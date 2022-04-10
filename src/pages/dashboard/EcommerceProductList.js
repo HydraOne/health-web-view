@@ -42,10 +42,11 @@ import { ProductTableRow, ProductTableToolbar } from '../../sections/@dashboard/
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
-  { id: 'name', label: 'Product', align: 'left' },
-  { id: 'createdAt', label: 'Create at', align: 'left' },
-  { id: 'inventoryType', label: 'Status', align: 'center', width: 180 },
-  { id: 'price', label: 'Price', align: 'right' },
+  { id: 'name', label: 'Product', alignRight: false },
+  { id: 'type', label: 'type', alignRight: false },
+  { id: 'createTime', label: 'Create at', alignRight: false },
+  { id: 'inventoryType', label: 'Status', alignRight: false },
+  { id: 'price', label: 'Price', alignRight: true },
   { id: '' },
 ];
 

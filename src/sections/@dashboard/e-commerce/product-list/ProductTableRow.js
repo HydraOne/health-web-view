@@ -27,7 +27,7 @@ ProductTableRow.propTypes = {
 export default function ProductTableRow({ row, selected, onEditRow, onSelectRow, onDeleteRow }) {
   const theme = useTheme();
 
-  const { name, cover, createdAt, inventoryType, price } = row;
+  const { name, type,cover, createTime, inventoryType, price } = row;
 
   const [openMenu, setOpenMenuActions] = useState(null);
 
@@ -52,7 +52,11 @@ export default function ProductTableRow({ row, selected, onEditRow, onSelectRow,
         </Typography>
       </TableCell>
 
-      <TableCell>{fDate(createdAt)}</TableCell>
+        <TableCell>
+            {type}
+        </TableCell>
+
+      <TableCell>{fDate(createTime)}</TableCell>
 
       <TableCell align="center">
         <Label
@@ -62,6 +66,7 @@ export default function ProductTableRow({ row, selected, onEditRow, onSelectRow,
           }
           sx={{ textTransform: 'capitalize' }}
         >
+          {inventoryType ? sentenceCase(inventoryType) : ''}
           {inventoryType ? sentenceCase(inventoryType) : ''}
         </Label>
       </TableCell>

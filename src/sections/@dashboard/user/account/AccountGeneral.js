@@ -15,6 +15,7 @@ import { fData } from '../../../../utils/formatNumber';
 import { countries } from '../../../../_mock';
 // components
 import { FormProvider, RHFSwitch, RHFSelect, RHFTextField, RHFUploadAvatar } from '../../../../components/hook-form';
+import axios from "../../../../utils/axios";
 
 // ----------------------------------------------------------------------
 
@@ -66,6 +67,18 @@ export default function AccountGeneral() {
       const file = acceptedFiles[0];
 
       if (file) {
+
+        const forms = new FormData()
+        const configs = {
+          headers:{'Content-Type':'multipart/form-data'}
+        };
+
+        forms.append('file',file);
+        forms.append('bucketName','demo');
+        axios.post("/api/file/uploadAvatar",forms ,configs).then(res=>{
+          console.log(res)
+        });
+
         setValue(
           'photoURL',
           Object.assign(file, {

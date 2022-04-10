@@ -22,6 +22,7 @@ import {
   RHFRadioGroup,
   RHFUploadMultiFile,
 } from '../../../components/hook-form';
+import axios from "../../../utils/axios";
 
 // ----------------------------------------------------------------------
 
@@ -120,9 +121,43 @@ export default function ProductNewEditForm({ isEdit, currentProduct }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isEdit, currentProduct]);
 
-  const onSubmit = async () => {
+  const onSubmit = async (data) => {
     try {
-      await new Promise((resolve) => setTimeout(resolve, 500));
+      const recordDescription = data.description;
+      const {name} = data;
+      const doc = new DOMParser().parseFromString(recordDescription,"text/html")
+      const imgs = doc.getElementsByTagName("img");
+      const blobs = [];
+      // eslint-disable-next-line no-plusplus
+      for (let i = 0; i < imgs.length; i++) {
+        const encode = imgs[i].getAttribute("src");
+        blobs.push(base64EncodeToBlob(encode));
+      }
+
+      const forms = new FormData();
+      const configs = {
+        headers:{'Content-Type':'multipart/form-data'}
+      };
+      // append('files',blobs);
+      blobs.forEach(blob=>forms.append('files',blob))
+      forms.append('bucketName','demo');
+
+      await axios.post("/api/file/uploadPictures",forms ,configs).then(res=>{
+        // eslint-disable-next-line no-plusplus
+        for (let i = 0; i < imgs.length; i++) {
+          imgs[i].setAttribute("src",res.data.data[i]);
+        }
+        const flag = false;
+      });
+
+      // const images = description.get;
+      // await new Promise((resolve) => setTimeout(resolve, 500));
+      const description = doc.documentElement.outerHTML;
+      const checkEntity = {name,description};
+      await axios.put("/api/check/put/item",checkEntity).then(res=>{
+        // eslint-disable-next-line no-plusplus
+        console.log(res);
+      });
       reset();
       enqueueSnackbar(!isEdit ? 'Create success!' : 'Update success!');
       navigate(PATH_DASHBOARD.eCommerce.list);
@@ -277,4 +312,18 @@ export default function ProductNewEditForm({ isEdit, currentProduct }) {
       </Grid>
     </FormProvider>
   );
+}
+
+
+function base64EncodeToBlob(encode){ // 生成Blob
+  const arr = encode.split(',');
+  const mime = arr[0].match(/:(.*?);/)[1];
+  const bstr = atob(arr[1]);
+  let n = bstr.length;
+  const u8arr = new Uint8Array(n);
+  // eslint-disable-next-line no-plusplus
+  while (n--) {
+    u8arr[n] = bstr.charCodeAt(n);
+  }
+  return new Blob([u8arr], { type: mime });
 }
