@@ -45,8 +45,8 @@ const TABLE_HEAD = [
   { id: 'name', label: 'Product', alignRight: false },
   { id: 'type', label: 'type', alignRight: false },
   { id: 'createTime', label: 'Create at', alignRight: false },
-  { id: 'inventoryType', label: 'Status', alignRight: false },
-  { id: 'price', label: 'Price', alignRight: true },
+  { id: 'inventoryType', label: 'Status', align: 'center'},
+  { id: 'price', label: 'Price', align: 'center' },
   { id: '' },
 ];
 

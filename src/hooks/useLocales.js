@@ -6,10 +6,10 @@ import { enUS, deDE, frFR } from '@mui/material/locale';
 
 const LANGS = [
   {
-    label: 'English',
-    value: 'en',
+    label: 'Chinese',
+    value: 'cn',
     systemValue: enUS,
-    icon: 'https://minimal-assets-api.vercel.app/assets/icons/ic_flag_en.svg',
+    icon: 'https://minimal-assets-api.vercel.app/assets/icons/ic_flag_cn.svg',
   },
   {
     label: 'German',

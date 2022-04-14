@@ -46,7 +46,7 @@ export default function ProductTableRow({ row, selected, onEditRow, onSelectRow,
       </TableCell>
 
       <TableCell sx={{ display: 'flex', alignItems: 'center' }}>
-        <Image disabledEffect alt={name} src={cover} sx={{ borderRadius: 1.5, width: 48, height: 48, mr: 2 }} />
+        <Image disabledEffect alt={name} src='http://192.168.117.130:19000/demo/01656b63ac557edbe35c6e20489a820a' sx={{ borderRadius: 1.5, width: 48, height: 48, mr: 2 }} />
         <Typography variant="subtitle2" noWrap>
           {name}
         </Typography>
@@ -66,12 +66,11 @@ export default function ProductTableRow({ row, selected, onEditRow, onSelectRow,
           }
           sx={{ textTransform: 'capitalize' }}
         >
-          {inventoryType ? sentenceCase(inventoryType) : ''}
-          {inventoryType ? sentenceCase(inventoryType) : ''}
+          {inventoryType ? sentenceCase(inventoryType) : sentenceCase('success')}
         </Label>
       </TableCell>
 
-      <TableCell align="right">{fCurrency(price)}</TableCell>
+      <TableCell align="center">{fCurrency(price)}</TableCell>
 
       <TableCell align="right">
         <TableMoreMenu
