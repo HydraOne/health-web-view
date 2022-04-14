@@ -51,14 +51,21 @@ import RHFSelectNew from "../../../components/hook-form/RHFSelectNew";
 import {ShopProductPreview} from "./shop";
 import {UserTableRow, UserTableToolbar} from "../user/list";
 import Scrollbar from "../../../components/Scrollbar";
-import {TableEmptyRows, TableHeadCustom, TableNoData, TableSelectedActions} from "../../../components/table";
+import {
+  TableEmptyRows,
+  TableHeadCustom,
+  TableNoData,
+  TableSelectedActions,
+  TableSkeleton
+} from "../../../components/table";
 import Iconify from "../../../components/Iconify";
 import useTable, {emptyRows, getComparator} from "../../../hooks/useTable";
 import useSettings from "../../../hooks/useSettings";
 import {_userList} from "../../../_mock";
 import useTabs from "../../../hooks/useTabs";
 import {getProducts} from "../../../redux/slices/product";
-import {dispatch} from "../../../redux/store";
+import {dispatch, useSelector} from "../../../redux/store";
+import {ProductTableRow} from "./product-list";
 
 // ----------------------------------------------------------------------
 
@@ -89,16 +96,16 @@ const TAGS_OPTION = [
   '3 Idiots',
 ];
 
-// const STATUS_OPTIONS = ['all', 'active', 'banned'];
+// const STATUS_OPTIONS = ['added', 'active', 'banned'];
 
 const STATUS_OPTIONS = [
-    {'label':'已添加','value':'all'},
-    {'label':'体检组','value':'active'},
-    {'label':'体检项','value':'banned'}
+    {'label':'已添加','value':'added'},
+    {'label':'体检组','value':'Group'},
+    {'label':'体检项','value':'Item'}
 ];
 
 const ROLE_OPTIONS = [
-  'all',
+  'added',
   'ux designer',
   'full stack designer',
   'backend developer',
@@ -111,11 +118,11 @@ const ROLE_OPTIONS = [
 ];
 
 const TABLE_HEAD = [
-  { id: 'name', label: 'Name', align: 'left' },
-  { id: 'company', label: 'Company', align: 'left' },
-  { id: 'role', label: 'Role', align: 'left' },
-  { id: 'isVerified', label: 'Verified', align: 'center' },
-  { id: 'status', label: 'Status', align: 'left' },
+  { id: 'name', label: 'Product', alignRight: false },
+  { id: 'type', label: 'type', alignRight: false },
+  { id: 'createTime', label: 'Create at', alignRight: false },
+  { id: 'inventoryType', label: 'Status', align: 'center'},
+  { id: 'price', label: 'Price', align: 'center' },
   { id: '' },
 ];
 
@@ -127,21 +134,27 @@ const LabelStyle = styled(Typography)(({ theme }) => ({
 
 // ----------------------------------------------------------------------
 
-ProductNewEditFormNew.propTypes = {
+ProductNewEditFormNew1.propTypes = {
   isEdit: PropTypes.bool,
   currentProduct: PropTypes.object,
 };
 
-export default function ProductNewEditFormNew({ isEdit, currentProduct }) {
+export default function ProductNewEditFormNew1({ isEdit, currentProduct }) {
   const navigate = useNavigate();
 
   const { enqueueSnackbar } = useSnackbar();
 
   const [open, setOpen] = useState(false);
 
+  const { products, isLoading } = useSelector((state) => state.product);
+
+  const [addedProducts, setAddedProducts] = useState(new Set());
+
   useEffect(() => {
-    dispatch(getProducts());
-  }, [dispatch]);
+    if (products.length) {
+      setTableData(products);
+    }
+  }, [products]);
 
   const handleOpenPreview = () => {
     setOpen(true);
@@ -173,13 +186,13 @@ export default function ProductNewEditFormNew({ isEdit, currentProduct }) {
   const { themeStretch } = useSettings();
 
 
-  const [tableData, setTableData] = useState(_userList);
+  const [tableData, setTableData] = useState([]);
 
   const [filterName, setFilterName] = useState('');
 
-  const [filterRole, setFilterRole] = useState('all');
+  const [filterRole, setFilterRole] = useState('added');
 
-  const { currentTab: filterStatus, onChangeTab: onChangeFilterStatus } = useTabs('all');
+  const { currentTab: filterStatus, onChangeTab: onChangeFilterStatus } = useTabs('Item');
 
   const handleFilterName = (filterName) => {
     setFilterName(filterName);
@@ -212,6 +225,7 @@ export default function ProductNewEditFormNew({ isEdit, currentProduct }) {
     filterName,
     filterRole,
     filterStatus,
+    addedProducts
   });
 
   const denseHeight = dense ? 52 : 72;
@@ -514,16 +528,22 @@ export default function ProductNewEditFormNew({ isEdit, currentProduct }) {
                       />
 
                       <TableBody>
-                        {dataFiltered.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => (
-                            <UserTableRow
-                                key={row.id}
-                                row={row}
-                                selected={selected.includes(row.id)}
-                                onSelectRow={() => onSelectRow(row.id)}
-                                onDeleteRow={() => handleDeleteRow(row.id)}
-                                onEditRow={() => handleEditRow(row.name)}
-                            />
-                        ))}
+                        {(isLoading ? [...Array(rowsPerPage)] : dataFiltered)
+                            .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                            .map((row, index) =>
+                                row ? (
+                                    <ProductTableRow
+                                        key={row.id}
+                                        row={row}
+                                        selected={selected.includes(row.id)}
+                                        onSelectRow={() => onSelectRow(row.id)}
+                                        onDeleteRow={() => handleDeleteRow(row.id)}
+                                        onEditRow={() => handleEditRow(row.name)}
+                                    />
+                                ) : (
+                                    !isNotFound && <TableSkeleton key={index} sx={{ height: denseHeight }} />
+                                )
+                            )}
 
                         <TableEmptyRows height={denseHeight} emptyRows={emptyRows(page, rowsPerPage, tableData.length)} />
 
@@ -584,7 +604,7 @@ function base64EncodeToBlob(encode){ // 生成Blob
 }
 
 
-function applySortFilter({ tableData, comparator, filterName, filterStatus, filterRole }) {
+function applySortFilter({ tableData, comparator, filterName, filterStatus, filterRole , addedProducts}) {
   const stabilizedThis = tableData.map((el, index) => [el, index]);
 
   stabilizedThis.sort((a, b) => {
@@ -599,11 +619,13 @@ function applySortFilter({ tableData, comparator, filterName, filterStatus, filt
     tableData = tableData.filter((item) => item.name.toLowerCase().indexOf(filterName.toLowerCase()) !== -1);
   }
 
-  if (filterStatus !== 'all') {
-    tableData = tableData.filter((item) => item.status === filterStatus);
+  if (filterStatus !== 'added') {
+    tableData = tableData.filter((item) => item.type === filterStatus);
+  }else {
+    tableData = tableData.filter((item) => addedProducts.has(item.id));
   }
 
-  if (filterRole !== 'all') {
+  if (filterRole !== 'added') {
     tableData = tableData.filter((item) => item.role === filterRole);
   }
 
