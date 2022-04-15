@@ -267,7 +267,7 @@ export default function ProductNewEditForm({ isEdit, currentProduct }) {
                       />
                     </div>
 
-                    <RHFSelectNew name={'type'} label={'Type'} options={TYPE_OPTION}/>
+                    <RHFSelectNew name={'type'} label={'Type'} options={TYPE_OPTION} />
 
                     <Controller
                         name="tags"

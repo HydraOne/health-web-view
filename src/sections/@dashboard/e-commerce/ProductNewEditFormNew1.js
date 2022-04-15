@@ -31,7 +31,7 @@ import {
   TableBody,
   Box,
   TablePagination,
-  FormControlLabel, Switch
+  FormControlLabel, Switch, Hidden
 } from '@mui/material';
 // routes
 import { PATH_DASHBOARD } from '../../../routes/paths';
@@ -96,10 +96,16 @@ const TAGS_OPTION = [
   '3 Idiots',
 ];
 
+const TYPE_VALUE = new Map([
+  ["Added", 0],
+  ["Group", 2],
+  ["Plan", 3],
+])
+
 // const STATUS_OPTIONS = ['added', 'active', 'banned'];
 
-const STATUS_OPTIONS = [
-    {'label':'已添加','value':'added'},
+const TYPE_OPTIONS = [
+    {'label':'已添加','value':'Added'},
     {'label':'体检组','value':'Group'},
     {'label':'体检项','value':'Item'}
 ];
@@ -192,7 +198,7 @@ export default function ProductNewEditFormNew1({ isEdit, currentProduct }) {
 
   const [filterRole, setFilterRole] = useState('added');
 
-  const { currentTab: filterStatus, onChangeTab: onChangeFilterStatus } = useTabs('Item');
+  const { currentTab: filterStatus, onChangeTab: onChangeFilterStatus } = useTabs('Added');
 
   const handleFilterName = (filterName) => {
     setFilterName(filterName);
@@ -215,9 +221,21 @@ export default function ProductNewEditFormNew1({ isEdit, currentProduct }) {
     setTableData(deleteRows);
   };
 
+  const handleAddRows = (selected) => {
+    selected.forEach((id)=>{
+      addedProducts.add(id);
+    });
+    const addRows = new Set(addedProducts);
+    setAddedProducts(addRows);
+  };
+
   const handleEditRow = (id) => {
     navigate(PATH_DASHBOARD.user.edit(paramCase(id)));
   };
+
+  const handleSelectAllRows = () =>{
+
+  }
 
   const dataFiltered = applySortFilter({
     tableData,
@@ -287,10 +305,11 @@ export default function ProductNewEditFormNew1({ isEdit, currentProduct }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isEdit, currentProduct]);
 
-  const onSubmit = async (data) => {
+  const onSubmit = async (data,added) => {
     try {
       const recordDescription = data.description;
       const {name,type} = data;
+      const children = Array.from(added);
       const doc = new DOMParser().parseFromString(recordDescription,"text/html")
       const imgs = doc.getElementsByTagName("img");
       const blobs = [];
@@ -319,7 +338,7 @@ export default function ProductNewEditFormNew1({ isEdit, currentProduct }) {
       // const images = description.get;
       // await new Promise((resolve) => setTimeout(resolve, 500));
       const description = doc.documentElement.outerHTML;
-      const checkEntity = {name,description,type};
+      const checkEntity = {name,description,type,children};
       await axios.put("/api/check/put",checkEntity).then(res=>{
         // eslint-disable-next-line no-plusplus
         console.log(res);
@@ -357,7 +376,7 @@ export default function ProductNewEditFormNew1({ isEdit, currentProduct }) {
 
   return (
       <>
-        <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
+        <FormProvider methods={methods} onSubmit={handleSubmit((data)=>onSubmit(data,addedProducts))}>
           <Grid container spacing={3}>
             <Grid item xs={12} md={8}>
               <Card sx={{ p: 3 }}>
@@ -448,6 +467,7 @@ export default function ProductNewEditFormNew1({ isEdit, currentProduct }) {
                     />
                   </Stack>
 
+
                   <RHFSwitch name="taxes" label="Price includes taxes" />
                 </Card>
               </Stack>
@@ -470,10 +490,13 @@ export default function ProductNewEditFormNew1({ isEdit, currentProduct }) {
                     variant="scrollable"
                     scrollButtons="auto"
                     value={filterStatus}
-                    onChange={onChangeFilterStatus}
+                    onChange={(event,currentTab)=>{
+                      onChangeFilterStatus(event,currentTab);
+                      onSelectAllRows(false);
+                    }}
                     sx={{ px: 2, bgcolor: 'background.neutral' }}
                 >
-                  {STATUS_OPTIONS.map((tab) => (
+                  {TYPE_OPTIONS.filter((item) => TYPE_VALUE.get(item.value)<=TYPE_VALUE.get(filterStatus)).map((tab) => (
                       <Tab disableRipple key={tab.value} label={tab.label} value={tab.value} />
                   ))}
                 </Tabs>
@@ -491,59 +514,62 @@ export default function ProductNewEditFormNew1({ isEdit, currentProduct }) {
                 <Scrollbar>
                   <TableContainer sx={{ minWidth: 800, position: 'relative' }}>
                     {selected.length > 0 && (
-                        <TableSelectedActions
-                            dense={dense}
-                            numSelected={selected.length}
-                            rowCount={tableData.length}
-                            onSelectAllRows={(checked) =>
-                                onSelectAllRows(
-                                    checked,
-                                    tableData.map((row) => row.id)
-                                )
-                            }
-                            actions={
-                              <Tooltip title="Delete">
-                                <IconButton color="primary" onClick={() => handleDeleteRows(selected)}>
-                                  <Iconify icon={'eva:trash-2-outline'} />
-                                </IconButton>
-                              </Tooltip>
-                            }
-                        />
+                      <TableSelectedActions
+                        dense={dense}
+                        numSelected={selected.length}
+                        rowCount={dataFiltered.length}
+                        onSelectAllRows={(checked) =>
+                          onSelectAllRows(
+                              checked,
+                              dataFiltered.map((row) => row.id)
+                          )
+                        }
+                        actions={
+                          <Tooltip title="Add">
+                            <IconButton color="primary" onClick={(checked) => {
+                              handleAddRows(selected);
+                              onSelectAllRows(!checked)}}
+                            >
+                              <Iconify icon={'eva:file-add-outline'} />
+                            </IconButton>
+                          </Tooltip>
+                        }
+                      />
                     )}
 
                     <Table size={dense ? 'small' : 'medium'}>
                       <TableHeadCustom
-                          order={order}
-                          orderBy={orderBy}
-                          headLabel={TABLE_HEAD}
-                          rowCount={tableData.length}
-                          numSelected={selected.length}
-                          onSort={onSort}
-                          onSelectAllRows={(checked) =>
-                              onSelectAllRows(
-                                  checked,
-                                  tableData.map((row) => row.id)
-                              )
-                          }
+                        order={order}
+                        orderBy={orderBy}
+                        headLabel={TABLE_HEAD}
+                        rowCount={dataFiltered.length}
+                        numSelected={selected.length}
+                        onSort={onSort}
+                        onSelectAllRows={(checked) =>
+                          onSelectAllRows(
+                            checked,
+                            dataFiltered.map((row) => row.id)
+                          )
+                        }
                       />
 
                       <TableBody>
                         {(isLoading ? [...Array(rowsPerPage)] : dataFiltered)
-                            .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                            .map((row, index) =>
-                                row ? (
-                                    <ProductTableRow
-                                        key={row.id}
-                                        row={row}
-                                        selected={selected.includes(row.id)}
-                                        onSelectRow={() => onSelectRow(row.id)}
-                                        onDeleteRow={() => handleDeleteRow(row.id)}
-                                        onEditRow={() => handleEditRow(row.name)}
-                                    />
-                                ) : (
-                                    !isNotFound && <TableSkeleton key={index} sx={{ height: denseHeight }} />
-                                )
-                            )}
+                          .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                          .map((row, index) =>
+                            row ? (
+                              <ProductTableRow
+                                  key={row.id}
+                                  row={row}
+                                  selected={selected.includes(row.id)}
+                                  onSelectRow={() => onSelectRow(row.id)}
+                                  onDeleteRow={() => handleDeleteRow(row.id)}
+                                  onEditRow={() => handleEditRow(row.name)}
+                              />
+                            ) : (
+                              !isNotFound && <TableSkeleton key={index} sx={{ height: denseHeight }} />
+                            )
+                          )}
 
                         <TableEmptyRows height={denseHeight} emptyRows={emptyRows(page, rowsPerPage, tableData.length)} />
 
@@ -555,19 +581,19 @@ export default function ProductNewEditFormNew1({ isEdit, currentProduct }) {
 
                 <Box sx={{ position: 'relative' }}>
                   <TablePagination
-                      rowsPerPageOptions={[5, 10, 25]}
-                      component="div"
-                      count={dataFiltered.length}
-                      rowsPerPage={rowsPerPage}
-                      page={page}
-                      onPageChange={onChangePage}
-                      onRowsPerPageChange={onChangeRowsPerPage}
+                    rowsPerPageOptions={[5, 10, 25]}
+                    component="div"
+                    count={dataFiltered.length}
+                    rowsPerPage={rowsPerPage}
+                    page={page}
+                    onPageChange={onChangePage}
+                    onRowsPerPageChange={onChangeRowsPerPage}
                   />
 
                   <FormControlLabel
-                      control={<Switch checked={dense} onChange={onChangeDense} />}
-                      label="Dense"
-                      sx={{ px: 3, py: 1.5, top: 0, position: { md: 'absolute' } }}
+                    control={<Switch checked={dense} onChange={onChangeDense} />}
+                    label="Dense"
+                    sx={{ px: 3, py: 1.5, top: 0, position: { md: 'absolute' } }}
                   />
                 </Box>
               </Card>
@@ -580,7 +606,7 @@ export default function ProductNewEditFormNew1({ isEdit, currentProduct }) {
               isValid={isValid}
               isSubmitting={isSubmitting}
               onClose={handleClosePreview}
-              onSubmit={handleSubmit(onSubmit)}
+              onSubmit={handleSubmit((data)=>onSubmit(data,addedProducts))}
           />
         </FormProvider>
 
@@ -620,7 +646,7 @@ function applySortFilter({ tableData, comparator, filterName, filterStatus, filt
   }
 
   if (filterStatus !== 'added') {
-    tableData = tableData.filter((item) => item.type === filterStatus);
+    tableData = tableData.filter((item) => (item.type === filterStatus) && !addedProducts.has(item.id));
   }else {
     tableData = tableData.filter((item) => addedProducts.has(item.id));
   }

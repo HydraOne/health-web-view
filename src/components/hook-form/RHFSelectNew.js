@@ -56,6 +56,7 @@ export default function RHFSelectNew({ name,label,options,children, ...other }) 
                 label={label}
                 InputLabelProps={{ shrink: true }}
                 SelectProps={{ native: false, sx: { textTransform: 'capitalize' } }}
+                {...other}
             >
                 {options.map((option) => (
                     <MenuItem
