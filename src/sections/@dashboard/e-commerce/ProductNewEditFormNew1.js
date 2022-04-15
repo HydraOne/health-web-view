@@ -496,7 +496,7 @@ export default function ProductNewEditFormNew1({ isEdit, currentProduct }) {
                     }}
                     sx={{ px: 2, bgcolor: 'background.neutral' }}
                 >
-                  {TYPE_OPTIONS.filter((item) => TYPE_VALUE.get(item.value)<=TYPE_VALUE.get(filterStatus)).map((tab) => (
+                  {TYPE_OPTIONS.map((tab) => (
                       <Tab disableRipple key={tab.value} label={tab.label} value={tab.value} />
                   ))}
                 </Tabs>
@@ -645,7 +645,7 @@ function applySortFilter({ tableData, comparator, filterName, filterStatus, filt
     tableData = tableData.filter((item) => item.name.toLowerCase().indexOf(filterName.toLowerCase()) !== -1);
   }
 
-  if (filterStatus !== 'added') {
+  if (filterStatus !== 'Added') {
     tableData = tableData.filter((item) => (item.type === filterStatus) && !addedProducts.has(item.id));
   }else {
     tableData = tableData.filter((item) => addedProducts.has(item.id));
