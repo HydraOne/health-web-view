@@ -68,15 +68,15 @@ export default function Register() {
   const mdUp = useResponsive('up', 'md');
 
   return (
-    <Page title="Register">
+    <Page title="注册">
       <RootStyle>
         <HeaderStyle>
           <Logo />
           {smUp && (
             <Typography variant="body2" sx={{ mt: { md: -2 } }}>
-              Already have an account?{' '}
+              已经拥有账号?{' '}
               <Link variant="subtitle2" component={RouterLink} to={PATH_AUTH.login}>
-                Login
+                直接登录
               </Link>
             </Typography>
           )}
@@ -85,7 +85,7 @@ export default function Register() {
         {mdUp && (
           <SectionStyle>
             <Typography variant="h3" sx={{ px: 5, mt: 10, mb: 5 }}>
-              Manage the job more effectively with Minimal
+              欢迎注册
             </Typography>
             <Image
               visibleByDefault
@@ -101,9 +101,9 @@ export default function Register() {
             <Box sx={{ mb: 5, display: 'flex', alignItems: 'center' }}>
               <Box sx={{ flexGrow: 1 }}>
                 <Typography variant="h4" gutterBottom>
-                  Get started absolutely free.
+                  欢迎注册
                 </Typography>
-                <Typography sx={{ color: 'text.secondary' }}>Free forever. No credit card needed.</Typography>
+
               </Box>
               <Tooltip title={capitalCase(method)}>
                 <>
@@ -119,22 +119,22 @@ export default function Register() {
             <RegisterForm />
 
             <Typography variant="body2" align="center" sx={{ color: 'text.secondary', mt: 3 }}>
-              By registering, I agree to Minimal&nbsp;
+              登录或完成注册即代表你同意
               <Link underline="always" color="text.primary" href="#">
-                Terms of Service
+                用户协议
               </Link>
-              and
+              和
               <Link underline="always" color="text.primary" href="#">
-                Privacy Policy
+                隐私政策
               </Link>
               .
             </Typography>
 
             {!smUp && (
               <Typography variant="body2" sx={{ mt: 3, textAlign: 'center' }}>
-                Already have an account?{' '}
+                已经拥有账号?{' '}
                 <Link variant="subtitle2" to={PATH_AUTH.login} component={RouterLink}>
-                  Login
+                  直接登录
                 </Link>
               </Typography>
             )}

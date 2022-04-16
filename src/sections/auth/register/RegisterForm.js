@@ -23,10 +23,10 @@ export default function RegisterForm() {
   const [showPassword, setShowPassword] = useState(false);
 
   const RegisterSchema = Yup.object().shape({
-    firstName: Yup.string().required('First name required'),
-    lastName: Yup.string().required('Last name required'),
-    email: Yup.string().email('Email must be a valid email address').required('Email is required'),
-    password: Yup.string().required('Password is required'),
+    firstName: Yup.string().required('姓是必须的'),
+    lastName: Yup.string().required('名是必须的'),
+    email: Yup.string().email('电子邮件必须是有效的电子邮件地址').required('电子邮件是必须的'),
+    password: Yup.string().required('密码是必须的'),
   });
 
   const defaultValues = {
@@ -56,7 +56,7 @@ export default function RegisterForm() {
       console.error(error);
       reset();
       if (isMountedRef.current) {
-        setError('afterSubmit', { ...error, message: error.message });
+        setError('afterSubmit', { ...error, message: error.msg });
       }
     }
   };
@@ -67,15 +67,15 @@ export default function RegisterForm() {
         {!!errors.afterSubmit && <Alert severity="error">{errors.afterSubmit.message}</Alert>}
 
         <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
-          <RHFTextField name="firstName" label="First name" />
-          <RHFTextField name="lastName" label="Last name" />
+          <RHFTextField name="firstName" label="姓" />
+          <RHFTextField name="lastName" label="名" />
         </Stack>
 
-        <RHFTextField name="email" label="Email address" />
+        <RHFTextField name="email" label="电子邮箱" />
 
         <RHFTextField
           name="password"
-          label="Password"
+          label="密码"
           type={showPassword ? 'text' : 'password'}
           InputProps={{
             endAdornment: (
@@ -89,7 +89,7 @@ export default function RegisterForm() {
         />
 
         <LoadingButton fullWidth size="large" type="submit" variant="contained" loading={isSubmitting}>
-          Register
+          注册
         </LoadingButton>
       </Stack>
     </FormProvider>
