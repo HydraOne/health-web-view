@@ -156,6 +156,8 @@ export default function ProductNewEditFormNew1({ isEdit, currentProduct }) {
 
   const [addedProducts, setAddedProducts] = useState(new Set());
 
+  const [productImgs, setProductImgs] = useState(new Set());
+
   useEffect(() => {
     if (products.length) {
       setTableData(products);
@@ -305,10 +307,10 @@ export default function ProductNewEditFormNew1({ isEdit, currentProduct }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isEdit, currentProduct]);
 
-  const onSubmit = async (data,added) => {
+  const onSubmit = async (data,added,productPic) => {
     try {
       const recordDescription = data.description;
-      const {name,type} = data;
+      const {name,type,images} = data;
       const children = Array.from(added);
       const doc = new DOMParser().parseFromString(recordDescription,"text/html")
       const imgs = doc.getElementsByTagName("img");
@@ -338,11 +340,24 @@ export default function ProductNewEditFormNew1({ isEdit, currentProduct }) {
       // const images = description.get;
       // await new Promise((resolve) => setTimeout(resolve, 500));
       const description = doc.documentElement.outerHTML;
+
+
       const checkEntity = {name,description,type,children};
-      await axios.put("/api/check/put",checkEntity).then(res=>{
+      const dataForms = new FormData();
+      dataForms.append("checkEntity",JSON.stringify(checkEntity));
+      // dataForms.append("checkEntity",new Blob([JSON.stringify(checkEntity)], {type: "application/json"}));
+      images.forEach(image =>dataForms.append('images',image))
+      await axios.put("/api/check/put",dataForms,configs).then(res=>{
         // eslint-disable-next-line no-plusplus
         console.log(res);
       });
+
+
+      // const checkEntity = {name,description,type,children};
+      // await axios.put("/api/check/put",dataForms,configs).then(res=>{
+      //   // eslint-disable-next-line no-plusplus
+      //   console.log(res);
+      // });
       reset();
       enqueueSnackbar(!isEdit ? 'Create success!' : 'Update success!');
       navigate(PATH_DASHBOARD.eCommerce.list);
@@ -353,6 +368,21 @@ export default function ProductNewEditFormNew1({ isEdit, currentProduct }) {
 
   const handleDrop = useCallback(
     (acceptedFiles) => {
+
+      // const forms = new FormData()
+      // const configs = {
+      //   headers:{'Content-Type':'multipart/form-data'}
+      // };
+      //
+      // acceptedFiles.map(file=>forms.append('files',file));
+      // // acceptedFiles.forEach(file=>console.log(file));
+      // forms.append('bucketName','demo');
+      // axios.post("/api/file/uploadPictures",forms ,configs).then(res=>{
+      //   const responseFilesId = res.data.data;
+      //   responseFilesId.forEach((item)=>productImgs.add(item));
+      //   const flag = false;
+      // });
+
       setValue(
         'images',
         acceptedFiles.map((file) =>
@@ -376,7 +406,7 @@ export default function ProductNewEditFormNew1({ isEdit, currentProduct }) {
 
   return (
       <>
-        <FormProvider methods={methods} onSubmit={handleSubmit((data)=>onSubmit(data,addedProducts))}>
+        <FormProvider methods={methods} onSubmit={handleSubmit((data)=>onSubmit(data,addedProducts,addedProducts))}>
           <Grid container spacing={3}>
             <Grid item xs={12} md={8}>
               <Card sx={{ p: 3 }}>
@@ -483,7 +513,7 @@ export default function ProductNewEditFormNew1({ isEdit, currentProduct }) {
               </Stack>
             </Grid>
 
-            <Grid item xs={12}>
+            <Grid item xs={12} >
               <Card>
                 <Tabs
                     allowScrollButtonsMobile
@@ -578,24 +608,6 @@ export default function ProductNewEditFormNew1({ isEdit, currentProduct }) {
                     </Table>
                   </TableContainer>
                 </Scrollbar>
-
-                <Box sx={{ position: 'relative' }}>
-                  <TablePagination
-                    rowsPerPageOptions={[5, 10, 25]}
-                    component="div"
-                    count={dataFiltered.length}
-                    rowsPerPage={rowsPerPage}
-                    page={page}
-                    onPageChange={onChangePage}
-                    onRowsPerPageChange={onChangeRowsPerPage}
-                  />
-
-                  <FormControlLabel
-                    control={<Switch checked={dense} onChange={onChangeDense} />}
-                    label="Dense"
-                    sx={{ px: 3, py: 1.5, top: 0, position: { md: 'absolute' } }}
-                  />
-                </Box>
               </Card>
             </Grid>
           </Grid>

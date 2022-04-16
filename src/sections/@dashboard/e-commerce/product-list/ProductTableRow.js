@@ -3,7 +3,17 @@ import { useState } from 'react';
 import { sentenceCase } from 'change-case';
 // @mui
 import { useTheme } from '@mui/material/styles';
-import { TableRow, Checkbox, TableCell, Typography, MenuItem } from '@mui/material';
+import {deepOrange} from "@mui/material/colors";
+import {
+    TableRow,
+    Checkbox,
+    TableCell,
+    Typography,
+    MenuItem,
+    ListItemAvatar,
+    ImageListItem,
+    Avatar
+} from '@mui/material';
 // utils
 import { fDate } from '../../../../utils/formatTime';
 import { fCurrency } from '../../../../utils/formatNumber';
@@ -27,7 +37,9 @@ ProductTableRow.propTypes = {
 export default function ProductTableRow({ row, selected, onEditRow, onSelectRow, onDeleteRow }) {
   const theme = useTheme();
 
-  const { name, type,cover, createTime, inventoryType, price } = row;
+  const { name, type,cover, createTime, inventoryType, price ,images} = row;
+
+  const defaultImages = images[0];
 
   const [openMenu, setOpenMenuActions] = useState(null);
 
@@ -46,7 +58,9 @@ export default function ProductTableRow({ row, selected, onEditRow, onSelectRow,
       </TableCell>
 
       <TableCell sx={{ display: 'flex', alignItems: 'center' }}>
-        <Image disabledEffect alt={name} src='http://192.168.117.130:19000/demo/01656b63ac557edbe35c6e20489a820a' sx={{ borderRadius: 1.5, width: 48, height: 48, mr: 2 }} />
+          {
+              <Image disabledEffect alt={name} src={defaultImages} sx={{ borderRadius: 1.5, width: 48, height: 48, mr: 2 }} />
+          }
         <Typography variant="subtitle2" noWrap>
           {name}
         </Typography>

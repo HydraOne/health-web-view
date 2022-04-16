@@ -62,7 +62,6 @@ const IconWrapperStyle = styled('div')(({ theme }) => ({
 // ----------------------------------------------------------------------
 
 export default function EcommerceProductDetails() {
-
   const { themeStretch } = useSettings();
   const dispatch = useDispatch();
   const [value, setValue] = useState('1');
@@ -80,7 +79,6 @@ export default function EcommerceProductDetails() {
   const handleGotoStep = (step) => {
     dispatch(onGotoStep(step));
   };
-
 
   return (
     <Page title="Ecommerce: Product Details">
@@ -110,6 +108,14 @@ export default function EcommerceProductDetails() {
                 <Grid item xs={12} md={6} lg={7}>
                   <ProductDetailsCarousel product={product} />
                 </Grid>
+                <Grid item xs={12} md={6} lg={5}>
+                  <ProductDetailsSummary
+                    product={product}
+                    cart={checkout.cart}
+                    onAddCart={handleAddCart}
+                    onGotoStep={handleGotoStep}
+                  />
+                </Grid>
               </Grid>
             </Card>
 
@@ -137,7 +143,7 @@ export default function EcommerceProductDetails() {
                     <Tab
                       disableRipple
                       value="2"
-                      label={`Review `}
+                      label={`Review (${product.reviews.length})`}
                       sx={{ '& .MuiTab-wrapper': { whiteSpace: 'nowrap' } }}
                     />
                   </TabList>
