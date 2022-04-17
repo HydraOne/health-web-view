@@ -36,7 +36,10 @@ ProductDetailsReviewOverview.propTypes = {
 };
 
 export default function ProductDetailsReviewOverview({ product, onOpen }) {
-  const { totalRating, totalReview, ratings } = product;
+
+  const {summary} = product;
+
+  const { totalRating, totalReview, ratings } = summary;
 
   const total = sumBy(ratings, (star) => star.starCount);
 
@@ -62,7 +65,7 @@ export default function ProductDetailsReviewOverview({ product, onOpen }) {
             .slice(0)
             .reverse()
             .map((rating) => (
-              <ProgressItem key={rating.name} star={rating} total={total} />
+              <ProgressItem key={rating.name} star={rating} total={total} value={rating.value}/>
             ))}
         </Stack>
       </GridStyle>
@@ -83,13 +86,14 @@ export default function ProductDetailsReviewOverview({ product, onOpen }) {
 ProgressItem.propTypes = {
   star: PropTypes.object,
   total: PropTypes.number,
+  value: PropTypes.number,
 };
 
-function ProgressItem({ star, total }) {
+function ProgressItem({ star, total ,value}) {
   const { name, starCount, reviewCount } = star;
   return (
     <Stack direction="row" alignItems="center" spacing={1.5}>
-      <Typography variant="subtitle2">{name}</Typography>
+      <RatingStyle readOnly size="small" value={value} />
       <LinearProgress
         variant="determinate"
         value={(starCount / total) * 100}

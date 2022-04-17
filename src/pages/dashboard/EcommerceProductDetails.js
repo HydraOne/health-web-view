@@ -137,7 +137,7 @@ export default function EcommerceProductDetails() {
                     <Tab
                       disableRipple
                       value="2"
-                      label={`Review `}
+                      label={`Review (54)`}
                       sx={{ '& .MuiTab-wrapper': { whiteSpace: 'nowrap' } }}
                     />
                   </TabList>

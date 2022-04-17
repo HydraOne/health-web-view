@@ -35,7 +35,6 @@ export default function ProductDetailsReview({ product }) {
         <Divider />
       </Collapse>
 
-      <ProductDetailsReviewList product={product} />
     </>
   );
 }
