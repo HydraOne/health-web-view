@@ -2,7 +2,7 @@ import { createContext, useEffect, useReducer } from 'react';
 import PropTypes from 'prop-types';
 // utils
 import axios from '../utils/axios';
-import { isValidToken, setSession } from '../utils/jwt';
+import { setSession } from '../utils/jwt';
 
 // ----------------------------------------------------------------------
 
@@ -55,6 +55,7 @@ const AuthContext = createContext({
   login: () => Promise.resolve(),
   logout: () => Promise.resolve(),
   register: () => Promise.resolve(),
+  sendEmailGetCaptchaCode: ()=>Promise.resolve(),
 });
 
 // ----------------------------------------------------------------------
@@ -126,12 +127,12 @@ function AuthProvider({ children }) {
     });
   };
 
-  const register = async (email, password, firstName, lastName) => {
-    const  name=firstName+lastName;
+  const register = async (email, password, firstName, lastName,CaptchaCode) => {
     const response = await axios.post('/api/account/register', {
       email,
       password,
-      "username":name
+      "username":firstName+lastName,
+      CaptchaCode
     });
     const { accessToken, user } = response.data;
 
@@ -144,6 +145,22 @@ function AuthProvider({ children }) {
       },
     });
   };
+
+  const sendEmailGetCaptchaCode = async (email) => {
+    const  response = await axios.post('/api/sendCaptchaCode/register',{
+      email
+    });
+
+    const { accessToken, user } = response.data;
+    setSession(accessToken);
+    // window.localStorage.setItem('accessToken', accessToken);
+    dispatch({
+      type: 'REGISTER',
+      payload: {
+        user,
+      },
+    });
+  }
 
   const logout = async () => {
     setSession(null);
@@ -158,6 +175,7 @@ function AuthProvider({ children }) {
         login,
         logout,
         register,
+        sendEmailGetCaptchaCode
       }}
     >
       {children}

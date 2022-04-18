@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 // @mui
-import { Stack, IconButton, InputAdornment, Alert } from '@mui/material';
+import {Stack, IconButton, InputAdornment, Alert, Button} from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 // hooks
 import useAuth from '../../../hooks/useAuth';
@@ -13,11 +13,12 @@ import useIsMountedRef from '../../../hooks/useIsMountedRef';
 import Iconify from '../../../components/Iconify';
 import { FormProvider, RHFTextField } from '../../../components/hook-form';
 
+
 // ----------------------------------------------------------------------
 
 export default function RegisterForm() {
   const { register } = useAuth();
-
+  const { sendEmailGetCaptchaCode }=useAuth();
   const isMountedRef = useIsMountedRef();
 
   const [showPassword, setShowPassword] = useState(false);
@@ -26,6 +27,7 @@ export default function RegisterForm() {
     firstName: Yup.string().required('姓是必须的'),
     lastName: Yup.string().required('名是必须的'),
     email: Yup.string().email('电子邮件必须是有效的电子邮件地址').required('电子邮件是必须的'),
+    CaptchaCode:Yup.string().required("验证码是必须的"),
     password: Yup.string().required('密码是必须的'),
   });
 
@@ -33,7 +35,9 @@ export default function RegisterForm() {
     firstName: '',
     lastName: '',
     email: '',
+    CaptchaCode:'',
     password: '',
+
   };
 
   const methods = useForm({
@@ -43,7 +47,6 @@ export default function RegisterForm() {
 
   const {
     reset,
-
     setError,
     handleSubmit,
     formState: { errors, isSubmitting },
@@ -51,7 +54,7 @@ export default function RegisterForm() {
 
   const onSubmit = async (data) => {
     try {
-      await register(data.email, data.password, data.firstName, data.lastName);
+      await register(data.email, data.password, data.firstName, data.lastName,data.CaptchaCode);
     } catch (error) {
       console.error(error);
       reset();
@@ -60,6 +63,15 @@ export default function RegisterForm() {
       }
     }
   };
+
+  const sendCaptchaCode = async () => {
+   try {
+     await sendEmailGetCaptchaCode(document.getElementsByName('email')[0].value);
+   }catch (error){
+     console.error(error);
+     setError('afterSubmit', { ...error, message: error.msg });
+   }
+  }
 
   return (
     <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
@@ -70,8 +82,6 @@ export default function RegisterForm() {
           <RHFTextField name="firstName" label="姓" />
           <RHFTextField name="lastName" label="名" />
         </Stack>
-
-        <RHFTextField name="email" label="电子邮箱" />
 
         <RHFTextField
           name="password"
@@ -87,6 +97,12 @@ export default function RegisterForm() {
             ),
           }}
         />
+
+        <Stack  direction="row" spacing={1}>
+          <RHFTextField name="email" label="电子邮箱" />
+          <Button  color="success" variant="contained" size="large" onClick={sendCaptchaCode}>发送验证码</Button>
+        </Stack>
+
 
         <LoadingButton fullWidth size="large" type="submit" variant="contained" loading={isSubmitting}>
           注册
