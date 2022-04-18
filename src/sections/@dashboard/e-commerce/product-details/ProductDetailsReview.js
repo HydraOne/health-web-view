@@ -16,6 +16,7 @@ ProductDetailsReview.propTypes = {
 export default function ProductDetailsReview({ product }) {
   const [reviewBox, setReviewBox] = useState(false);
 
+
   const handleOpenReviewBox = () => {
     setReviewBox((prev) => !prev);
   };
@@ -31,10 +32,11 @@ export default function ProductDetailsReview({ product }) {
       <Divider />
 
       <Collapse in={reviewBox}>
-        <ProductDetailsReviewForm onClose={handleCloseReviewBox} id="move_add_review" />
+        <ProductDetailsReviewForm product={product} onClose={handleCloseReviewBox} id="move_add_review" />
         <Divider />
       </Collapse>
 
+      <ProductDetailsReviewList product={product} />
     </>
   );
 }

@@ -9,6 +9,7 @@ import { Button, Stack, Rating, Typography, FormHelperText } from '@mui/material
 import { LoadingButton } from '@mui/lab';
 // components
 import { FormProvider, RHFTextField } from '../../../../components/hook-form';
+import axios from "../../../../utils/axios";
 
 // ----------------------------------------------------------------------
 
@@ -27,18 +28,16 @@ ProductDetailsReviewForm.propTypes = {
 };
 
 export default function ProductDetailsReviewForm({ onClose, id, ...other }) {
+  const {product} = other;
+
   const ReviewSchema = Yup.object().shape({
     rating: Yup.mixed().required('Rating is required'),
-    review: Yup.string().required('Review is required'),
-    name: Yup.string().required('Name is required'),
-    email: Yup.string().email('Email must be a valid email address').required('Email is required'),
+    comment: Yup.string().required('Review is required'),
   });
 
   const defaultValues = {
     rating: null,
-    review: '',
-    name: '',
-    email: '',
+    comment: '',
   };
 
   const methods = useForm({
@@ -53,9 +52,10 @@ export default function ProductDetailsReviewForm({ onClose, id, ...other }) {
     formState: { errors, isSubmitting },
   } = methods;
 
-  const onSubmit = async () => {
+  const onSubmit = async (data) => {
     try {
-      await new Promise((resolve) => setTimeout(resolve, 500));
+      const {...other} = data;
+      await axios.post(`/api/rating/add/${product.id}`,data);
       reset();
       onClose();
     } catch (error) {
@@ -89,11 +89,7 @@ export default function ProductDetailsReviewForm({ onClose, id, ...other }) {
             {!!errors.rating && <FormHelperText error> {errors.rating?.message}</FormHelperText>}
           </div>
 
-          <RHFTextField name="review" label="Review *" multiline rows={3} />
-
-          <RHFTextField name="name" label="Name *" />
-
-          <RHFTextField name="email" label="Email *" />
+          <RHFTextField name="comment" label="Review *" multiline rows={3} />
 
           <Stack direction="row" justifyContent="flex-end" spacing={1.5}>
             <Button color="inherit" variant="outlined" onClick={onCancel}>

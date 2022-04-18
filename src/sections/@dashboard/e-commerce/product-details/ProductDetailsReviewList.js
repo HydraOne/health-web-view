@@ -7,6 +7,7 @@ import { fDate } from '../../../../utils/formatTime';
 import { fShortenNumber } from '../../../../utils/formatNumber';
 // components
 import Iconify from '../../../../components/Iconify';
+import axios from "../../../../utils/axios";
 
 // ----------------------------------------------------------------------
 
@@ -15,17 +16,33 @@ ProductDetailsReviewList.propTypes = {
 };
 
 export default function ProductDetailsReviewList({ product }) {
-  const { reviews } = product;
+  const {summary} = product;
+
+  const initRatingList = summary.ratingList;
+
+  const [ratingList,setRatingList] = useState(initRatingList);
+
+  const getRatingList = async(event,page)=>{
+      // const {pageNum,size} = other;
+      const response = await axios.get(`/api/check/review/page`,{
+          params: {productId:product.id,pageNum:page,pageSize:20}
+      });
+      console.log(response.data);
+      const {rating} = response.data;
+      setRatingList(rating.records);
+      // const data = response.data;
+      const tep = 1;
+  };
 
   return (
     <Box sx={{ pt: 3, px: 2, pb: 5 }}>
-      <List disablePadding>
-        {reviews.map((review) => (
-          <ReviewItem key={review.id} review={review} />
-        ))}
-      </List>
+        <List disablePadding>
+            {ratingList.map((review) => (
+                <ReviewItem key={review.id} review={review} />
+            ))}
+        </List>
       <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
-        <Pagination count={10} color="primary" />
+        <Pagination count={10} color="primary" onChange={getRatingList}/>
       </Box>
     </Box>
   );
@@ -40,7 +57,7 @@ ReviewItem.propTypes = {
 function ReviewItem({ review }) {
   const [isHelpful, setHelpfuls] = useState(false);
 
-  const { name, rating, comment, helpful, postedAt, avatarUrl, isPurchased } = review;
+  const { name, rating, comment, helpful, createTime, avatarUrl, isPurchased } = review;
 
   const handleClickHelpful = () => {
     setHelpfuls((prev) => !prev);
@@ -81,13 +98,13 @@ function ReviewItem({ review }) {
               {name}
             </Typography>
             <Typography variant="caption" sx={{ color: 'text.secondary' }} noWrap>
-              {fDate(postedAt)}
+              {fDate(createTime)}
             </Typography>
           </div>
         </Box>
 
         <div>
-          <Rating size="small" value={rating} precision={0.1} readOnly />
+          <Rating size="small" value={rating} readOnly />
 
           {isPurchased && (
             <Typography

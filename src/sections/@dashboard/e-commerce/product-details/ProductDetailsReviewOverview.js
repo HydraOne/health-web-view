@@ -65,7 +65,7 @@ export default function ProductDetailsReviewOverview({ product, onOpen }) {
             .slice(0)
             .reverse()
             .map((rating) => (
-              <ProgressItem key={rating.name} star={rating} total={total} value={rating.value}/>
+              <ProgressItem key={rating.value} star={rating} total={total} value={rating.value}/>
             ))}
         </Stack>
       </GridStyle>
