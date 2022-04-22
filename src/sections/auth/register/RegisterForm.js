@@ -67,6 +67,7 @@ export default function RegisterForm() {
   const sendCaptchaCode = async () => {
    try {
      await sendEmailGetCaptchaCode(document.getElementsByName('email')[0].value);
+
    }catch (error){
      console.error(error);
      setError('afterSubmit', { ...error, message: error.msg });
@@ -83,6 +84,13 @@ export default function RegisterForm() {
           <RHFTextField name="lastName" label="名" />
         </Stack>
 
+        <Stack  direction="row" spacing={1}>
+          <RHFTextField name="email" label="电子邮箱" />
+          <Button  color="success" variant="contained" size="large" onClick={sendCaptchaCode}>发送验证码</Button>
+        </Stack>
+
+        <RHFTextField name="CaptchaCode" label="验证码" />
+
         <RHFTextField
           name="password"
           label="密码"
@@ -97,12 +105,6 @@ export default function RegisterForm() {
             ),
           }}
         />
-
-        <Stack  direction="row" spacing={1}>
-          <RHFTextField name="email" label="电子邮箱" />
-          <Button  color="success" variant="contained" size="large" onClick={sendCaptchaCode}>发送验证码</Button>
-        </Stack>
-
 
         <LoadingButton fullWidth size="large" type="submit" variant="contained" loading={isSubmitting}>
           注册
