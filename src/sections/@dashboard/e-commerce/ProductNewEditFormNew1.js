@@ -34,6 +34,7 @@ import {
   FormControlLabel, Switch, Hidden
 } from '@mui/material';
 // routes
+import {List} from "immutable";
 import { PATH_DASHBOARD } from '../../../routes/paths';
 // components
 import {
@@ -271,6 +272,7 @@ export default function ProductNewEditFormNew1({ isEdit, currentProduct }) {
       sku: currentProduct?.sku || '',
       price: currentProduct?.price || 0,
       priceSale: currentProduct?.priceSale || 0,
+      id: currentProduct?.id || '',
       tags: currentProduct?.tags || [TAGS_OPTION[0]],
       inStock: true,
       taxes: true,
@@ -307,18 +309,22 @@ export default function ProductNewEditFormNew1({ isEdit, currentProduct }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isEdit, currentProduct]);
 
-  const onSubmit = async (data,added,productPic) => {
+  const onSubmit = async (data,added) => {
     try {
       const recordDescription = data.description;
-      const {name,type,images} = data;
+      const {name,type,images,id} = data;
       const children = Array.from(added);
       const doc = new DOMParser().parseFromString(recordDescription,"text/html")
       const imgs = doc.getElementsByTagName("img");
       const blobs = [];
+      const uploadImgElement = [];
       // eslint-disable-next-line no-plusplus
       for (let i = 0; i < imgs.length; i++) {
         const encode = imgs[i].getAttribute("src");
-        blobs.push(base64EncodeToBlob(encode));
+        if (encode.length > 66) {
+          uploadImgElement.push(imgs[i]);
+          blobs.push(base64EncodeToBlob(encode));
+        }
       }
 
       const forms = new FormData();
@@ -330,11 +336,11 @@ export default function ProductNewEditFormNew1({ isEdit, currentProduct }) {
       forms.append('bucketName','demo');
 
       await axios.post("/api/file/uploadPictures",forms ,configs).then(res=>{
-        // eslint-disable-next-line no-plusplus
-        for (let i = 0; i < imgs.length; i++) {
-          imgs[i].setAttribute("src",res.data.data[i]);
-        }
-        const flag = false;
+        const list=res.data.data;
+        list.forEach((item)=>{
+          // console.log(item);
+          uploadImgElement.pop().setAttribute("src",item);
+        })
       });
 
       // const images = description.get;
@@ -342,11 +348,11 @@ export default function ProductNewEditFormNew1({ isEdit, currentProduct }) {
       const description = doc.documentElement.outerHTML;
 
 
-      const checkEntity = {name,description,type,children};
+      const checkEntity = {name,description,type,children,id};
       const dataForms = new FormData();
       dataForms.append("checkEntity",JSON.stringify(checkEntity));
       // dataForms.append("checkEntity",new Blob([JSON.stringify(checkEntity)], {type: "application/json"}));
-      images.forEach(image =>dataForms.append('images',image))
+      images.forEach(image =>dataForms.append('images',image));
       await axios.put("/api/check/put",dataForms,configs).then(res=>{
         // eslint-disable-next-line no-plusplus
         console.log(res);
@@ -368,20 +374,6 @@ export default function ProductNewEditFormNew1({ isEdit, currentProduct }) {
 
   const handleDrop = useCallback(
     (acceptedFiles) => {
-
-      // const forms = new FormData()
-      // const configs = {
-      //   headers:{'Content-Type':'multipart/form-data'}
-      // };
-      //
-      // acceptedFiles.map(file=>forms.append('files',file));
-      // // acceptedFiles.forEach(file=>console.log(file));
-      // forms.append('bucketName','demo');
-      // axios.post("/api/file/uploadPictures",forms ,configs).then(res=>{
-      //   const responseFilesId = res.data.data;
-      //   responseFilesId.forEach((item)=>productImgs.add(item));
-      //   const flag = false;
-      // });
 
       setValue(
         'images',
@@ -414,9 +406,14 @@ export default function ProductNewEditFormNew1({ isEdit, currentProduct }) {
                   <RHFTextField name="name" label="Product Name" />
 
 
+
                   <div>
                     <LabelStyle>Description</LabelStyle>
                     <RHFEditor name="description" />
+                  </div>
+
+                  <div hidden>
+                    <RHFTextField name="id" />
                   </div>
 
                   <div>

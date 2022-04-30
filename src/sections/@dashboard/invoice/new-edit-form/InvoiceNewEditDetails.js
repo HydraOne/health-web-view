@@ -105,38 +105,7 @@ export default function InvoiceNewEditDetails() {
                 ))}
               </RHFSelect>
 
-              <RHFTextField
-                size="small"
-                type="number"
-                name={`items[${index}].quantity`}
-                label="Quantity"
-                onChange={(event) => setValue(`items[${index}].quantity`, Number(event.target.value))}
-                sx={{ maxWidth: { md: 96 } }}
-              />
 
-              <RHFTextField
-                size="small"
-                type="number"
-                name={`items[${index}].price`}
-                label="Price"
-                onChange={(event) => setValue(`items[${index}].price`, Number(event.target.value))}
-                InputProps={{
-                  startAdornment: <InputAdornment position="start">$</InputAdornment>,
-                }}
-                sx={{ maxWidth: { md: 96 } }}
-              />
-
-              <RHFTextField
-                disabled
-                size="small"
-                name={`items[${index}].total`}
-                label="Total"
-                value={fNumber(values.items[index].quantity * values.items[index].price)}
-                InputProps={{
-                  startAdornment: <InputAdornment position="start">$</InputAdornment>,
-                }}
-                sx={{ maxWidth: { md: 96 } }}
-              />
             </Stack>
 
             <Button

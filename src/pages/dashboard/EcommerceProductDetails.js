@@ -25,6 +25,7 @@ import {
   ProductDetailsCarousel,
 } from '../../sections/@dashboard/e-commerce/product-details';
 import CartWidget from '../../sections/@dashboard/e-commerce/CartWidget';
+import ProductDetailsSummaryNew from "../../sections/@dashboard/e-commerce/product-details/ProductDetailsSummaryNew";
 
 // ----------------------------------------------------------------------
 
@@ -66,12 +67,12 @@ export default function EcommerceProductDetails() {
   const { themeStretch } = useSettings();
   const dispatch = useDispatch();
   const [value, setValue] = useState('1');
-  const { name = '' } = useParams();
+  const { id = '' } = useParams();
   const { product ,error, checkout } = useSelector((state) => state.product);
 
   useEffect(() => {
-    dispatch(getProduct(name));
-  }, [dispatch, name]);
+    dispatch(getProduct(id));
+  }, [dispatch, id]);
 
   const handleAddCart = (product) => {
     dispatch(addCart(product));
@@ -97,7 +98,7 @@ export default function EcommerceProductDetails() {
               name: 'Shop',
               href: PATH_DASHBOARD.eCommerce.shop,
             },
-            { name: sentenceCase(name) },
+            { id: sentenceCase(id) },
           ]}
         />
 
@@ -109,6 +110,14 @@ export default function EcommerceProductDetails() {
               <Grid container>
                 <Grid item xs={12} md={6} lg={7}>
                   <ProductDetailsCarousel product={product} />
+                </Grid>
+                <Grid item xs={12} md={6} lg={5}>
+                  <ProductDetailsSummaryNew
+                      product={product}
+                      cart={checkout.cart}
+                      onAddCart={handleAddCart}
+                      onGotoStep={handleGotoStep}
+                  />
                 </Grid>
               </Grid>
             </Card>

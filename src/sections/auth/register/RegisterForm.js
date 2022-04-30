@@ -7,16 +7,19 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import {Stack, IconButton, InputAdornment, Alert, Button} from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 // hooks
+import {useNavigate} from "react-router-dom";
 import useAuth from '../../../hooks/useAuth';
 import useIsMountedRef from '../../../hooks/useIsMountedRef';
 // components
 import Iconify from '../../../components/Iconify';
 import { FormProvider, RHFTextField } from '../../../components/hook-form';
+import {PATH_AUTH, PATH_PAGE} from "../../../routes/paths";
 
 
 // ----------------------------------------------------------------------
 
 export default function RegisterForm() {
+  const navigate = useNavigate();
   const { register } = useAuth();
   const { sendEmailGetCaptchaCode }=useAuth();
   const isMountedRef = useIsMountedRef();
@@ -25,9 +28,9 @@ export default function RegisterForm() {
 
   const RegisterSchema = Yup.object().shape({
     firstName: Yup.string().required('姓是必须的'),
-    lastName: Yup.string().required('名是必须的'),
+    lastName: Yup.string(),
     email: Yup.string().email('电子邮件必须是有效的电子邮件地址').required('电子邮件是必须的'),
-    CaptchaCode:Yup.string().required("验证码是必须的"),
+    CaptchaCode:Yup.string(),
     password: Yup.string().required('密码是必须的'),
   });
 
@@ -54,7 +57,9 @@ export default function RegisterForm() {
 
   const onSubmit = async (data) => {
     try {
-      await register(data.email, data.password, data.firstName, data.lastName,data.CaptchaCode);
+      console.log(4546);
+      navigate(PATH_AUTH.verify);
+      // await register(data.email, data.password, data.firstName, data.lastName,data.CaptchaCode);
     } catch (error) {
       console.error(error);
       reset();
@@ -81,15 +86,11 @@ export default function RegisterForm() {
 
         <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
           <RHFTextField name="firstName" label="姓" />
-          <RHFTextField name="lastName" label="名" />
         </Stack>
 
         <Stack  direction="row" spacing={1}>
           <RHFTextField name="email" label="电子邮箱" />
-          <Button  color="success" variant="contained" size="large" onClick={sendCaptchaCode}>发送验证码</Button>
         </Stack>
-
-        <RHFTextField name="CaptchaCode" label="验证码" />
 
         <RHFTextField
           name="password"

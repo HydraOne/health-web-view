@@ -2,8 +2,21 @@ import { capitalCase } from 'change-case';
 import { Link as RouterLink } from 'react-router-dom';
 // @mui
 import { styled } from '@mui/material/styles';
-import { Box, Card, Link, Container, Typography, Tooltip } from '@mui/material';
+import {
+  Box,
+  Card,
+  Link,
+  Container,
+  Typography,
+  Tooltip,
+  Stepper,
+  Step,
+  StepLabel,
+  Grid,
+  StepConnector
+} from '@mui/material';
 // hooks
+import PropTypes from "prop-types";
 import useAuth from '../../hooks/useAuth';
 import useResponsive from '../../hooks/useResponsive';
 // routes
@@ -14,6 +27,8 @@ import Logo from '../../components/Logo';
 import Image from '../../components/Image';
 // sections
 import { RegisterForm } from '../../sections/auth/register';
+import Iconify from "../../components/Iconify";
+import {VerifyCodeForm} from "../../sections/auth/verify-code";
 
 // ----------------------------------------------------------------------
 
@@ -58,6 +73,60 @@ const ContentStyle = styled('div')(({ theme }) => ({
   padding: theme.spacing(12, 0),
 }));
 
+const steps = [
+  '填写信息',
+  '接受验证码',
+];
+
+const QontoConnector = styled(StepConnector)(({ theme }) => ({
+  top: 10,
+  left: 'calc(-50% + 20px)',
+  right: 'calc(50% + 20px)',
+  '& .MuiStepConnector-line': {
+    borderTopWidth: 2,
+    borderColor: theme.palette.divider,
+  },
+  '&.Mui-active, &.Mui-completed': {
+    '& .MuiStepConnector-line': {
+      borderColor: theme.palette.primary.main,
+    },
+  },
+}));
+
+QontoStepIcon.propTypes = {
+  active: PropTypes.bool,
+  completed: PropTypes.bool,
+};
+
+function QontoStepIcon({ active, completed }) {
+  return (
+      <Box
+          sx={{
+            zIndex: 9,
+            width: 24,
+            height: 24,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            color: active ? 'primary.main' : 'text.disabled',
+          }}
+      >
+        {completed ? (
+            <Iconify icon={'eva:checkmark-fill'} sx={{ zIndex: 1, width: 20, height: 20, color: 'primary.main' }} />
+        ) : (
+            <Box
+                sx={{
+                  width: 8,
+                  height: 8,
+                  borderRadius: '50%',
+                  backgroundColor: 'currentColor',
+                }}
+            />
+        )}
+      </Box>
+  );
+}
+
 // ----------------------------------------------------------------------
 
 export default function Register() {
@@ -98,23 +167,30 @@ export default function Register() {
 
         <Container>
           <ContentStyle>
-            <Box sx={{ mb: 5, display: 'flex', alignItems: 'center' }}>
-              <Box sx={{ flexGrow: 1 }}>
-                <Typography variant="h4" gutterBottom>
-                  欢迎注册
-                </Typography>
 
-              </Box>
-              <Tooltip title={capitalCase(method)}>
-                <>
-                  <Image
-                    disabledEffect
-                    src={`https://minimal-assets-api.vercel.app/assets/icons/auth/ic_${method}.png`}
-                    sx={{ width: 32, height: 32 }}
-                  />
-                </>
-              </Tooltip>
-            </Box>
+
+            <Grid container justifyContent={'center'}>
+              <Grid item xs={12} md={8} sx={{ mb: 5 }}>
+                <Stepper alternativeLabel activeStep={1} connector={<QontoConnector />}>
+                  {steps.map((label) => (
+                      <Step key={label}>
+                        <StepLabel
+                            StepIconComponent={QontoStepIcon}
+                            sx={{
+                              '& .MuiStepLabel-label': {
+                                typography: 'subtitle2',
+                                color: 'text.disabled',
+                              },
+                            }}
+                        >
+                          {label}
+                        </StepLabel>
+                      </Step>
+                  ))}
+                </Stepper>
+              </Grid>
+            </Grid>
+
 
             <RegisterForm />
 
