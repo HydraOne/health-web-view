@@ -27,9 +27,9 @@ export default function ShopProductList({ products, loading }) {
         },
       }}
     >
-      {(loading ? [...Array(12)] : products).map((product, index) =>
-        product ? <ShopProductCard key={product.id} product={product} /> : <SkeletonProductItem key={index} />
-      )}
+        {(loading ? [...Array(12)] : products).map((product, index) =>
+            product ? <ShopProductCard key={product.id} product={product} /> : <SkeletonProductItem key={index} />
+        )}
     </Box>
   );
 }

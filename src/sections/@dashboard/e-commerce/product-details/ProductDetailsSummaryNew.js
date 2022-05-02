@@ -3,7 +3,7 @@ import { sentenceCase } from 'change-case';
 import { useNavigate } from 'react-router-dom';
 // form
 import { Controller, useForm } from 'react-hook-form';
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import {endOfTomorrow, isPast} from "date-fns";
 // @mui
 import { useTheme, styled } from '@mui/material/styles';
@@ -21,6 +21,7 @@ import {
 } from '@mui/material';
 // routes
 import DatePicker from "@mui/lab/DatePicker";
+import {useDispatch, useSelector} from "react-redux";
 import { PATH_DASHBOARD } from '../../../../routes/paths';
 // utils
 import { fShortenNumber, fCurrency } from '../../../../utils/formatNumber';
@@ -30,6 +31,7 @@ import Iconify from '../../../../components/Iconify';
 import SocialsButton from '../../../../components/SocialsButton';
 import { ColorSinglePicker } from '../../../../components/color-utils';
 import { FormProvider, RHFSelect } from '../../../../components/hook-form';
+import {getTypes} from "../../../../redux/slices/type";
 
 // ----------------------------------------------------------------------
 
@@ -212,7 +214,15 @@ export default function ProductDetailsSummaryNew({ cart, product, onAddCart, onG
 
   const navigate = useNavigate();
 
+  const dispatch = useDispatch();
+
+  const { types } = useSelector((state) => state.type);
+
   const [appointData,setAppointData] = useState(endOfTomorrow);
+
+  useEffect(() => {
+    dispatch(getTypes());
+  }, []);
 
   const {
     id,
@@ -225,8 +235,11 @@ export default function ProductDetailsSummaryNew({ cart, product, onAddCart, onG
     available,
     priceSale,
     summary,
+    tags,
     inventoryType,
   } = product;
+
+  const containTags = new Set(tags);
 
   const {
     totalRating,
@@ -318,9 +331,9 @@ export default function ProductDetailsSummaryNew({ cart, product, onAddCart, onG
 
         <Typography variant="h4" sx={{ mb: 3 }}>
           <Box component="span" sx={{ color: 'text.disabled', textDecoration: 'line-through' }}>
-            市场价: {15 && fCurrency(15)}
+            市场价: {price && fCurrency(price)}
           </Box>
-          <br/>预约价: {fCurrency(15)}
+          <br/>预约价: {fCurrency(priceSale)}
         </Typography>
 
         <Divider sx={{ borderStyle: 'dashed' }} />
@@ -347,9 +360,9 @@ export default function ProductDetailsSummaryNew({ cart, product, onAddCart, onG
               freeSolo
               readOnly
               id="tags-standard"
-              options={top100Films}
-              getOptionLabel={(option) => option.title}
-              defaultValue={[top100Films[13],top100Films[5],top100Films[1],top100Films[4]]}
+              options={types}
+              getOptionLabel={(option) => option.name}
+              defaultValue={types.filter(type => containTags.has(type.id))}
               renderInput={(params) => (
                   <TextField
                       {...params}

@@ -67,6 +67,7 @@ import useTabs from "../../../hooks/useTabs";
 import {getProducts} from "../../../redux/slices/product";
 import {dispatch, useSelector} from "../../../redux/store";
 import {ProductTableRow} from "./product-list";
+import {getTypes} from "../../../redux/slices/type";
 
 // ----------------------------------------------------------------------
 
@@ -81,21 +82,21 @@ const TYPE_OPTION = [
     "Item","Group","Plan"
 ];
 
-const TAGS_OPTION = [
-  'Toy Story 3',
-  'Logan',
-  'Full Metal Jacket',
-  'Dangal',
-  'The Sting',
-  '2001: A Space Odyssey',
-  "Singin' in the Rain",
-  'Toy Story',
-  'Bicycle Thieves',
-  'The Kid',
-  'Inglourious Basterds',
-  'Snatch',
-  '3 Idiots',
-];
+// const TAGS_OPTION = [
+//   'Toy Story 3',
+//   'Logan',
+//   'Full Metal Jacket',
+//   'Dangal',
+//   'The Sting',
+//   '2001: A Space Odyssey',
+//   "Singin' in the Rain",
+//   'Toy Story',
+//   'Bicycle Thieves',
+//   'The Kid',
+//   'Inglourious Basterds',
+//   'Snatch',
+//   '3 Idiots',
+// ];
 
 const TYPE_VALUE = new Map([
   ["Added", 0],
@@ -155,6 +156,10 @@ export default function ProductNewEditFormNew1({ isEdit, currentProduct }) {
 
   const { products, isLoading } = useSelector((state) => state.product);
 
+  const { types } = useSelector((state) => state.type);
+
+  // const { types } = useSelector((state) => state.type);
+
   const [addedProducts, setAddedProducts] = useState(new Set());
 
   const [productImgs, setProductImgs] = useState(new Set());
@@ -165,6 +170,10 @@ export default function ProductNewEditFormNew1({ isEdit, currentProduct }) {
     }
   }, [products]);
 
+  useEffect(() => {
+    dispatch(getTypes());
+  }, []);
+
   const handleOpenPreview = () => {
     setOpen(true);
   };
@@ -172,6 +181,8 @@ export default function ProductNewEditFormNew1({ isEdit, currentProduct }) {
   const handleClosePreview = () => {
     setOpen(false);
   };
+
+  const tagsOption = types.map((type) =>({"id":type.id,"label":type.name}));
 
   const {
     dense,
@@ -273,7 +284,7 @@ export default function ProductNewEditFormNew1({ isEdit, currentProduct }) {
       price: currentProduct?.price || 0,
       priceSale: currentProduct?.priceSale || 0,
       id: currentProduct?.id || '',
-      tags: currentProduct?.tags || [TAGS_OPTION[0]],
+      tags: currentProduct?.tags || [],
       inStock: true,
       taxes: true,
       type: currentProduct?.type || TYPE_OPTION[0],
@@ -312,7 +323,7 @@ export default function ProductNewEditFormNew1({ isEdit, currentProduct }) {
   const onSubmit = async (data,added) => {
     try {
       const recordDescription = data.description;
-      const {name,type,images,id} = data;
+      const {name,type,images,id,tags,price,priceSale} = data;
       const children = Array.from(added);
       const doc = new DOMParser().parseFromString(recordDescription,"text/html")
       const imgs = doc.getElementsByTagName("img");
@@ -347,12 +358,14 @@ export default function ProductNewEditFormNew1({ isEdit, currentProduct }) {
       // await new Promise((resolve) => setTimeout(resolve, 500));
       const description = doc.documentElement.outerHTML;
 
+      const tagsElement = tags.map(tag=>tag.id);
 
-      const checkEntity = {name,description,type,children,id};
+      const checkEntity = {name,description,type,children,id,'tags':tagsElement,price,priceSale};
       const dataForms = new FormData();
       dataForms.append("checkEntity",JSON.stringify(checkEntity));
       // dataForms.append("checkEntity",new Blob([JSON.stringify(checkEntity)], {type: "application/json"}));
       images.forEach(image =>dataForms.append('images',image));
+
       await axios.put("/api/check/put",dataForms,configs).then(res=>{
         // eslint-disable-next-line no-plusplus
         console.log(res);
@@ -452,16 +465,17 @@ export default function ProductNewEditFormNew1({ isEdit, currentProduct }) {
                                 multiple
                                 freeSolo
                                 onChange={(event, newValue) => field.onChange(newValue)}
-                                options={TAGS_OPTION.map((option) => option)}
+                                options={tagsOption.map((option) => option)}
                                 renderTags={(value, getTagProps) =>
                                     value.map((option, index) => (
-                                        <Chip {...getTagProps({ index })} key={option} size="small" label={option} />
+                                        <Chip {...getTagProps({ index })} key={option.id} size="small" label={option.label} />
                                     ))
                                 }
                                 renderInput={(params) => <TextField label="Tags" {...params} />}
                             />
                         )}
                     />
+
                   </Stack>
                 </Card>
 
@@ -469,7 +483,7 @@ export default function ProductNewEditFormNew1({ isEdit, currentProduct }) {
                   <Stack spacing={3} mb={2}>
                     <RHFTextField
                         name="price"
-                        label="Regular Price"
+                        label="市场价"
                         placeholder="0.00"
                         value={getValues('price') === 0 ? '' : getValues('price')}
                         onChange={(event) => setValue('price', Number(event.target.value))}
@@ -482,10 +496,10 @@ export default function ProductNewEditFormNew1({ isEdit, currentProduct }) {
 
                     <RHFTextField
                         name="priceSale"
-                        label="Sale Price"
+                        label="预约价"
                         placeholder="0.00"
                         value={getValues('priceSale') === 0 ? '' : getValues('priceSale')}
-                        onChange={(event) => setValue('price', Number(event.target.value))}
+                        onChange={(event) => setValue('priceSale', Number(event.target.value))}
                         InputLabelProps={{ shrink: true }}
                         InputProps={{
                           startAdornment: <InputAdornment position="start">$</InputAdornment>,

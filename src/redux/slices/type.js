@@ -11,8 +11,8 @@ import { dispatch } from '../store';
 const initialState = {
   isLoading: false,
   error: null,
-  products: [],
-  product: null,
+  types: [],
+  type: null,
   sortBy: null,
   filters: {
     gender: [],
@@ -34,7 +34,7 @@ const initialState = {
 };
 
 const slice = createSlice({
-  name: 'product',
+  name: 'type',
   initialState,
   reducers: {
     // START LOADING
@@ -49,15 +49,15 @@ const slice = createSlice({
     },
 
     // GET PRODUCTS
-    getProductsSuccess(state, action) {
+    getTypesSuccess(state, action) {
       state.isLoading = false;
-      state.products = action.payload;
+      state.types = action.payload;
     },
 
     // GET PRODUCT
-    getProductSuccess(state, action) {
+    getTypeSuccess(state, action) {
       state.isLoading = false;
-      state.product = action.payload;
+      state.type = action.payload;
     },
 
     //  SORT & FILTER PRODUCTS
@@ -193,6 +193,8 @@ const slice = createSlice({
 // Reducer
 export default slice.reducer;
 
+export const { actions } = slice;
+
 // Actions
 export const {
   getCart,
@@ -213,13 +215,13 @@ export const {
 
 // ----------------------------------------------------------------------
 
-export function getProducts() {
+export function getTypes() {
   return async () => {
     dispatch(slice.actions.startLoading());
     try {
-      const response = await axios.get('/api/check/list');
+      const response = await axios.get('/api/type/get');
       // const response = await axios.get('/api/products');
-      dispatch(slice.actions.getProductsSuccess(response.data.data));
+      dispatch(slice.actions.getTypesSuccess(response.data.type));
       // dispatch(slice.actions.getProductsSuccess(response.data.products));
     } catch (error) {
       dispatch(slice.actions.hasError(error));
@@ -229,11 +231,11 @@ export function getProducts() {
 
 // ----------------------------------------------------------------------
 
-export function getProduct(name) {
+export function getType(name) {
   return async () => {
     dispatch(slice.actions.startLoading());
     try {
-      const response = await axios.get(`/api/check/get/${name}`);
+      const response = await axios.get(`/api/type/get/${name}`);
       dispatch(slice.actions.getProductSuccess(response.data.product));
     } catch (error) {
       console.error(error);

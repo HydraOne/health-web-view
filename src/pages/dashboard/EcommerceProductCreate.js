@@ -16,6 +16,8 @@ import HeaderBreadcrumbs from '../../components/HeaderBreadcrumbs';
 import ProductNewEditForm from '../../sections/@dashboard/e-commerce/ProductNewEditForm';
 import ProductNewEditFormNew from "../../sections/@dashboard/e-commerce/ProductNewEditFormNew";
 import ProductNewEditFormNew1 from "../../sections/@dashboard/e-commerce/ProductNewEditFormNew1";
+import axios from "../../utils/axios";
+import {getTypes} from "../../redux/slices/type";
 
 // ----------------------------------------------------------------------
 
@@ -31,6 +33,8 @@ export default function EcommerceProductCreate() {
   useEffect(() => {
     dispatch(getProducts());
   }, [dispatch]);
+
+
 
   return (
     <Page title="Ecommerce: Create a new product">

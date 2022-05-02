@@ -425,7 +425,7 @@ export default function ProductNewEditFormNew({ isEdit, currentProduct }) {
                         label="Sale Price"
                         placeholder="0.00"
                         value={getValues('priceSale') === 0 ? '' : getValues('priceSale')}
-                        onChange={(event) => setValue('price', Number(event.target.value))}
+                        onChange={(event) => setValue('priceSale', Number(event.target.value))}
                         InputLabelProps={{ shrink: true }}
                         InputProps={{
                           startAdornment: <InputAdornment position="start">$</InputAdornment>,

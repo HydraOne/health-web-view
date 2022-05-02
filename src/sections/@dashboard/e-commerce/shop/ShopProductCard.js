@@ -19,9 +19,9 @@ ShopProductCard.propTypes = {
 };
 
 export default function ShopProductCard({ product }) {
-  const { name, cover, price, colors, status, priceSale } = product;
+  const { id,name, images, price, colors, status, priceSale } = product;
 
-  const linkTo = PATH_DASHBOARD.eCommerce.view(paramCase(name));
+  const linkTo = PATH_DASHBOARD.eCommerce.view(paramCase(id));
 
   return (
     <Card>
@@ -41,7 +41,7 @@ export default function ShopProductCard({ product }) {
             {status}
           </Label>
         )}
-        <Image alt={name} src={cover} ratio="1/1" />
+        <Image alt={name} src={images[0]} ratio="1/1" />
       </Box>
 
       <Stack spacing={2} sx={{ p: 3 }}>
@@ -52,16 +52,15 @@ export default function ShopProductCard({ product }) {
         </Link>
 
         <Stack direction="row" alignItems="center" justifyContent="space-between">
-          <ColorPreview colors={colors} />
 
           <Stack direction="row" spacing={0.5}>
-            {priceSale && (
+            {price && (
               <Typography component="span" sx={{ color: 'text.disabled', textDecoration: 'line-through' }}>
-                {fCurrency(priceSale)}
+                {fCurrency(price)}
               </Typography>
             )}
 
-            <Typography variant="subtitle1">{fCurrency(price)}</Typography>
+            <Typography variant="subtitle1">{fCurrency(priceSale)}</Typography>
           </Stack>
         </Stack>
       </Stack>

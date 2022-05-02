@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 // @mui
 import { alpha, styled } from '@mui/material/styles';
-import { Box, Tab, Card, Grid, Divider, Container, Typography } from '@mui/material';
+import {Box, Tab, Card, Grid, Divider, Container, Typography, Skeleton} from '@mui/material';
 import { TabContext, TabList, TabPanel } from '@mui/lab';
 // redux
 import { useDispatch, useSelector } from '../../redux/store';
@@ -26,6 +26,7 @@ import {
 } from '../../sections/@dashboard/e-commerce/product-details';
 import CartWidget from '../../sections/@dashboard/e-commerce/CartWidget';
 import ProductDetailsSummaryNew from "../../sections/@dashboard/e-commerce/product-details/ProductDetailsSummaryNew";
+import {getTypes} from "../../redux/slices/type";
 
 // ----------------------------------------------------------------------
 
@@ -149,6 +150,11 @@ export default function EcommerceProductDetails() {
                       label={`Review (54)`}
                       sx={{ '& .MuiTab-wrapper': { whiteSpace: 'nowrap' } }}
                     />
+                    <Tab
+                        disableRipple
+                        value="3"
+                        label="检查项目"
+                    />
                   </TabList>
                 </Box>
 
@@ -161,6 +167,9 @@ export default function EcommerceProductDetails() {
                 </TabPanel>
                 <TabPanel value="2">
                   <ProductDetailsReview product={product} />
+                </TabPanel>
+                <TabPanel value="3">
+                  <Skeleton />
                 </TabPanel>
               </TabContext>
             </Card>

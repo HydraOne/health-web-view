@@ -1,8 +1,9 @@
 import PropTypes from 'prop-types';
-import { useState } from 'react';
+import {useEffect, useState} from 'react';
 // @mui
-import { Box, List, Button, Rating, Avatar, ListItem, Pagination, Typography } from '@mui/material';
+import {Box, List, Button, Rating, Avatar, ListItem, Pagination, Typography, Skeleton} from '@mui/material';
 // utils
+import {useDispatch} from "react-redux";
 import { fDate } from '../../../../utils/formatTime';
 import { fShortenNumber } from '../../../../utils/formatNumber';
 // components
@@ -18,31 +19,31 @@ ProductDetailsReviewList.propTypes = {
 export default function ProductDetailsReviewList({ product }) {
   const {summary} = product;
 
-  const initRatingList = summary.ratingList;
+  const [pageNum,setPageNum] = useState(0);
+  const [pages,setPages] = useState(0);
+  const [records,setRecords] = useState([]);
 
-  const [ratingList,setRatingList] = useState(initRatingList);
 
-  const getRatingList = async(event,page)=>{
-      // const {pageNum,size} = other;
-      const response = await axios.get(`/api/check/review/page`,{
-          params: {productId:product.id,pageNum:page,pageSize:20}
+  const productId = product.id;
+
+  useEffect(async () => {
+      const response = await axios.get(`/api/check/review/page`, {
+          params: {productId, pageNum, pageSize:20}
       });
-      console.log(response.data);
       const {rating} = response.data;
-      setRatingList(rating.records);
-      // const data = response.data;
-      const tep = 1;
-  };
+      setRecords(rating.records);
+      setPages(rating.pages);
+  },[pageNum, productId]);
 
   return (
     <Box sx={{ pt: 3, px: 2, pb: 5 }}>
         <List disablePadding>
-            {ratingList.map((review) => (
+            {records.map((review) => (
                 <ReviewItem key={review.id} review={review} />
             ))}
         </List>
       <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
-        <Pagination count={10} color="primary" onChange={getRatingList}/>
+        <Pagination count={pages} color="primary" onChange={(event,index)=>setPageNum(index)}/>
       </Box>
     </Box>
   );
