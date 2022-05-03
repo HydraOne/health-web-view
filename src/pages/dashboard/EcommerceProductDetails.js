@@ -27,6 +27,7 @@ import {
 import CartWidget from '../../sections/@dashboard/e-commerce/CartWidget';
 import ProductDetailsSummaryNew from "../../sections/@dashboard/e-commerce/product-details/ProductDetailsSummaryNew";
 import {getTypes} from "../../redux/slices/type";
+import ProductDetailsContainInfo from "../../sections/@dashboard/e-commerce/product-details/ProductDetailsContainInfo";
 
 // ----------------------------------------------------------------------
 
@@ -169,7 +170,7 @@ export default function EcommerceProductDetails() {
                   <ProductDetailsReview product={product} />
                 </TabPanel>
                 <TabPanel value="3">
-                  <Skeleton />
+                  <ProductDetailsContainInfo  product={product} />
                 </TabPanel>
               </TabContext>
             </Card>
