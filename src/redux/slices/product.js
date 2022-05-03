@@ -29,7 +29,6 @@ const initialState = {
     discount: 0,
     shipping: 0,
     billing: null,
-    images: [],
   },
 };
 
@@ -81,13 +80,11 @@ const slice = createSlice({
       const discount = cart.length === 0 ? 0 : state.checkout.discount;
       const shipping = cart.length === 0 ? 0 : state.checkout.shipping;
       const billing = cart.length === 0 ? null : state.checkout.billing;
-      const conver = cart.length === 0 ? null : state.checkout.images[0];
 
       state.checkout.cart = cart;
       state.checkout.discount = discount;
       state.checkout.shipping = shipping;
       state.checkout.billing = billing;
-      state.checkout.conver = conver;
       state.checkout.subtotal = subtotal;
       state.checkout.total = subtotal - discount;
     },

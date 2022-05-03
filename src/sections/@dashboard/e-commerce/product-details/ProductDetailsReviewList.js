@@ -3,7 +3,6 @@ import {useEffect, useState} from 'react';
 // @mui
 import {Box, List, Button, Rating, Avatar, ListItem, Pagination, Typography, Skeleton} from '@mui/material';
 // utils
-import {useDispatch} from "react-redux";
 import { fDate } from '../../../../utils/formatTime';
 import { fShortenNumber } from '../../../../utils/formatNumber';
 // components

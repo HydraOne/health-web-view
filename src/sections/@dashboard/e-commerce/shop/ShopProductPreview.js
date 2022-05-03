@@ -24,7 +24,7 @@ ShopProductPreview.propTypes = {
   onSubmit: PropTypes.func,
 };
 
-export default function ShopProductPreview({ values, isValid, isSubmitting, isOpen, onClose, onSubmit }) {
+export default function ShopProductPreview({ values, isOpen, onClose}) {
   const { title, description, brief } = values;
 
   const cover = isString(values.cover) ? values.cover : values.cover?.preview;
@@ -39,10 +39,7 @@ export default function ShopProductPreview({ values, isValid, isSubmitting, isOp
         <Typography variant="subtitle1" sx={{ flexGrow: 1 }}>
           Preview Post
         </Typography>
-        <Button onClick={onClose}>Cancel</Button>
-        <LoadingButton type="submit" variant="contained" disabled={!isValid} loading={isSubmitting} onClick={onSubmit}>
-          Post
-        </LoadingButton>
+        <Button onClick={onClose}>关闭</Button>
       </DialogActions>
 
       {hasContent ? (

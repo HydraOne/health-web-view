@@ -50,7 +50,7 @@ export default function CheckoutProductList({ products, onDelete, onIncreaseQuan
             <TableCell>Product</TableCell>
             <TableCell align="left">Price</TableCell>
             <TableCell align="left">Quantity</TableCell>
-            <TableCell align="right">Total Price</TableCell>
+            <TableCell align="right">'added'</TableCell>
             <TableCell align="right" />
           </TableRow>
         </TableHead>

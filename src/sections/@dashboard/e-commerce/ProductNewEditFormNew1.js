@@ -626,10 +626,7 @@ export default function ProductNewEditFormNew1({ isEdit, currentProduct }) {
           <ShopProductPreview
               values={values}
               isOpen={open}
-              isValid={isValid}
-              isSubmitting={isSubmitting}
               onClose={handleClosePreview}
-              onSubmit={handleSubmit((data)=>onSubmit(data,addedProducts))}
           />
         </FormProvider>
 
