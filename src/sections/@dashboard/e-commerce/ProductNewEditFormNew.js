@@ -378,8 +378,7 @@ export default function ProductNewEditFormNew({ isEdit, currentProduct }) {
                   <RHFSwitch name="inStock" label="In stock" />
 
                   <Stack spacing={3} mt={2}>
-                    <RHFTextField name="code" label="Product Code" />
-                    <RHFTextField name="sku" label="Product SKU" />
+                    <RHFTextField name="available" label="可预约数" />
 
                     <RHFSelectNew name={'type'} label={'Type'} options={TYPE_OPTION}/>
 

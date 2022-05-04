@@ -25,7 +25,7 @@ import {
 
 // ----------------------------------------------------------------------
 
-const STEPS = ['Cart', 'Billing & address', 'Payment'];
+const STEPS = ['订单', '选择体检人信息', '支付'];
 
 const QontoConnector = styled(StepConnector)(({ theme }) => ({
   top: 10,

@@ -45,11 +45,11 @@ export default function CheckoutSummary({
   return (
     <Card sx={{ mb: 3 }}>
       <CardHeader
-        title="Order Summary"
+        title="订单信息"
         action={
           enableEdit && (
             <Button size="small" onClick={onEdit} startIcon={<Iconify icon={'eva:edit-fill'} />}>
-              Edit
+              编辑
             </Button>
           )
         }
@@ -59,14 +59,14 @@ export default function CheckoutSummary({
         <Stack spacing={2}>
           <Stack direction="row" justifyContent="space-between">
             <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-              Sub Total
+              总金额
             </Typography>
             <Typography variant="subtitle2">{fCurrency(subtotal)}</Typography>
           </Stack>
 
           <Stack direction="row" justifyContent="space-between">
             <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-              Discount
+              折扣
             </Typography>
             <Typography variant="subtitle2">{discount ? fCurrency(-discount) : '-'}</Typography>
           </Stack>
@@ -81,7 +81,7 @@ export default function CheckoutSummary({
           <Divider />
 
           <Stack direction="row" justifyContent="space-between">
-            <Typography variant="subtitle1">Total</Typography>
+            <Typography variant="subtitle1">实付</Typography>
             <Box sx={{ textAlign: 'right' }}>
               <Typography variant="subtitle1" sx={{ color: 'error.main' }}>
                 {fCurrency(total)}

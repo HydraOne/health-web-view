@@ -4,11 +4,15 @@ import * as Yup from 'yup';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 // @mui
-import { Box, Stack, Dialog, Button, Divider, DialogTitle, DialogContent, DialogActions } from '@mui/material';
+import {Box, Stack, Dialog, Button, Divider, DialogTitle, DialogContent, DialogActions, TextField} from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 // _mock
+import DatePicker from "@mui/lab/DatePicker";
+import {endOfTomorrow, isPast} from "date-fns";
+import {useState} from "react";
 import { countries } from '../../../../_mock';
 import { FormProvider, RHFCheckbox, RHFSelect, RHFTextField, RHFRadioGroup } from '../../../../components/hook-form';
+import axios from "../../../../utils/axios";
 
 // ----------------------------------------------------------------------
 
@@ -21,22 +25,22 @@ CheckoutNewAddressForm.propTypes = {
 
 export default function CheckoutNewAddressForm({ open, onClose, onNextStep, onCreateBilling }) {
   const NewAddressSchema = Yup.object().shape({
-    receiver: Yup.string().required('Fullname is required'),
-    phone: Yup.string().required('Phone is required'),
-    address: Yup.string().required('Address is required'),
-    city: Yup.string().required('City is required'),
-    state: Yup.string().required('State is required'),
+    name: Yup.string().required('请输入姓名'),
+    gender: Yup.string().required('请输入性别'),
+    idCard: Yup.string().required('请输入身份证号码'),
+    contact: Yup.string().required('请输入联系方式'),
+    birth: Yup.date().required('请输入生日'),
   });
 
+
+  const [appointData,setAppointData] = useState(endOfTomorrow);
+
   const defaultValues = {
-    addressType: 'Home',
-    receiver: '',
-    phone: '',
-    address: '',
-    city: '',
-    state: '',
-    country: countries[0].label,
-    zipcode: '',
+    gender: '男',
+    name: '',
+    contact: '',
+    idCard: '',
+    birth: new Date(),
     isDefault: true,
   };
 
@@ -52,12 +56,14 @@ export default function CheckoutNewAddressForm({ open, onClose, onNextStep, onCr
 
   const onSubmit = async (data) => {
     try {
+      const {gender,name,contact,idCard,birth}=data;
+      await axios.put('/api/userInfo/put',{gender,name,contact,idCard,birth});
       onNextStep();
       onCreateBilling({
-        receiver: data.receiver,
-        phone: data.phone,
-        fullAddress: `${data.address}, ${data.city}, ${data.state}, ${data.country}, ${data.zipcode}`,
-        addressType: data.addressType,
+        name,
+        contact,
+        birth,
+        gender,
         isDefault: data.isDefault,
       });
     } catch (error) {
@@ -66,64 +72,57 @@ export default function CheckoutNewAddressForm({ open, onClose, onNextStep, onCr
   };
 
   return (
-    <Dialog fullWidth maxWidth="sm" open={open} onClose={onClose}>
-      <DialogTitle>Add new address</DialogTitle>
+      <Dialog fullWidth maxWidth="sm" open={open} onClose={onClose}>
+        <DialogTitle>Add new address</DialogTitle>
 
-      <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
-        <DialogContent>
-          <Stack spacing={3}>
-            <RHFRadioGroup name="addressType" options={['Home', 'Office']} />
+        <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
+          <DialogContent>
+            <Stack spacing={3}>
+              <RHFRadioGroup name="gender" options={['男', '女']} />
 
-            <Box
-              sx={{
-                display: 'grid',
-                rowGap: 3,
-                columnGap: 2,
-                gridTemplateColumns: { xs: 'repeat(1, 1fr)', sm: 'repeat(2, 1fr)' },
-              }}
-            >
-              <RHFTextField name="receiver" label="Full Name" />
-              <RHFTextField name="phone" label="Phone Number" />
-            </Box>
+              <Box
+                  sx={{
+                    display: 'grid',
+                    rowGap: 3,
+                    columnGap: 2,
+                    gridTemplateColumns: { xs: 'repeat(1, 1fr)', sm: 'repeat(2, 1fr)' },
+                  }}
+              >
+                <RHFTextField name="name" label="姓名" />
+                <RHFTextField name="contact" label="手机号码" />
+              </Box>
 
-            <RHFTextField name="address" label="Address" />
+              <RHFTextField name="idCard" label="身份证号码" />
 
-            <Box
-              sx={{
-                display: 'grid',
-                rowGap: 3,
-                columnGap: 2,
-                gridTemplateColumns: { xs: 'repeat(1, 1fr)', sm: 'repeat(3, 1fr)' },
-              }}
-            >
-              <RHFTextField name="city" label="Town / City" />
-              <RHFTextField name="state" label="State" />
-              <RHFTextField name="zipcode" label="Zip / Postal Code" />
-            </Box>
+              <DatePicker
+                  label="出生日期"
+                  value={appointData}
+                  onChange={(date)=>setAppointData(date)}
+                  renderInput={(params) => (
+                      <TextField
+                          name="birth"
+                          {...params}
+                          fullWidth
+                      />
+                  )}
+              />
 
-            <RHFSelect name="country" label="Country">
-              {countries.map((option) => (
-                <option key={option.code} value={option.label}>
-                  {option.label}
-                </option>
-              ))}
-            </RHFSelect>
 
-            <RHFCheckbox name="isDefault" label="Use this address as default." sx={{ mt: 3 }} />
-          </Stack>
-        </DialogContent>
+              <RHFCheckbox name="isDefault" label="作为默认健康监管人" sx={{ mt: 3 }} />
+            </Stack>
+          </DialogContent>
 
-        <Divider />
+          <Divider />
 
-        <DialogActions>
-          <LoadingButton type="submit" variant="contained" loading={isSubmitting}>
-            Deliver to this Address
-          </LoadingButton>
-          <Button color="inherit" variant="outlined" onClick={onClose}>
-            Cancel
-          </Button>
-        </DialogActions>
-      </FormProvider>
-    </Dialog>
+          <DialogActions>
+            <LoadingButton type="submit" variant="contained" loading={isSubmitting}>
+              添加健康监管人
+            </LoadingButton>
+            <Button color="inherit" variant="outlined" onClick={onClose}>
+              取消
+            </Button>
+          </DialogActions>
+        </FormProvider>
+      </Dialog>
   );
 }

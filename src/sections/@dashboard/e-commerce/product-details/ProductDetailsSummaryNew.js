@@ -204,11 +204,13 @@ export default function ProductDetailsSummaryNew({ cart, product, onAddCart, onG
               renderInput={(params) => (
                   <TextField
                       {...params}
+                      name="appoint"
                       fullWidth
                   />
               )}
           />
         </Stack>
+
 
         <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ my: 3}} >
           <Autocomplete
@@ -231,20 +233,9 @@ export default function ProductDetailsSummaryNew({ cart, product, onAddCart, onG
         </Stack>
 
         <Stack direction="row" justifyContent="space-between" sx={{ mb: 3 }}>
-          <Typography variant="subtitle1" sx={{ mt: 0.5 }}>
-            预约人数:
-          </Typography>
-
           <div>
-            <Incrementer
-                name="quantity"
-                quantity={values.quantity}
-                available={available}
-                onIncrementQuantity={() => setValue('quantity', values.quantity + 1)}
-                onDecrementQuantity={() => setValue('quantity', values.quantity - 1)}
-            />
-            <Typography variant="caption" component="div" sx={{ mt: 1, textAlign: 'right', color: 'text.secondary' }}>
-              可预约数:  {54}
+            <Typography variant="subtitle1" component="div" sx={{ mt: 1, textAlign: 'right'}}>
+              可预约数:  {available}
             </Typography>
           </div>
         </Stack>

@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import { useState } from 'react';
+import {useEffect, useState} from 'react';
 // @mui
 import { Box, Grid, Card, Button, Typography } from '@mui/material';
 // redux
@@ -13,6 +13,8 @@ import Iconify from '../../../../components/Iconify';
 //
 import CheckoutSummary from './CheckoutSummary';
 import CheckoutNewAddressForm from './CheckoutNewAddressForm';
+import axios from "../../../../utils/axios";
+import {fDate, fTimestamp} from "../../../../utils/formatTime";
 
 // ----------------------------------------------------------------------
 
@@ -23,6 +25,15 @@ export default function CheckoutBillingAddress() {
   const { total, discount, subtotal } = checkout;
   //
   const [open, setOpen] = useState(false);
+
+
+  const [userList,setUserList] = useState([]);
+
+  useEffect(async () => {
+      const response = await axios.get('/api/userInfo/get');
+      const {usersInfo} = response.data;
+      setUserList(usersInfo);
+  },[localStorage.accessToken])
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -48,10 +59,10 @@ export default function CheckoutBillingAddress() {
     <>
       <Grid container spacing={3}>
         <Grid item xs={12} md={8}>
-          {_addressBooks.map((address, index) => (
+          {userList.map((userInfo, index) => (
             <AddressItem
               key={index}
-              address={address}
+              userInfo={userInfo}
               onNextStep={handleNextStep}
               onCreateBilling={handleCreateBilling}
             />
@@ -66,7 +77,7 @@ export default function CheckoutBillingAddress() {
               Back
             </Button>
             <Button size="small" onClick={handleClickOpen} startIcon={<Iconify icon={'eva:plus-fill'} />}>
-              Add new address
+              添加用户
             </Button>
           </Box>
         </Grid>
@@ -89,25 +100,25 @@ export default function CheckoutBillingAddress() {
 // ----------------------------------------------------------------------
 
 AddressItem.propTypes = {
-  address: PropTypes.object,
+  userInfo: PropTypes.object,
   onNextStep: PropTypes.func,
   onCreateBilling: PropTypes.func,
 };
 
-function AddressItem({ address, onNextStep, onCreateBilling }) {
-  const { receiver, fullAddress, addressType, phone, isDefault } = address;
+function AddressItem({ userInfo, onNextStep, onCreateBilling }) {
+  const { name, gender, idCard, contact, birth, isDefault } = userInfo;
 
   const handleCreateBilling = () => {
-    onCreateBilling(address);
+    onCreateBilling(userInfo);
     onNextStep();
   };
 
   return (
     <Card sx={{ p: 3, mb: 3, position: 'relative' }}>
       <Box sx={{ mb: 1, display: 'flex', alignItems: 'center' }}>
-        <Typography variant="subtitle1">{receiver}</Typography>
+        <Typography variant="subtitle1">{name}</Typography>
         <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-          &nbsp;({addressType})
+          &nbsp;({gender})
         </Typography>
         {isDefault && (
           <Label color="info" sx={{ ml: 1 }}>
@@ -116,10 +127,10 @@ function AddressItem({ address, onNextStep, onCreateBilling }) {
         )}
       </Box>
       <Typography variant="body2" gutterBottom>
-        {fullAddress}
+        {fDate(birth)}
       </Typography>
       <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-        {phone}
+        {contact}
       </Typography>
 
       <Box
@@ -133,12 +144,12 @@ function AddressItem({ address, onNextStep, onCreateBilling }) {
       >
         {!isDefault && (
           <Button variant="outlined" size="small" color="inherit">
-            Delete
+            编辑此用户信息
           </Button>
         )}
         <Box sx={{ mx: 0.5 }} />
         <Button variant="outlined" size="small" onClick={handleCreateBilling}>
-          Deliver to this Address
+          选择用户信息
         </Button>
       </Box>
     </Card>

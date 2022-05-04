@@ -254,7 +254,6 @@ export default function ProductNewEditForm({ isEdit, currentProduct }) {
 
                   <Stack spacing={3} mt={2}>
                     <RHFTextField name="code" label="Product Code" />
-                    <RHFTextField name="sku" label="Product SKU" />
 
                     <div>
                       <LabelStyle>Gender</LabelStyle>

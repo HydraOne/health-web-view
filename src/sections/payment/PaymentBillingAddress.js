@@ -9,10 +9,10 @@ export default function PaymentBillingAddress() {
       <Typography variant="subtitle1">Billing Address</Typography>
 
       <Stack spacing={3} mt={5}>
-        <TextField fullWidth label="Person name" />
-        <TextField fullWidth label="Phone number" />
-        <TextField fullWidth label="Email" />
-        <TextField fullWidth label="Address" />
+        <TextField fullWidth label="name" />
+        <TextField fullWidth label="contact" />
+        <TextField fullWidth label="birth" />
+        <TextField fullWidth label="gender" />
       </Stack>
     </div>
   );

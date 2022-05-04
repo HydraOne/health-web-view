@@ -5,6 +5,7 @@ import { Card, Button, Typography, CardHeader, CardContent } from '@mui/material
 import { useSelector } from '../../../../redux/store';
 // components
 import Iconify from '../../../../components/Iconify';
+import {fDate} from "../../../../utils/formatTime";
 
 // ----------------------------------------------------------------------
 
@@ -20,7 +21,7 @@ export default function CheckoutBillingInfo({ onBackStep }) {
   return (
     <Card sx={{ mb: 3 }}>
       <CardHeader
-        title="Billing Address"
+        title="体检人信息"
         action={
           <Button size="small" startIcon={<Iconify icon={'eva:edit-fill'} />} onClick={onBackStep}>
             Edit
@@ -29,17 +30,17 @@ export default function CheckoutBillingInfo({ onBackStep }) {
       />
       <CardContent>
         <Typography variant="subtitle2" gutterBottom>
-          {billing?.receiver}&nbsp;
+          {billing?.name}&nbsp;
           <Typography component="span" variant="body2" sx={{ color: 'text.secondary' }}>
-            ({billing?.addressType})
+            ({billing?.gender})
           </Typography>
         </Typography>
 
         <Typography variant="body2" gutterBottom>
-          {billing?.fullAddress}
+          {billing?.contact}
         </Typography>
         <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-          {billing?.phone}
+          {fDate(billing?.birth)}
         </Typography>
       </CardContent>
     </Card>

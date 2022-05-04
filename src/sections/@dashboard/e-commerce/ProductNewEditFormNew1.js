@@ -279,7 +279,7 @@ export default function ProductNewEditFormNew1({ isEdit, currentProduct }) {
       name: currentProduct?.name || '',
       description: currentProduct?.description || '',
       images: currentProduct?.images || [],
-      code: currentProduct?.code || '',
+      available: currentProduct?.available || '',
       sku: currentProduct?.sku || '',
       price: currentProduct?.price || 0,
       priceSale: currentProduct?.priceSale || 0,
@@ -323,7 +323,7 @@ export default function ProductNewEditFormNew1({ isEdit, currentProduct }) {
   const onSubmit = async (data,added) => {
     try {
       const recordDescription = data.description;
-      const {name,type,images,id,tags,price,priceSale} = data;
+      const {name,type,images,id,tags,price,priceSale,available} = data;
       const children = Array.from(added);
       const doc = new DOMParser().parseFromString(recordDescription,"text/html")
       const imgs = doc.getElementsByTagName("img");
@@ -360,7 +360,7 @@ export default function ProductNewEditFormNew1({ isEdit, currentProduct }) {
 
       const tagsElement = tags.map(tag=>tag.id);
 
-      const checkEntity = {name,description,type,children,id,'tags':tagsElement,price,priceSale};
+      const checkEntity = {name,description,type,children,id,'tags':tagsElement,price,priceSale,available};
       const dataForms = new FormData();
       dataForms.append("checkEntity",JSON.stringify(checkEntity));
       // dataForms.append("checkEntity",new Blob([JSON.stringify(checkEntity)], {type: "application/json"}));
@@ -451,8 +451,7 @@ export default function ProductNewEditFormNew1({ isEdit, currentProduct }) {
                   <RHFSwitch name="inStock" label="In stock" />
 
                   <Stack spacing={3} mt={2}>
-                    <RHFTextField name="code" label="Product Code" />
-                    <RHFTextField name="sku" label="Product SKU" />
+                    <RHFTextField name="available" label="可预约数" />
 
                     <RHFSelectNew name={'type'} label={'Type'} options={TYPE_OPTION}/>
 

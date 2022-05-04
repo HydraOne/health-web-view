@@ -3,9 +3,12 @@ import * as Yup from 'yup';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 // @mui
-import { Grid, Button } from '@mui/material';
+import {Grid, Button, TextField, Card, CardContent} from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 // redux
+import {endOfTomorrow, isPast} from "date-fns";
+import DatePicker from "@mui/lab/DatePicker";
+import {useState} from "react";
 import { useDispatch, useSelector } from '../../../../redux/store';
 import { onGotoStep, onBackStep, onNextStep, applyShipping } from '../../../../redux/slices/product';
 // components
@@ -16,6 +19,7 @@ import CheckoutSummary from './CheckoutSummary';
 import CheckoutDelivery from './CheckoutDelivery';
 import CheckoutBillingInfo from './CheckoutBillingInfo';
 import CheckoutPaymentMethods from './CheckoutPaymentMethods';
+import axios from "../../../../utils/axios";
 
 // ----------------------------------------------------------------------
 
@@ -35,14 +39,14 @@ const DELIVERY_OPTIONS = [
 const PAYMENT_OPTIONS = [
   {
     value: 'paypal',
-    title: 'Pay with Paypal',
-    description: 'You will be redirected to PayPal website to complete your purchase securely.',
+    title: 'Paypal支付',
+    description: '您将被重定向到PayPal网站以安全地完成购买。',
     icons: ['https://minimal-assets-api.vercel.app/assets/icons/ic_paypal.svg'],
   },
   {
     value: 'credit_card',
-    title: 'Credit / Debit Card',
-    description: 'We support Mastercard, Visa, Discover and Stripe.',
+    title: '信用卡支付',
+    description: '我们支持Mastercard、Visa、Discover和Stripe。',
     icons: [
       'https://minimal-assets-api.vercel.app/assets/icons/ic_mastercard.svg',
       'https://minimal-assets-api.vercel.app/assets/icons/ic_visa.svg',
@@ -50,8 +54,8 @@ const PAYMENT_OPTIONS = [
   },
   {
     value: 'cash',
-    title: 'Cash on CheckoutDelivery',
-    description: 'Pay with cash when your order is delivered.',
+    title: '现金支付',
+    description: '线下体检时前往指定地点支付。',
     icons: [],
   },
 ];
@@ -66,6 +70,8 @@ export default function CheckoutPayment() {
   const dispatch = useDispatch();
 
   const { checkout } = useSelector((state) => state.product);
+
+  const [appointData,setAppointData] = useState(endOfTomorrow);
 
   const { total, discount, subtotal, shipping } = checkout;
 
@@ -86,12 +92,14 @@ export default function CheckoutPayment() {
   };
 
   const PaymentSchema = Yup.object().shape({
-    payment: Yup.string().required('Payment is required!'),
+    payment: Yup.string().required('请选择支付方式!'),
+    appoint: Yup.date().required('请选择预约日期!'),
   });
 
   const defaultValues = {
     delivery: shipping,
     payment: '',
+    appoint: new Date()
   };
 
   const methods = useForm({
@@ -104,8 +112,14 @@ export default function CheckoutPayment() {
     formState: { isSubmitting },
   } = methods;
 
-  const onSubmit = async () => {
+  const onSubmit = async (data) => {
     try {
+      const {appoint} = data;
+      const {billing : {id}} = checkout;
+      const {cart} = checkout;
+      const orderList = cart.map(item=>item.id);
+      const order = {userId:id,amount:total,orderList,appoint};
+      axios.put("/api/order/put",order);
       handleNextStep();
     } catch (error) {
       console.error(error);
@@ -116,7 +130,6 @@ export default function CheckoutPayment() {
     <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
       <Grid container spacing={3}>
         <Grid item xs={12} md={8}>
-          <CheckoutDelivery onApplyShipping={handleApplyShipping} deliveryOptions={DELIVERY_OPTIONS} />
           <CheckoutPaymentMethods cardOptions={CARDS_OPTIONS} paymentOptions={PAYMENT_OPTIONS} />
           <Button
             size="small"
@@ -124,13 +137,14 @@ export default function CheckoutPayment() {
             onClick={handleBackStep}
             startIcon={<Iconify icon={'eva:arrow-ios-back-fill'} />}
           >
-            Back
+            返回
           </Button>
         </Grid>
 
+
+
         <Grid item xs={12} md={4}>
           <CheckoutBillingInfo onBackStep={handleBackStep} />
-
           <CheckoutSummary
             enableEdit
             total={total}
@@ -139,8 +153,25 @@ export default function CheckoutPayment() {
             shipping={shipping}
             onEdit={() => handleGotoStep(0)}
           />
+          <Card sx={{ mb: 4 }}>
+            <CardContent>
+              <DatePicker
+                  label="预约日期"
+                  value={appointData}
+                  shouldDisableDate={isPast}
+                  onChange={(date)=>setAppointData(date)}
+                  renderInput={(params) => (
+                      <TextField
+                          {...params}
+                          fullWidth
+                          name="appoint"
+                      />
+                  )}
+              />
+            </CardContent>
+          </Card>
           <LoadingButton fullWidth size="large" type="submit" variant="contained" loading={isSubmitting}>
-            Complete Order
+            完成支付
           </LoadingButton>
         </Grid>
       </Grid>

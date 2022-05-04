@@ -50,7 +50,7 @@ export default function CheckoutPaymentMethods({ paymentOptions, cardOptions }) 
 
   return (
     <Card sx={{ my: 3 }}>
-      <CardHeader title="Payment options" />
+      <CardHeader title="支付方式" />
       <CardContent>
         <Controller
           name="payment"
@@ -93,7 +93,7 @@ export default function CheckoutPaymentMethods({ paymentOptions, cardOptions }) 
                         {isDesktop && (
                           <Stack direction="row" spacing={1} flexShrink={0}>
                             {icons.map((icon) => (
-                              <Image key={icon} alt="logo card" src={icon} />
+                              <Image key={icon} alt="logo card" sx={{md:'300px'}} src={icon} />
                             ))}
                           </Stack>
                         )}
