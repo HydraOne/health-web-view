@@ -50,14 +50,14 @@ export default function CheckoutProductList({ products, onDelete, onIncreaseQuan
             <TableCell>Product</TableCell>
             <TableCell align="left">Price</TableCell>
             <TableCell align="left">Quantity</TableCell>
-            <TableCell align="right">'added'</TableCell>
+            <TableCell align="right">费用</TableCell>
             <TableCell align="right" />
           </TableRow>
         </TableHead>
 
         <TableBody>
           {products.map((product) => {
-            const { id, name, size, price, color, cover, quantity, available } = product;
+            const { id, name, price, cover, quantity, available } = product;
             return (
               <TableRow key={id}>
                 <TableCell>
@@ -67,27 +67,6 @@ export default function CheckoutProductList({ products, onDelete, onIncreaseQuan
                       <Typography noWrap variant="subtitle2" sx={{ maxWidth: 240 }}>
                         {name}
                       </Typography>
-
-                      <Box
-                        sx={{
-                          display: 'flex',
-                          alignItems: 'center',
-                        }}
-                      >
-                        <Typography variant="body2">
-                          <Typography component="span" variant="body2" sx={{ color: 'text.secondary' }}>
-                            size:&nbsp;
-                          </Typography>
-                          {size}
-                        </Typography>
-                        <Divider orientation="vertical" sx={{ mx: 1, height: 16 }} />
-                        <Typography variant="body2">
-                          <Typography component="span" variant="body2" sx={{ color: 'text.secondary' }}>
-                            color:&nbsp;
-                          </Typography>
-                          {getColorName(color)}
-                        </Typography>
-                      </Box>
                     </Box>
                   </Box>
                 </TableCell>
