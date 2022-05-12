@@ -2,6 +2,7 @@ import { useParams } from 'react-router-dom';
 // @mui
 import { Container } from '@mui/material';
 // routes
+import {useEffect, useState} from "react";
 import { PATH_DASHBOARD } from '../../routes/paths';
 // hooks
 import useSettings from '../../hooks/useSettings';
@@ -12,6 +13,7 @@ import Page from '../../components/Page';
 import HeaderBreadcrumbs from '../../components/HeaderBreadcrumbs';
 // sections
 import InvoiceNewEditForm from '../../sections/@dashboard/invoice/new-edit-form';
+import axios from "../../utils/axios";
 
 // ----------------------------------------------------------------------
 
@@ -205,11 +207,21 @@ export default function InvoiceEdit() {
 
   const { id } = useParams();
 
-  const currentInvoice = _invoices.find((invoice) => invoice.id === id);
+  // const currentInvoice = _invoices.find((invoice) => invoice.id === id);
+  const [currentInvoice,setCurrentInvoice] = useState();
 
-  const realInvoice = invoices.map(item=>({id:item.id,name:item.name}))
+  const [isLoading,setIsLoading] = useState(true);
 
-  currentInvoice.items = realInvoice;
+
+  useEffect(()=>{
+      const fetchInvoice = async ()=> {
+      const response = await axios.get(`/api/order/get/${id}`);
+      const {data} = response;
+      setCurrentInvoice(data);
+      setIsLoading(false);
+    }
+    fetchInvoice();
+  },[id]);
 
   return (
     <Page title="Invoices: Edit">
@@ -222,8 +234,10 @@ export default function InvoiceEdit() {
             { name: currentInvoice?.invoiceNumber || '' },
           ]}
         />
-
-        <InvoiceNewEditForm isEdit currentInvoice={currentInvoice} />
+          {
+              isLoading?<div>Loading...</div>:
+                  <InvoiceNewEditForm isEdit currentInvoice={currentInvoice} />
+          }
       </Container>
     </Page>
   );

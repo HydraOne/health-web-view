@@ -249,7 +249,8 @@ const orderData ={
 export default function InvoiceNewEditForm({ isEdit, currentInvoice }) {
   const navigate = useNavigate();
 
-  const {userInfo,order,checks} = orderData;
+  // const {userInfo,order,checks} = orderData;
+  const {userInfo,order,checks} = currentInvoice;
 
   const [loadingSave, setLoadingSave] = useState(false);
 
@@ -270,7 +271,7 @@ export default function InvoiceNewEditForm({ isEdit, currentInvoice }) {
       discount: currentInvoice?.discount || '',
       invoiceFrom: currentInvoice?.invoiceFrom || _invoiceAddressFrom[0],
       invoiceTo: currentInvoice?.invoiceTo || null,
-      items: currentInvoice?.items || [{ name: '', content: '', info: ''}],
+      items: currentInvoice?.checks || [{ name: '', content: '', info: ''}],
     }),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [currentInvoice]
