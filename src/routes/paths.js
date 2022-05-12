@@ -68,6 +68,7 @@ export const PATH_DASHBOARD = {
     list: path(ROOTS_DASHBOARD, '/e-commerce/list'),
     checkout: path(ROOTS_DASHBOARD, '/e-commerce/checkout'),
     new: path(ROOTS_DASHBOARD, '/e-commerce/product/new'),
+    order: path(ROOTS_DASHBOARD, '/e-commerce/order'),
     view: (name) => path(ROOTS_DASHBOARD, `/e-commerce/product/${name}`),
     edit: (id) => path(ROOTS_DASHBOARD, `/e-commerce/product/${id}/edit`),
     demoEdit: path(ROOTS_DASHBOARD, '/e-commerce/product/6e81c7354b394304bc7900ae44ca30fa/edit'),

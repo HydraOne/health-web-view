@@ -223,7 +223,7 @@ export default function ProductNewEditForm({ isEdit, currentProduct }) {
             <Grid item xs={12} md={8}>
               <Card sx={{ p: 3 }}>
                 <Stack spacing={3}>
-                  <RHFTextField name="name" label="Product Name" />
+                  <RHFTextField name="name" label="检查计划表" />
 
 
                   <div>
@@ -250,7 +250,6 @@ export default function ProductNewEditForm({ isEdit, currentProduct }) {
             <Grid item xs={12} md={4}>
               <Stack spacing={3}>
                 <Card sx={{ p: 3 }}>
-                  <RHFSwitch name="inStock" label="In stock" />
 
                   <Stack spacing={3} mt={2}>
                     <RHFTextField name="code" label="Product Code" />

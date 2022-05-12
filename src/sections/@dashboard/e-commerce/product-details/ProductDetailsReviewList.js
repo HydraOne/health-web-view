@@ -122,30 +122,6 @@ function ReviewItem({ review }) {
           )}
 
           <Typography variant="body2">{comment}</Typography>
-
-          <Box
-            sx={{
-              mt: 1,
-              display: 'flex',
-              flexWrap: 'wrap',
-              alignItems: 'center',
-            }}
-          >
-            {!isHelpful && (
-              <Typography variant="body2" sx={{ mr: 1 }}>
-                Was this review helpful to you?
-              </Typography>
-            )}
-
-            <Button
-              size="small"
-              color="inherit"
-              startIcon={<Iconify icon={!isHelpful ? 'ic:round-thumb-up' : 'eva:checkmark-fill'} />}
-              onClick={handleClickHelpful}
-            >
-              {isHelpful ? 'Helpful' : 'Thank'}({fShortenNumber(!isHelpful ? helpful : helpful + 1)})
-            </Button>
-          </Box>
         </div>
       </ListItem>
     </>

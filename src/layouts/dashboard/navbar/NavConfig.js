@@ -70,6 +70,7 @@ const navConfig = [
           { title: 'create', path: PATH_DASHBOARD.eCommerce.new },
           { title: 'edit', path: PATH_DASHBOARD.eCommerce.demoEdit },
           { title: 'checkout', path: PATH_DASHBOARD.eCommerce.checkout },
+          { title: 'order', path: PATH_DASHBOARD.eCommerce.order },
         ],
       },
 

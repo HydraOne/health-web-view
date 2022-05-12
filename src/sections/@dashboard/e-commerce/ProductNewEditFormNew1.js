@@ -416,12 +416,12 @@ export default function ProductNewEditFormNew1({ isEdit, currentProduct }) {
             <Grid item xs={12} md={8}>
               <Card sx={{ p: 3 }}>
                 <Stack spacing={3}>
-                  <RHFTextField name="name" label="Product Name" />
+                  <RHFTextField name="name" label="标识名" />
 
 
 
                   <div>
-                    <LabelStyle>Description</LabelStyle>
+                    <LabelStyle>描述信息</LabelStyle>
                     <RHFEditor name="description" />
                   </div>
 
@@ -448,12 +448,11 @@ export default function ProductNewEditFormNew1({ isEdit, currentProduct }) {
             <Grid item xs={12} md={4}>
               <Stack spacing={3}>
                 <Card sx={{ p: 3 }}>
-                  <RHFSwitch name="inStock" label="In stock" />
 
                   <Stack spacing={3} mt={2}>
                     <RHFTextField name="available" label="可预约数" />
 
-                    <RHFSelectNew name={'type'} label={'Type'} options={TYPE_OPTION}/>
+                    <RHFSelectNew name={'type'} label="类型" options={TYPE_OPTION}/>
 
                     <Controller
                         name="tags"
@@ -470,7 +469,7 @@ export default function ProductNewEditFormNew1({ isEdit, currentProduct }) {
                                         <Chip {...getTagProps({ index })} key={option.id} size="small" label={option.label} />
                                     ))
                                 }
-                                renderInput={(params) => <TextField label="Tags" {...params} />}
+                                renderInput={(params) => <TextField label="标签" {...params} />}
                             />
                         )}
                     />
@@ -507,17 +506,15 @@ export default function ProductNewEditFormNew1({ isEdit, currentProduct }) {
                     />
                   </Stack>
 
-
-                  <RHFSwitch name="taxes" label="Price includes taxes" />
                 </Card>
               </Stack>
 
               <Stack direction="row" spacing={1.5} sx={{ mt: 3 }}>
                 <Button fullWidth color="inherit" variant="outlined" size="large" onClick={handleOpenPreview}>
-                  Preview
+                  预览
                 </Button>
                 <LoadingButton fullWidth type="submit" variant="contained" size="large" loading={isSubmitting}>
-                  {!isEdit ? 'Create Product' : 'Save Changes'}
+                  {!isEdit ? '保存新增' : '保存修改'}
                 </LoadingButton>
                 <div/>
               </Stack>

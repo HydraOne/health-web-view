@@ -1,13 +1,15 @@
 import * as Yup from 'yup';
 import { useSnackbar } from 'notistack';
-import { useCallback } from 'react';
+import {useCallback, useState} from 'react';
 // form
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 // @mui
-import { Box, Grid, Card, Stack, Typography } from '@mui/material';
+import {Box, Grid, Card, Stack, Typography, TextField} from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 // hooks
+import {endOfTomorrow} from "date-fns";
+import DatePicker from "@mui/lab/DatePicker";
 import useAuth from '../../../../hooks/useAuth';
 // utils
 import { fData } from '../../../../utils/formatNumber';
@@ -17,12 +19,26 @@ import { countries } from '../../../../_mock';
 import { FormProvider, RHFSwitch, RHFSelect, RHFTextField, RHFUploadAvatar } from '../../../../components/hook-form';
 import axios from "../../../../utils/axios";
 
+
+const gender =[
+  {
+    name:"男",
+    value:"M"
+  },
+  {
+    name:"女",
+    value:"F"
+  }
+]
 // ----------------------------------------------------------------------
 
 export default function AccountGeneral() {
   const { enqueueSnackbar } = useSnackbar();
 
   const { user } = useAuth();
+
+
+  const [appointData,setAppointData] = useState(endOfTomorrow);
 
   const UpdateUserSchema = Yup.object().shape({
     displayName: Yup.string().required('Name is required'),
@@ -37,6 +53,7 @@ export default function AccountGeneral() {
     address: user?.address || '',
     state: user?.state || '',
     city: user?.city || '',
+    birth: user?.birth || new Date(),
     zipCode: user?.zipCode || '',
     about: user?.about || '',
     isPublic: user?.isPublic || false,
@@ -111,13 +128,13 @@ export default function AccountGeneral() {
                     color: 'text.secondary',
                   }}
                 >
-                  Allowed *.jpeg, *.jpg, *.png, *.gif
-                  <br /> max size of {fData(3145728)}
+                  允许上传 *.jpeg, *.jpg, *.png, *.gif
+                  <br /> 最大文件尺寸 {fData(3145728)}
                 </Typography>
               }
             />
 
-            <RHFSwitch name="isPublic" labelPlacement="start" label="Public Profile" sx={{ mt: 5 }} />
+            <RHFSwitch name="isPublic" labelPlacement="start" label="公开信息" sx={{ mt: 5 }} />
           </Card>
         </Grid>
 
@@ -131,32 +148,39 @@ export default function AccountGeneral() {
                 gridTemplateColumns: { xs: 'repeat(1, 1fr)', sm: 'repeat(2, 1fr)' },
               }}
             >
-              <RHFTextField name="displayName" label="Name" />
-              <RHFTextField name="email" label="Email Address" />
+              <RHFTextField name="displayName" label="显示名" fullWidth/>
+              <RHFTextField name="email" label="联系电子邮件" />
 
-              <RHFTextField name="phoneNumber" label="Phone Number" />
-              <RHFTextField name="address" label="Address" />
+              <RHFTextField name="phoneNumber" label="电话号码" />
+              <RHFTextField name="address" label="居住地" />
 
-              <RHFSelect name="country" label="Country" placeholder="Country">
-                <option value="" />
-                {countries.map((option) => (
-                  <option key={option.code} value={option.label}>
-                    {option.label}
+              <RHFSelect name="country" label="性别" placeholder="男">
+                {gender.map((option) => (
+                  <option key={option.value} value={option.name}>
+                    {option.name}
                   </option>
                 ))}
               </RHFSelect>
 
-              <RHFTextField name="state" label="State/Region" />
-
-              <RHFTextField name="city" label="City" />
-              <RHFTextField name="zipCode" label="Zip/Code" />
+              <DatePicker
+                  label="出生日期"
+                  value={appointData}
+                  onChange={(date)=>setAppointData(date)}
+                  renderInput={(params) => (
+                      <TextField
+                          name="birth"
+                          {...params}
+                          fullWidth
+                      />
+                  )}
+              />
             </Box>
 
             <Stack spacing={3} alignItems="flex-end" sx={{ mt: 3 }}>
-              <RHFTextField name="about" multiline rows={4} label="About" />
+              <RHFTextField name="about" multiline rows={4} label="简介" />
 
               <LoadingButton type="submit" variant="contained" loading={isSubmitting}>
-                Save Changes
+                保存
               </LoadingButton>
             </Stack>
           </Card>

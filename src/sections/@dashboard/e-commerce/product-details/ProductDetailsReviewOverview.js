@@ -47,7 +47,7 @@ export default function ProductDetailsReviewOverview({ product, onOpen }) {
     <Grid container>
       <GridStyle item xs={12} md={4}>
         <Typography variant="subtitle1" gutterBottom>
-          Average rating
+          平均评分
         </Typography>
         <Typography variant="h2" gutterBottom sx={{ color: 'error.main' }}>
           {totalRating}/5
@@ -55,7 +55,7 @@ export default function ProductDetailsReviewOverview({ product, onOpen }) {
         <RatingStyle readOnly value={totalRating} precision={0.1} />
         <Typography variant="body2" sx={{ color: 'text.secondary' }}>
           ({fShortenNumber(totalReview)}
-          &nbsp;reviews)
+          &nbsp;评论)
         </Typography>
       </GridStyle>
 
@@ -73,7 +73,7 @@ export default function ProductDetailsReviewOverview({ product, onOpen }) {
       <GridStyle item xs={12} md={4}>
         <Link href="#move_add_review" underline="none">
           <Button size="large" onClick={onOpen} variant="outlined" startIcon={<Iconify icon={'eva:edit-2-fill'} />}>
-            Write your review
+            写下你的评论
           </Button>
         </Link>
       </GridStyle>

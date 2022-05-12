@@ -12,10 +12,16 @@ import { _invoiceAddressFrom, _invoiceAddressTo } from '../../../../_mock';
 import Iconify from '../../../../components/Iconify';
 //
 import InvoiceAddressListDialog from './InvoiceAddressListDialog';
+import InvoiceNewEditForm from "./index";
+import {fDate} from "../../../../utils/formatTime";
 
 // ----------------------------------------------------------------------
+InvoiceNewEditAddress.propTypes = {
+  userInfo: PropTypes.object,
+  order: PropTypes.object,
+};
 
-export default function InvoiceNewEditAddress() {
+export default function InvoiceNewEditAddress({userInfo,order}) {
   const {
     watch,
     setValue,
@@ -42,11 +48,11 @@ export default function InvoiceNewEditAddress() {
       <Stack sx={{ width: 1 }}>
         <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ mb: 1 }}>
           <Typography variant="h6" sx={{ color: 'text.disabled' }}>
-            From:
+            体检人信息:
           </Typography>
 
           <Button size="small" startIcon={<Iconify icon="eva:edit-fill" />} onClick={onOpenFrom}>
-            Change
+            修改
           </Button>
 
           <InvoiceAddressListDialog
@@ -58,39 +64,7 @@ export default function InvoiceNewEditAddress() {
           />
         </Stack>
 
-        <AddressInfo name={invoiceFrom.name} address={invoiceFrom.address} phone={invoiceFrom.phone} />
-      </Stack>
-
-      <Stack sx={{ width: 1 }}>
-        <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ mb: 1 }}>
-          <Typography variant="h6" sx={{ color: 'text.disabled' }}>
-            To:
-          </Typography>
-
-          <Button
-            size="small"
-            startIcon={<Iconify icon={invoiceTo ? 'eva:edit-fill' : 'eva:plus-fill'} />}
-            onClick={onOpenTo}
-          >
-            {invoiceTo ? 'Change' : 'Add'}
-          </Button>
-
-          <InvoiceAddressListDialog
-            open={openTo}
-            onClose={onCloseTo}
-            selected={(selectedId) => invoiceTo?.id === selectedId}
-            onSelect={(address) => setValue('invoiceTo', address)}
-            addressOptions={_invoiceAddressTo}
-          />
-        </Stack>
-
-        {invoiceTo ? (
-          <AddressInfo name={invoiceTo.name} address={invoiceTo.address} phone={invoiceTo.phone} />
-        ) : (
-          <Typography typography="caption" sx={{ color: 'error.main' }}>
-            {errors.invoiceTo ? errors.invoiceTo.message : null}
-          </Typography>
-        )}
+        <AddressInfo userInfo={userInfo} order={order}/>
       </Stack>
     </Stack>
   );
@@ -99,19 +73,19 @@ export default function InvoiceNewEditAddress() {
 // ----------------------------------------------------------------------
 
 AddressInfo.propTypes = {
-  address: PropTypes.string,
-  name: PropTypes.string,
-  phone: PropTypes.string,
+  userInfo: PropTypes.object,
+  order: PropTypes.object,
 };
 
-function AddressInfo({ name, address, phone }) {
+function AddressInfo({userInfo,order}){
   return (
     <>
-      <Typography variant="subtitle2">{name}</Typography>
+      <Typography variant="subtitle2">姓名：{userInfo.name}({userInfo.gender})</Typography>
       <Typography variant="body2" sx={{ mt: 1, mb: 0.5 }}>
-        {address}
+        身份证号码：{userInfo.idCard}
       </Typography>
-      <Typography variant="body2">Phone: {phone}</Typography>
+      <Typography variant="body2">联系方式: {userInfo.contact}</Typography>
+      <Typography variant="body2">检查日期: {fDate(order.appoint)}</Typography>
     </>
   );
 }

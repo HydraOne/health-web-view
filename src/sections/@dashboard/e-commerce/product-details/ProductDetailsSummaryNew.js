@@ -181,16 +181,16 @@ export default function ProductDetailsSummaryNew({ cart, product, onAddCart, onG
           <Rating value={totalRating} precision={0.1} readOnly />
           <Typography variant="body2" sx={{ color: 'text.secondary' }}>
             ({fShortenNumber(totalReview)}
-            reviews)
+            评论)
           </Typography>
         </Stack>
 
 
         <Typography variant="h4" sx={{ mb: 3 }}>
           <Box component="span" sx={{ color: 'text.disabled', textDecoration: 'line-through' }}>
-            市场价: {price && fCurrency(price)}
+            市场价: ¥{price && fCurrency(price)}
           </Box>
-          <br/>预约价: {fCurrency(priceSale)}
+          <br/>预约价: ¥{fCurrency(priceSale)}
         </Typography>
 
         <Divider sx={{ borderStyle: 'dashed' }} />
@@ -256,17 +256,15 @@ export default function ProductDetailsSummaryNew({ cart, product, onAddCart, onG
             onClick={handleAddCart}
             sx={{ whiteSpace: 'nowrap' }}
           >
-            Add to Cart
+            添加到购物车
           </Button>
 
           <Button fullWidth size="large" type="submit" variant="contained">
-            Buy Now
+            现在预约
           </Button>
         </Stack>
 
-        <Stack alignItems="center" sx={{ mt: 3 }}>
-          <SocialsButton initialColor />
-        </Stack>
+
       </FormProvider>
     </RootStyle>
   );

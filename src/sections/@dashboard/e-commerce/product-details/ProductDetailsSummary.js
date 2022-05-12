@@ -148,7 +148,7 @@ export default function ProductDetailsSummary({ cart, product, onAddCart, onGoto
           <Rating value={totalRating} precision={0.1} readOnly />
           <Typography variant="body2" sx={{ color: 'text.secondary' }}>
             ({fShortenNumber(totalReview)}
-            reviews)
+            评论)
           </Typography>
         </Stack>
 
@@ -243,11 +243,11 @@ export default function ProductDetailsSummary({ cart, product, onAddCart, onGoto
             onClick={handleAddCart}
             sx={{ whiteSpace: 'nowrap' }}
           >
-            Add to Cart
+            添加到购物车
           </Button>
 
           <Button fullWidth size="large" type="submit" variant="contained">
-            Buy Now
+            现在预约
           </Button>
         </Stack>
 

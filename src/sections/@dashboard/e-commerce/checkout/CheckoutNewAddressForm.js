@@ -73,7 +73,7 @@ export default function CheckoutNewAddressForm({ open, onClose, onNextStep, onCr
 
   return (
       <Dialog fullWidth maxWidth="sm" open={open} onClose={onClose}>
-        <DialogTitle>Add new address</DialogTitle>
+        <DialogTitle>添加家庭成员</DialogTitle>
 
         <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
           <DialogContent>
@@ -116,7 +116,7 @@ export default function CheckoutNewAddressForm({ open, onClose, onNextStep, onCr
 
           <DialogActions>
             <LoadingButton type="submit" variant="contained" loading={isSubmitting}>
-              添加健康监管人
+              添加被监管人信息
             </LoadingButton>
             <Button color="inherit" variant="outlined" onClick={onClose}>
               取消

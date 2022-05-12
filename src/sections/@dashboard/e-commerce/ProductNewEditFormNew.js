@@ -348,7 +348,7 @@ export default function ProductNewEditFormNew({ isEdit, currentProduct }) {
             <Grid item xs={12} md={8}>
               <Card sx={{ p: 3 }}>
                 <Stack spacing={3}>
-                  <RHFTextField name="name" label="Product Name" />
+                  <RHFTextField name="name" label="标识名" />
 
 
                   <div>
