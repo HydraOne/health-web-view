@@ -98,11 +98,6 @@ export default function ChatRoom({ conversation, participants }) {
       )}
       <Divider />
 
-      <ChatRoomAttachment
-        conversation={conversation}
-        isCollapse={showAttachment}
-        onCollapse={() => setShowAttachment((prev) => !prev)}
-      />
     </>
   );
 

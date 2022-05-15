@@ -28,10 +28,10 @@ export default function ChatConversationList({ conversations, isOpenSidebar, act
       conversationKey = conversation.id;
     } else {
       const otherParticipant = conversation.participants.find(
-        (participant) => participant.id !== '8864c717-587d-472a-929a-8e5f298024da-0'
+        (participant) => participant.id !== localStorage.getItem("currentUserId")
       );
-      if (otherParticipant?.username) {
-        conversationKey = otherParticipant?.username;
+      if (otherParticipant?.id) {
+        conversationKey = otherParticipant?.id;
       }
     }
     navigate(PATH_DASHBOARD.chat.view(conversationKey));

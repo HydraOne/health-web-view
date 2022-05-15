@@ -47,9 +47,9 @@ ChatConversationItem.propTypes = {
 };
 
 export default function ChatConversationItem({ isSelected, conversation, isOpenSidebar, onSelectConversation }) {
-  const details = getDetails(conversation, '8864c717-587d-472a-929a-8e5f298024da-0');
+  const details = getDetails(conversation, localStorage.getItem("currentUserId"));
 
-  const displayLastActivity = conversation.messages[conversation.messages.length - 1].createdAt;
+  // const displayLastActivity = conversation.messages[conversation.messages.length - 1].createdAt;
 
   const isGroup = details.otherParticipants.length > 1;
   const isUnread = conversation.unreadCount > 0;
@@ -124,19 +124,6 @@ export default function ChatConversationItem({ isSelected, conversation, isOpenS
               flexDirection: 'column',
             }}
           >
-            <Box
-              sx={{
-                mb: 1.25,
-                fontSize: 12,
-                lineHeight: '22px',
-                whiteSpace: 'nowrap',
-                color: 'text.disabled',
-              }}
-            >
-              {formatDistanceToNowStrict(new Date(displayLastActivity), {
-                addSuffix: false,
-              })}
-            </Box>
             {isUnread && <BadgeStatus status="unread" size="small" />}
           </Box>
         </>

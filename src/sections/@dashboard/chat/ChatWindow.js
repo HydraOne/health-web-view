@@ -48,7 +48,7 @@ export default function ChatWindow() {
   const conversation = useSelector((state) => conversationSelector(state));
 
   const mode = conversationKey ? 'DETAIL' : 'COMPOSE';
-  const displayParticipants = participants.filter((item) => item.id !== '8864c717-587d-472a-929a-8e5f298024da-0');
+  const displayParticipants = participants.filter((item) => item.id !== localStorage.getItem("currentUserId"));
 
   useEffect(() => {
     const getDetails = async () => {

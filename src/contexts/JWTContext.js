@@ -2,7 +2,7 @@ import { createContext, useEffect, useReducer } from 'react';
 import PropTypes from 'prop-types';
 // utils
 import axios from '../utils/axios';
-import { setSession } from '../utils/jwt';
+import {setCurrentUserIdSession, setSession} from '../utils/jwt';
 
 // ----------------------------------------------------------------------
 
@@ -119,6 +119,7 @@ function AuthProvider({ children }) {
     const { token, user } = response.data;
 
     setSession(token);
+    setCurrentUserIdSession(user.id);
     dispatch({
       type: 'LOGIN',
       payload: {
@@ -137,6 +138,7 @@ function AuthProvider({ children }) {
     const { accessToken, user } = response.data;
 
     setSession(accessToken);
+    setCurrentUserIdSession(null);
     // window.localStorage.setItem('accessToken', accessToken);
     dispatch({
       type: 'REGISTER',

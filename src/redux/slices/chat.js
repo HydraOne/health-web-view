@@ -81,7 +81,10 @@ const slice = createSlice({
         attachments,
         createdAt,
         senderId,
+        conversationId
       };
+
+      axios.put("/api/chat/sendMessage",newMessage);
 
       state.conversations.byId[conversationId].messages.push(newMessage);
     },
@@ -138,7 +141,7 @@ export function getConversations() {
   return async () => {
     dispatch(slice.actions.startLoading());
     try {
-      const response = await axios.get('/api/chat/conversations');
+      const response = await axios.get('/api/chat/conversations2');
       dispatch(slice.actions.getConversationsSuccess(response.data.conversations));
     } catch (error) {
       dispatch(slice.actions.hasError(error));

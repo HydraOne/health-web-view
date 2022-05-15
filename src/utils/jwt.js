@@ -45,4 +45,15 @@ const setSession = (accessToken) => {
   }
 };
 
-export { isValidToken, setSession };
+const setCurrentUserIdSession = (id) => {
+  if (id) {
+    localStorage.setItem('currentUserId', id);
+    // This function below will handle when token is expired
+    // const { exp } = jwtDecode(accessToken);
+    // handleTokenExpired(exp);
+  } else {
+    localStorage.removeItem('currentUserId');
+  }
+};
+
+export { isValidToken, setSession ,setCurrentUserIdSession};

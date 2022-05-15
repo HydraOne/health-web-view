@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import { useRef, useState } from 'react';
+import {useEffect, useRef, useState} from 'react';
 // @mui
 import { styled } from '@mui/material/styles';
 import { Stack, Input, Divider, IconButton, InputAdornment } from '@mui/material';
@@ -8,6 +8,7 @@ import uuidv4 from '../../../utils/uuidv4';
 // components
 import Iconify from '../../../components/Iconify';
 import EmojiPicker from '../../../components/EmojiPicker';
+import axios from "../../../utils/axios";
 
 // ----------------------------------------------------------------------
 
@@ -29,7 +30,34 @@ ChatMessageInput.propTypes = {
 
 export default function ChatMessageInput({ disabled, conversationId, onSend }) {
   const fileInputRef = useRef(null);
+
   const [message, setMessage] = useState('');
+
+  const handleUploadFile = async (event) => {
+    const file = event.target.files[0];// 选择单个文件
+    const forms = new FormData();
+    const configs = {
+      headers: {'Content-Type': 'multipart/form-data'}
+    };
+    forms.append("files",file);
+    forms.append('bucketName', 'demo');
+    const list = [];
+    await axios.post("/api/file/uploadPictures", forms, configs).then(res => {
+      list.push(res.data.data[0]);
+    });
+    if (onSend && conversationId) {
+      onSend({
+        conversationId,
+        messageId: uuidv4(),
+        message: `http://192.168.117.130:19000/demo/${list.pop()}`,
+        contentType: 'image',
+        attachments: [],
+        createdAt: new Date(),
+        senderId: localStorage.getItem("currentUserId"),
+      });
+    }
+    return setMessage('');
+  };
 
   const handleAttach = () => {
     fileInputRef.current?.click();
@@ -53,7 +81,7 @@ export default function ChatMessageInput({ disabled, conversationId, onSend }) {
         contentType: 'text',
         attachments: [],
         createdAt: new Date(),
-        senderId: '8864c717-587d-472a-929a-8e5f298024da-0',
+        senderId: localStorage.getItem("currentUserId"),
       });
     }
     return setMessage('');
@@ -95,7 +123,7 @@ export default function ChatMessageInput({ disabled, conversationId, onSend }) {
         <Iconify icon="ic:round-send" width={22} height={22} />
       </IconButton>
 
-      <input type="file" ref={fileInputRef} style={{ display: 'none' }} />
+      <input type="file" ref={fileInputRef} onChange={handleUploadFile} style={{ display: 'none' }} />
     </RootStyle>
   );
 }

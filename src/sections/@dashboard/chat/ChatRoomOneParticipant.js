@@ -65,9 +65,6 @@ export default function ChatRoomOneParticipant({ participants, isCollapse, onCol
         <Avatar alt={participant.name} src={participant.avatar} sx={{ width: 96, height: 96 }} />
         <Box sx={{ mt: 2, textAlign: 'center' }}>
           <Typography variant="subtitle1">{participant.name}</Typography>
-          <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-            {participant.position}
-          </Typography>
         </Box>
       </Box>
 
@@ -90,10 +87,6 @@ export default function ChatRoomOneParticipant({ participants, isCollapse, onCol
 
       <Collapse in={isCollapse}>
         <Box sx={{ px: 2.5, pb: 1 }}>
-          <RowStyle>
-            <RowIconStyle icon={'eva:pin-fill'} />
-            <RowTextStyle>{participant.address}</RowTextStyle>
-          </RowStyle>
           <RowStyle>
             <RowIconStyle icon={'eva:phone-fill'} />
             <RowTextStyle>{participant.phone}</RowTextStyle>

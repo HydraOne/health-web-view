@@ -37,7 +37,7 @@ OrderTableRow.propTypes = {
 export default function OrderTableRow({ row, selected, onEditRow, onSelectRow, onDeleteRow }) {
   const theme = useTheme();
 
-  const { id, appoint, amount,name} = row;
+  const { id, appoint, amount,name,status} = row;
 
 
   const [openMenu, setOpenMenuActions] = useState(null);
@@ -73,11 +73,13 @@ export default function OrderTableRow({ row, selected, onEditRow, onSelectRow, o
         <Label
             variant={theme.palette.mode === 'light' ? 'ghost' : 'filled'}
             color={
-                'success'
+                // eslint-disable-next-line no-nested-ternary
+                status==='isAppoint'?'warning':(status==='isCheck'?'secondary':'success')
             }
             sx={{ textTransform: 'capitalize' }}
         >
-            {'已完成'}
+            {/* eslint-disable-next-line no-nested-ternary */}
+            {status==='isAppoint'?'已预约':(status==='isCheck'?'已检查':'已完成')}
         </Label>
       </TableCell>
       <TableCell align="right">

@@ -99,7 +99,7 @@ export default function CheckoutPayment() {
   const defaultValues = {
     delivery: shipping,
     payment: '',
-    appoint: new Date()
+    appoint: appointData
   };
 
   const methods = useForm({
@@ -114,11 +114,10 @@ export default function CheckoutPayment() {
 
   const onSubmit = async (data) => {
     try {
-      const {appoint} = data;
       const {billing : {id}} = checkout;
       const {cart} = checkout;
       const orderList = cart.map(item=>item.id);
-      const order = {userId:id,amount:total,orderList,appoint};
+      const order = {userId:id,amount:total,orderList,appoint:appointData};
       axios.put("/api/order/put",order);
       handleNextStep();
     } catch (error) {
@@ -163,8 +162,8 @@ export default function CheckoutPayment() {
                   renderInput={(params) => (
                       <TextField
                           {...params}
-                          fullWidth
                           name="appoint"
+                          fullWidth
                       />
                   )}
               />
