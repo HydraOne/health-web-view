@@ -80,6 +80,9 @@ export default function Router() {
             { path: 'product/:id', element: <EcommerceProductDetails /> },
             { path: 'list', element: <EcommerceProductList /> },
             { path: 'order', element: <EcommerceProductOrderList /> },
+            { path: 'healthInfo', element: <HealthInfoCreate /> },
+            { path: 'healthProgram', element: <HealthProgram /> },
+            { path: 'healthRecipes', element: <HealthInfoCreate /> },
             { path: 'product/new', element: <EcommerceProductCreate /> },
             { path: 'product/:id/edit', element: <EcommerceProductCreate /> },
             { path: 'checkout', element: <EcommerceCheckout /> },
@@ -187,6 +190,9 @@ const EcommerceShop = Loadable(lazy(() => import('../pages/dashboard/EcommerceSh
 const EcommerceProductDetails = Loadable(lazy(() => import('../pages/dashboard/EcommerceProductDetails')));
 const EcommerceProductList = Loadable(lazy(() => import('../pages/dashboard/EcommerceProductList')));
 const EcommerceProductOrderList = Loadable(lazy(() => import('../pages/dashboard/EcommerceProductOrderList')));
+const HealthInfoCreate = Loadable(lazy(() => import('../pages/dashboard/HealthInfoCreate')));
+const HealthProgram = Loadable(lazy(() => import('../pages/dashboard/HealthProgram')));
+const HealthRecipes = Loadable(lazy(() => import('../pages/dashboard/HealthInfoCreate')));
 const EcommerceProductCreate = Loadable(lazy(() => import('../pages/dashboard/EcommerceProductCreate')));
 const EcommerceCheckout = Loadable(lazy(() => import('../pages/dashboard/EcommerceCheckout')));
 

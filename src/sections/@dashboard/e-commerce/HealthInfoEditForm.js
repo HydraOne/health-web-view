@@ -142,12 +142,12 @@ const LabelStyle = styled(Typography)(({ theme }) => ({
 
 // ----------------------------------------------------------------------
 
-ProductNewEditFormNew1.propTypes = {
+HealthInfoEditForm.propTypes = {
   isEdit: PropTypes.bool,
   currentProduct: PropTypes.object,
 };
 
-export default function ProductNewEditFormNew1({ isEdit, currentProduct }) {
+export default function HealthInfoEditForm({ isEdit, currentProduct }) {
   const navigate = useNavigate();
 
   const { enqueueSnackbar } = useSnackbar();
@@ -418,8 +418,6 @@ export default function ProductNewEditFormNew1({ isEdit, currentProduct }) {
                 <Stack spacing={3}>
                   <RHFTextField name="name" label="标识名" />
 
-
-
                   <div>
                     <LabelStyle>描述信息</LabelStyle>
                     <RHFEditor name="description" />
@@ -463,7 +461,7 @@ export default function ProductNewEditFormNew1({ isEdit, currentProduct }) {
                                 multiple
                                 freeSolo
                                 onChange={(event, newValue) => field.onChange(newValue)}
-                                options={tagsOption}
+                                options={tagsOption.map((option) => option)}
                                 renderTags={(value, getTagProps) =>
                                     value.map((option, index) => (
                                         <Chip {...getTagProps({ index })} key={option.id} size="small" label={option.label} />
@@ -518,104 +516,6 @@ export default function ProductNewEditFormNew1({ isEdit, currentProduct }) {
                 </LoadingButton>
                 <div/>
               </Stack>
-            </Grid>
-
-            <Grid item xs={12} >
-              <Card>
-                <Tabs
-                    allowScrollButtonsMobile
-                    variant="scrollable"
-                    scrollButtons="auto"
-                    value={filterStatus}
-                    onChange={(event,currentTab)=>{
-                      onChangeFilterStatus(event,currentTab);
-                      onSelectAllRows(false);
-                    }}
-                    sx={{ px: 2, bgcolor: 'background.neutral' }}
-                >
-                  {TYPE_OPTIONS.map((tab) => (
-                      <Tab disableRipple key={tab.value} label={tab.label} value={tab.value} />
-                  ))}
-                </Tabs>
-
-                <Divider />
-
-                <UserTableToolbar
-                    filterName={filterName}
-                    filterRole={filterRole}
-                    onFilterName={handleFilterName}
-                    onFilterRole={handleFilterRole}
-                    optionsRole={ROLE_OPTIONS}
-                />
-
-                <Scrollbar>
-                  <TableContainer sx={{ minWidth: 800, position: 'relative' }}>
-                    {selected.length > 0 && (
-                      <TableSelectedActions
-                        dense={dense}
-                        numSelected={selected.length}
-                        rowCount={dataFiltered.length}
-                        onSelectAllRows={(checked) =>
-                          onSelectAllRows(
-                              checked,
-                              dataFiltered.map((row) => row.id)
-                          )
-                        }
-                        actions={
-                          <Tooltip title="Add">
-                            <IconButton color="primary" onClick={(checked) => {
-                              handleAddRows(selected);
-                              onSelectAllRows(!checked)}}
-                            >
-                              <Iconify icon={'eva:file-add-outline'} />
-                            </IconButton>
-                          </Tooltip>
-                        }
-                      />
-                    )}
-
-                    <Table size={dense ? 'small' : 'medium'}>
-                      <TableHeadCustom
-                        order={order}
-                        orderBy={orderBy}
-                        headLabel={TABLE_HEAD}
-                        rowCount={dataFiltered.length}
-                        numSelected={selected.length}
-                        onSort={onSort}
-                        onSelectAllRows={(checked) =>
-                          onSelectAllRows(
-                            checked,
-                            dataFiltered.map((row) => row.id)
-                          )
-                        }
-                      />
-
-                      <TableBody>
-                        {(isLoading ? [...Array(rowsPerPage)] : dataFiltered)
-                          .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                          .map((row, index) =>
-                            row ? (
-                              <ProductTableRow
-                                  key={row.id}
-                                  row={row}
-                                  selected={selected.includes(row.id)}
-                                  onSelectRow={() => onSelectRow(row.id)}
-                                  onDeleteRow={() => handleDeleteRow(row.id)}
-                                  onEditRow={() => handleEditRow(row.name)}
-                              />
-                            ) : (
-                              !isNotFound && <TableSkeleton key={index} sx={{ height: denseHeight }} />
-                            )
-                          )}
-
-                        <TableEmptyRows height={denseHeight} emptyRows={emptyRows(page, rowsPerPage, tableData.length)} />
-
-                        <TableNoData isNotFound={isNotFound} />
-                      </TableBody>
-                    </Table>
-                  </TableContainer>
-                </Scrollbar>
-              </Card>
             </Grid>
           </Grid>
 

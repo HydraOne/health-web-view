@@ -71,6 +71,9 @@ const navConfig = [
           { title: 'edit', path: PATH_DASHBOARD.eCommerce.demoEdit },
           { title: 'checkout', path: PATH_DASHBOARD.eCommerce.checkout },
           { title: 'order', path: PATH_DASHBOARD.eCommerce.order },
+          { title: '健康信息', path: PATH_DASHBOARD.eCommerce.healthInfo },
+          { title: '膳食管理', path: PATH_DASHBOARD.eCommerce.healthRecipes },
+          { title: '健康计划', path: PATH_DASHBOARD.eCommerce.healthProgram },
         ],
       },
 

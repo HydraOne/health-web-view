@@ -11,38 +11,38 @@ import DatePicker from "@mui/lab/DatePicker";
 import {endOfTomorrow, isPast} from "date-fns";
 import {useState} from "react";
 import { countries } from '../../../../_mock';
-import { FormProvider, RHFCheckbox, RHFSelect, RHFTextField, RHFRadioGroup } from '../../../../components/hook-form';
+import {
+  FormProvider,
+  RHFCheckbox,
+  RHFSelect,
+  RHFTextField,
+  RHFRadioGroup,
+  RHFEditor
+} from '../../../../components/hook-form';
 import axios from "../../../../utils/axios";
+import AsyncSelectUser from "./AsyncSelectUser";
 
 // ----------------------------------------------------------------------
 
-CheckoutNewAddressForm.propTypes = {
+NewHealthProgramForm.propTypes = {
   open: PropTypes.bool,
   onClose: PropTypes.func,
   onNextStep: PropTypes.func,
   onCreateBilling: PropTypes.func,
 };
 
-export default function CheckoutNewAddressForm({ open, onClose, onNextStep, onCreateBilling }) {
+export default function NewHealthProgramForm({ open, onClose, onNextStep, onCreateBilling }) {
   const NewAddressSchema = Yup.object().shape({
-    name: Yup.string().required('请输入姓名'),
-    gender: Yup.string().required('请输入性别'),
-    idCard: Yup.string().required('请输入身份证号码'),
-    contact: Yup.string().required('请输入联系方式'),
-    birth: Yup.date().required('请输入生日'),
+    // user: Yup.string().required('请选择健康信息归属人'),
+    details: Yup.string().required('请输入健康信息'),
   });
 
 
-
-  const [appointData,setAppointData] = useState(endOfTomorrow);
+  const [executeTime,setExecuteTime] = useState(endOfTomorrow);
 
   const defaultValues = {
-    gender: '男',
-    name: '',
-    contact: '',
-    idCard: '',
-    birth: new Date(),
-    isDefault: true,
+    user: '',
+    details: '',
   };
 
   const methods = useForm({
@@ -52,64 +52,52 @@ export default function CheckoutNewAddressForm({ open, onClose, onNextStep, onCr
 
   const {
     handleSubmit,
+    reset,
+    control,
     formState: { isSubmitting },
   } = methods;
 
   const onSubmit = async (data) => {
     try {
-      const {gender,name,contact,idCard,birth}=data;
-      await axios.put('/api/userInfo/put',{gender,name,contact,idCard,birth});
-      onNextStep();
-      onCreateBilling({
-        name,
-        contact,
-        birth,
-        gender,
-        isDefault: data.isDefault,
-      });
+      console.log(data);
+      const {user,details,target}=data;
+      const {id}=user;
+      await axios.put("/api/healthProgram/add",{pid:id,details,target,executeTime});
+      reset();
+      onClose();
     } catch (error) {
       console.error(error);
     }
   };
 
   return (
-      <Dialog fullWidth maxWidth="sm" open={open} onClose={onClose}>
-        <DialogTitle>添加家庭成员</DialogTitle>
+        <Dialog fullWidth maxWidth="sm" open={open} onClose={onClose}>
+        <DialogTitle>添加健康信息</DialogTitle>
 
         <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
           <DialogContent>
             <Stack spacing={3}>
-              <RHFRadioGroup name="gender" options={['男', '女']} />
+              <RHFTextField name="id" style={{display: "none"}}/>
 
-              <Box
-                  sx={{
-                    display: 'grid',
-                    rowGap: 3,
-                    columnGap: 2,
-                    gridTemplateColumns: { xs: 'repeat(1, 1fr)', sm: 'repeat(2, 1fr)' },
-                  }}
-              >
-                <RHFTextField name="name" label="姓名" />
-                <RHFTextField name="contact" label="手机号码" />
-              </Box>
+              <AsyncSelectUser inputName={"user"} inputLabel={"用户"} control={control}/>
 
-              <RHFTextField name="idCard" label="身份证号码" />
+              <RHFTextField name="details" label="健康信息信息" multiline rows={5} />
+
+              <RHFTextField name="target" label="备注" />
 
               <DatePicker
-                  label="出生日期"
-                  value={appointData}
-                  onChange={(date)=>setAppointData(date)}
+                  label="预约日期"
+                  value={executeTime}
+                  shouldDisableDate={isPast}
+                  onChange={(date)=>setExecuteTime(date)}
                   renderInput={(params) => (
                       <TextField
-                          name="birth"
                           {...params}
+                          name="executeTime"
                           fullWidth
                       />
                   )}
               />
-
-
-              <RHFCheckbox name="isDefault" label="作为默认健康监管人" sx={{ mt: 3 }} />
             </Stack>
           </DialogContent>
 
