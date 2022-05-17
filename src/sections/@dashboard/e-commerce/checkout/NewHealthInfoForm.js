@@ -9,7 +9,7 @@ import { LoadingButton } from '@mui/lab';
 // _mock
 import DatePicker from "@mui/lab/DatePicker";
 import {endOfTomorrow, isPast} from "date-fns";
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import { countries } from '../../../../_mock';
 import {
   FormProvider,
@@ -24,30 +24,40 @@ import AsyncSelectUser from "./AsyncSelectUser";
 
 // ----------------------------------------------------------------------
 
-NewHealthProgramForm.propTypes = {
+NewHealthInfoForm.propTypes = {
   open: PropTypes.bool,
   onClose: PropTypes.func,
-  onNextStep: PropTypes.func,
-  onCreateBilling: PropTypes.func,
+  isEdit: PropTypes.bool,
+  healthInfo: PropTypes.object
 };
 
-export default function NewHealthProgramForm({ open, onClose, onNextStep, onCreateBilling }) {
+export default function NewHealthInfoForm({ open, onClose , isEdit, healthInfo}) {
   const NewAddressSchema = Yup.object().shape({
     // user: Yup.string().required('请选择健康信息归属人'),
     details: Yup.string().required('请输入健康信息'),
   });
 
-
   const defaultValues = {
-    user: '',
-    details: '',
-    remarks: '',
+    id: healthInfo?.id,
+    user: healthInfo?.userInfo || '',
+    details: healthInfo?.details || '',
+    remarks: healthInfo?.remarks || '',
   };
 
   const methods = useForm({
     resolver: yupResolver(NewAddressSchema),
     defaultValues,
   });
+
+  useEffect(() => {
+    if (isEdit && healthInfo) {
+      reset(defaultValues);
+    }
+    if (!isEdit) {
+      reset(defaultValues);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isEdit, healthInfo]);
 
   const {
     handleSubmit,
@@ -59,9 +69,9 @@ export default function NewHealthProgramForm({ open, onClose, onNextStep, onCrea
   const onSubmit = async (data) => {
     try {
       console.log(data);
-      const {user,details,remarks}=data;
-      const {id}=user;
-      await axios.put("/api/healthInfo/add",{pid:id,details,remarks});
+      const {id,user,details,remarks}=data;
+      const pid=user.id;
+      await axios.put("/api/healthInfo/add",{id,pid,details,remarks});
       reset();
       onClose();
     } catch (error) {
@@ -78,7 +88,7 @@ export default function NewHealthProgramForm({ open, onClose, onNextStep, onCrea
             <Stack spacing={3}>
               <RHFTextField name="id" style={{display: "none"}}/>
 
-              <AsyncSelectUser inputName={"user"} inputLabel={"用户"} control={control}/>
+              <AsyncSelectUser readOnly={isEdit} inputName={"user"} inputLabel={"用户"} control={control}/>
 
               <RHFTextField name="details" label="健康信息信息" multiline rows={5} />
 

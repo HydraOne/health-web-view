@@ -21,7 +21,7 @@ AsyncSelectUser.propTypes = {
     control: PropTypes.object,
 };
 
-export default function AsyncSelectUser({inputName,inputLabel,control}) {
+export default function AsyncSelectUser({inputName,inputLabel,control,...others}) {
     const [open, setOpen] = useState(false);
     const [options, setOptions] = useState([]);
     const loading = open && options.length === 0;
@@ -64,6 +64,7 @@ export default function AsyncSelectUser({inputName,inputLabel,control}) {
                     {...field}
                     id="asynchronous-demo"
                     open={open}
+                    {...others}
                     onOpen={() => {
                         setOpen(true);
                     }}

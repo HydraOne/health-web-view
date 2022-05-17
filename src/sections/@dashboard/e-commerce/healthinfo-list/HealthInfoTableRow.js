@@ -37,8 +37,7 @@ HealthInfoTableRow.propTypes = {
 export default function HealthInfoTableRow({ row, selected, onEditRow, onSelectRow, onDeleteRow }) {
   const theme = useTheme();
 
-  const { id, pid, name,details,remarks,createTime} = row;
-
+  const { id, pid, userInfo:{name},details,remarks,createTime} = row;
 
   const [openMenu, setOpenMenuActions] = useState(null);
 

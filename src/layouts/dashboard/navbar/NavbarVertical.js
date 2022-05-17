@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import { useEffect } from 'react';
+import {useEffect, useState} from 'react';
 import { useLocation } from 'react-router-dom';
 // @mui
 import { styled, useTheme } from '@mui/material/styles';
@@ -20,6 +20,9 @@ import navConfig from './NavConfig';
 import NavbarDocs from './NavbarDocs';
 import NavbarAccount from './NavbarAccount';
 import CollapseButton from './CollapseButton';
+import axios from "../../../utils/axios";
+import elderlyNavConfig from "./ElderlyNavConfig";
+import userNavConfig from "./UserNavConfig";
 
 // ----------------------------------------------------------------------
 
@@ -44,10 +47,40 @@ export default function NavbarVertical({ isOpenSidebar, onCloseSidebar }) {
 
   const { pathname } = useLocation();
 
+  const [currentRole,setCurrentRole] = useState('elder');
+
+  const [currentNavConfig,setCurrentNavConfig] = useState([]);
+
+
   const isDesktop = useResponsive('up', 'lg');
 
   const { isCollapse, collapseClick, collapseHover, onToggleCollapse, onHoverEnter, onHoverLeave } =
     useCollapseDrawer();
+
+  useEffect(()=>{
+      async function fetchData() {
+          const response = await axios.get("/api/user/getCurrentUserRole");
+          const {role} = response.data;
+          console.log(role);
+          if (role !== currentRole) {
+              setCurrentRole(role);
+          }
+      }
+      fetchData();
+  })
+
+  useEffect(()=>{
+      if (currentRole==='elder'){
+          setCurrentNavConfig(elderlyNavConfig);
+      }
+      if (currentRole==='admin'){
+          setCurrentNavConfig(navConfig);
+      }
+      if (currentRole==='user'){
+          setCurrentNavConfig(userNavConfig);
+      }
+  },[currentRole])
+
 
   useEffect(() => {
     if (isOpenSidebar) {
@@ -84,7 +117,7 @@ export default function NavbarVertical({ isOpenSidebar, onCloseSidebar }) {
         <NavbarAccount isCollapse={isCollapse} />
       </Stack>
 
-      <NavSectionVertical navConfig={navConfig} isCollapse={isCollapse} />
+      <NavSectionVertical navConfig={currentNavConfig} isCollapse={isCollapse} />
 
       <Box sx={{ flexGrow: 1 }} />
 

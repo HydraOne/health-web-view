@@ -44,25 +44,25 @@ import {HealthInfoTableRow, HealthInfoTableToolbar} from "../../sections/@dashbo
 import CheckoutNewAddressForm from "../../sections/@dashboard/e-commerce/checkout/CheckoutNewAddressForm";
 import {NewHealthInfoForm} from "../../sections/@dashboard/e-commerce/checkout";
 import {
-    HealthProgramTableRow,
-    HealthProgramTableToolbar
-} from "../../sections/@dashboard/e-commerce/healthProgram-list";
-import NewHealthProgramForm from "../../sections/@dashboard/e-commerce/checkout/NewHealthProgramForm";
+    HealthRecipesTableRow,
+    HealthRecipesTableToolbar
+} from "../../sections/@dashboard/e-commerce/healthRecipes-list";
+import NewHealthRecipesForm from "../../sections/@dashboard/e-commerce/checkout/NewHealthRecipesForm";
 
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
-    { id: 'name', label: '执行人', alignRight: false },
+    { id: 'name', label: '归属人', alignRight: false },
     { id: 'details', label: '信息', align: 'center' },
-    { id: 'target', label: '目的', align: 'center' },
-    { id: 'executeTime', label: '执行时间', align: 'center'},
+    { id: 'effectDesc', label: '备注', align: 'center' },
+    { id: 'executeTime', label: '创建时间', align: 'center'},
     { id: '' },
 ];
 
 
 // ----------------------------------------------------------------------
 
-export default function HealthProgram() {
+export default function HealthRecipes() {
     const {
         dense,
         page,
@@ -125,11 +125,11 @@ export default function HealthProgram() {
             //   }
             // }
         };
-        const response = await axios.get("/api/healthProgram/getList", params);
-        const {healthPrograms} = response.data;
+        const response = await axios.get("/api/healthRecipes/getList", params);
+        const {healthRecipes} = response.data;
         // // setUsersInfo(response.data.usersInfo);
         // setTableData(healthInfos);
-        setTableData(healthPrograms);
+        setTableData(healthRecipes);
     }, [localStorage.getItem("currentUserId")]);
 
 
@@ -151,11 +151,12 @@ export default function HealthProgram() {
     };
 
     const handleEditRow = async (id) => {
-        await axios.get(`/api/healthProgram/get/${id}`).then(res => {
-            setEditInfo(res.data.healthProgram);
+        await axios.get(`/api/healthRecipes/get/${id}`).then(res => {
+            setEditInfo(res.data.healthRecipes);
             openEditForm();
             setEdit(true);
         });
+
     };
 
     const dataFiltered = applySortFilter({
@@ -163,8 +164,6 @@ export default function HealthProgram() {
         comparator: getComparator(order, orderBy),
         filterName
     });
-
-
 
     const denseHeight = dense ? 60 : 80;
 
@@ -195,7 +194,7 @@ export default function HealthProgram() {
                 />
 
                 <Card>
-                    <HealthProgramTableToolbar filterName={filterName} onFilterName={handleFilterName} />
+                    <HealthRecipesTableToolbar filterName={filterName} onFilterName={handleFilterName} />
 
                     <Scrollbar>
                         <TableContainer sx={{ minWidth: 800 }}>
@@ -243,7 +242,7 @@ export default function HealthProgram() {
                                         .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                                         .map((row, index) =>
                                             row ? (
-                                                <HealthProgramTableRow
+                                                <HealthRecipesTableRow
                                                     key={row.id}
                                                     row={row}
                                                     selected={selected.includes(row.id)}
@@ -281,10 +280,10 @@ export default function HealthProgram() {
                             sx={{ px: 3, py: 1.5, top: 0, position: { md: 'absolute' } }}
                         />
                     </Box>
-                    <NewHealthProgramForm
+                    <NewHealthRecipesForm
                         open={open}
                         onClose={closeEditForm}
-                        healthProgram={editInfo}
+                        healthRecipes={editInfo}
                         isEdit={edit}
                     />
                 </Card>

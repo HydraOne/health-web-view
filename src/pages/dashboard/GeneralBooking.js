@@ -1,5 +1,5 @@
 // @mui
-import { Grid, Container } from '@mui/material';
+import {Grid, Container, Stack} from '@mui/material';
 // hooks
 import useSettings from '../../hooks/useSettings';
 // components
@@ -18,6 +18,7 @@ import {
 } from '../../sections/@dashboard/general/booking';
 // assets
 import { BookingIllustration, CheckInIllustration, CheckOutIllustration } from '../../assets';
+import HealthNewsDetails from "../../sections/@dashboard/general/booking/HealthNewsDetails";
 
 // ----------------------------------------------------------------------
 
@@ -28,48 +29,28 @@ export default function GeneralBooking() {
     <Page title="General: Banking">
       <Container maxWidth={themeStretch ? false : 'xl'}>
         <Grid container spacing={3}>
-          <Grid item xs={12} md={4}>
-            <BookingWidgetSummary title="Total Booking" total={714000} icon={<BookingIllustration />} />
-          </Grid>
-
-          <Grid item xs={12} md={4}>
-            <BookingWidgetSummary title="Check In" total={311000} icon={<CheckInIllustration />} />
-          </Grid>
-
-          <Grid item xs={12} md={4}>
-            <BookingWidgetSummary title="Check Out" total={124000} icon={<CheckOutIllustration />} />
-          </Grid>
 
           <Grid item xs={12} md={8}>
             <Grid container spacing={3}>
               <Grid item xs={12} md={6}>
-                <BookingTotalIncomes />
+                <Stack spacing={3}>
+                  <BookingTotalIncomes />
+                  <BookingCheckInWidgets />
+                </Stack>
               </Grid>
 
               <Grid item xs={12} md={6}>
-                <BookingBookedRoom />
-              </Grid>
-
-              <Grid item xs={12} md={12}>
-                <BookingCheckInWidgets />
+                <BookingCustomerReviews />
               </Grid>
             </Grid>
-          </Grid>
-
-          <Grid item xs={12} md={4}>
-            <BookingRoomAvailable />
-          </Grid>
-
-          <Grid item xs={12} md={8}>
-            <BookingReservationStats />
           </Grid>
 
           <Grid item xs={12} md={4}>
             <BookingCustomerReviews />
           </Grid>
 
-          <Grid item xs={12}>
-            <BookingNewestBooking />
+          <Grid item xs={12} md={12}>
+            <HealthNewsDetails />
           </Grid>
 
           <Grid item xs={12}>

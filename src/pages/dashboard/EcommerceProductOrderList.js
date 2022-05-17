@@ -509,6 +509,10 @@ export default function EcommerceProductOrderList() {
     navigate(PATH_DASHBOARD.invoice.edit(paramCase(id)));
   };
 
+  const handleViewRow = (id) => {
+    navigate(PATH_DASHBOARD.invoice.view(id));
+  };
+
   const dataFiltered = applySortFilter({
     tableData,
     comparator: getComparator(order, orderBy),
@@ -600,6 +604,7 @@ export default function EcommerceProductOrderList() {
                                   onSelectRow={() => onSelectRow(row.id)}
                                   onDeleteRow={() => handleDeleteRow(row.id)}
                                   onEditRow={() => handleEditRow(row.id)}
+                                  onViewRow={() => handleViewRow(row.id)}
                               />
                           ) : (
                               !isNotFound && <TableSkeleton key={index} sx={{ height: denseHeight }} />

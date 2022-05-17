@@ -2,9 +2,14 @@ import { Font, StyleSheet } from '@react-pdf/renderer';
 
 // ----------------------------------------------------------------------
 
+// Font.register({
+//   family: 'Roboto',
+//   fonts: [{ src: '/fonts/Roboto-Regular.ttf' }, { src: '/fonts/Roboto-Bold.ttf' }],
+// });
+
 Font.register({
-  family: 'Roboto',
-  fonts: [{ src: '/fonts/Roboto-Regular.ttf' }, { src: '/fonts/Roboto-Bold.ttf' }],
+  family: 'ZCool',
+  src: 'https://fonts.gstatic.com/s/zcoolkuaile/v7/tssqApdaRQokwFjFJjvM6h2WpozzoXhC2g.ttf'
 });
 
 const styles = StyleSheet.create({
@@ -28,7 +33,7 @@ const styles = StyleSheet.create({
     padding: '40px 24px 0 24px',
     fontSize: 9,
     lineHeight: 1.6,
-    fontFamily: 'Roboto',
+    fontFamily: 'ZCool',
     backgroundColor: '#fff',
     textTransform: 'capitalize',
   },

@@ -1,7 +1,8 @@
 import PropTypes from 'prop-types';
 import * as Yup from 'yup';
 // form
-import { useForm } from 'react-hook-form';
+import { useForm} from 'react-hook-form';
+// import { useFormContext, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 // @mui
 import {Box, Stack, Dialog, Button, Divider, DialogTitle, DialogContent, DialogActions, TextField} from '@mui/material';
@@ -21,18 +22,19 @@ import {
 } from '../../../../components/hook-form';
 import axios from "../../../../utils/axios";
 import AsyncSelectUser from "./AsyncSelectUser";
-import {fDate} from "../../../../utils/formatTime";
 
 // ----------------------------------------------------------------------
 
-NewHealthProgramForm.propTypes = {
+NewHealthRecipesForm.propTypes = {
   open: PropTypes.bool,
   onClose: PropTypes.func,
   isEdit: PropTypes.bool,
-  healthProgram: PropTypes.object
+  healthRecipes: PropTypes.object
 };
 
-export default function NewHealthProgramForm({ open, onClose, isEdit, healthProgram }) {
+export default function NewHealthRecipesForm({ open, onClose, isEdit, healthRecipes }) {
+
+
   const NewAddressSchema = Yup.object().shape({
     // user: Yup.string().required('请选择健康信息归属人'),
     details: Yup.string().required('请输入健康信息'),
@@ -42,10 +44,10 @@ export default function NewHealthProgramForm({ open, onClose, isEdit, healthProg
   const [executeTime,setExecuteTime] = useState(endOfTomorrow);
 
   const defaultValues = {
-    id: healthProgram?.id,
-    user: healthProgram?.userInfo || '',
-    details: healthProgram?.details || '',
-    target: healthProgram?.target || ''
+    id: healthRecipes?.id,
+    user: healthRecipes?.userInfo || '',
+    details: healthRecipes?.details || '',
+    effectDesc: healthRecipes?.effectDesc || ''
   };
 
   const methods = useForm({
@@ -54,14 +56,14 @@ export default function NewHealthProgramForm({ open, onClose, isEdit, healthProg
   });
 
   useEffect(() => {
-    if (isEdit && healthProgram) {
+    if (isEdit && healthRecipes) {
       reset(defaultValues);
     }
     if (!isEdit) {
       reset(defaultValues);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isEdit, healthProgram]);
+  }, [isEdit, healthRecipes]);
 
   const {
     handleSubmit,
@@ -71,15 +73,15 @@ export default function NewHealthProgramForm({ open, onClose, isEdit, healthProg
   } = methods;
 
   useEffect(()=>{
-    setExecuteTime(healthProgram?.executeTime||new Date())
-  },[healthProgram])
+    setExecuteTime(healthRecipes?.executeTime||new Date())
+  },[healthRecipes])
 
   const onSubmit = async (data) => {
     try {
       console.log(data);
-      const {id,user,details,target}=data;
+      const {id,user,details,effectDesc}=data;
       const pid=user.id;
-      await axios.put("/api/healthProgram/add",{id,pid,details,target,executeTime});
+      await axios.put("/api/healthRecipes/add",{id,pid,details,effectDesc,executeTime});
       reset();
       onClose();
     } catch (error) {
@@ -88,7 +90,7 @@ export default function NewHealthProgramForm({ open, onClose, isEdit, healthProg
   };
 
   return (
-        <Dialog fullWidth maxWidth="sm" open={open} onClose={onClose}>
+      <Dialog fullWidth maxWidth="sm" open={open} onClose={onClose}>
         <DialogTitle>添加健康信息</DialogTitle>
 
         <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
@@ -100,7 +102,7 @@ export default function NewHealthProgramForm({ open, onClose, isEdit, healthProg
 
               <RHFTextField name="details" label="健康信息信息" multiline rows={5} />
 
-              <RHFTextField name="target" label="备注" />
+              <RHFTextField name="effectDesc" label="备注" />
 
               <DatePicker
                   label="预约日期"

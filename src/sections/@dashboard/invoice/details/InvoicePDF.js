@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import { Page, View, Text, Image, Document } from '@react-pdf/renderer';
+import {Page, View, Text, Image, Document, Font} from '@react-pdf/renderer';
 // utils
 import { fCurrency } from '../../../../utils/formatNumber';
 import { fDate } from '../../../../utils/formatTime';
@@ -12,7 +12,18 @@ InvoicePDF.propTypes = {
   invoice: PropTypes.object.isRequired,
 };
 
+
+// Create style with font-family
+// const styles = StyleSheet.create({
+//   page: {
+//     fontFamily: "Roboto"
+//   },
+// });
+
 export default function InvoicePDF({ invoice }) {
+
+  const {userInfo,order,results} = invoice;
+
   const {
     items,
     taxes,
@@ -40,30 +51,23 @@ export default function InvoicePDF({ invoice }) {
 
         <View style={[styles.gridContainer, styles.mb40]}>
           <View style={styles.col6}>
-            <Text style={[styles.overline, styles.mb8]}>Invoice from</Text>
-            <Text style={styles.body1}>{invoiceFrom.name}</Text>
-            <Text style={styles.body1}>{invoiceFrom.address}</Text>
-            <Text style={styles.body1}>{invoiceFrom.phone}</Text>
+            <Text style={[styles.overline, styles.mb8]}>体检人信息</Text>
+            <Text style={styles.body1}>姓名：{userInfo.name}</Text>
+            <Text style={styles.body1}>性别：{userInfo.gender}</Text>
+            <Text style={styles.body1}>身份证号码：{userInfo.idCard}</Text>
+            <Text style={styles.body1}>生日: {fDate(userInfo.birth)}</Text>
+            <Text style={styles.body1}>联系方式: {userInfo.contact}</Text>
           </View>
 
+
           <View style={styles.col6}>
-            <Text style={[styles.overline, styles.mb8]}>Invoice to</Text>
-            <Text style={styles.body1}>{invoiceTo.name}</Text>
-            <Text style={styles.body1}>{invoiceTo.address}</Text>
-            <Text style={styles.body1}>{invoiceTo.phone}</Text>
+            <Text style={[styles.overline, styles.mb8]}>订单信息</Text>
+            <Text style={styles.body1}>套餐名：{userInfo.gender}</Text>
+            <Text style={styles.body1}>预约日期: {fDate(order.appoint)}</Text>
+            <Text style={styles.body1}>创建日期: {fDate(order.createTime)}</Text>
           </View>
         </View>
 
-        <View style={[styles.gridContainer, styles.mb40]}>
-          <View style={styles.col6}>
-            <Text style={[styles.overline, styles.mb8]}>Date create</Text>
-            <Text style={styles.body1}>{fDate(createDate)}</Text>
-          </View>
-          <View style={styles.col6}>
-            <Text style={[styles.overline, styles.mb8]}>Due date</Text>
-            <Text style={styles.body1}>{fDate(dueDate)}</Text>
-          </View>
-        </View>
 
         <Text style={[styles.overline, styles.mb8]}>Invoice Details</Text>
 
@@ -75,96 +79,41 @@ export default function InvoicePDF({ invoice }) {
               </View>
 
               <View style={styles.tableCell_2}>
-                <Text style={styles.subtitle2}>Description</Text>
+                <Text style={styles.subtitle2}>检查项目名</Text>
               </View>
 
               <View style={styles.tableCell_3}>
-                <Text style={styles.subtitle2}>Qty</Text>
+                <Text style={styles.subtitle2}>结果</Text>
               </View>
 
               <View style={styles.tableCell_3}>
-                <Text style={styles.subtitle2}>Unit price</Text>
-              </View>
-
-              <View style={[styles.tableCell_3, styles.alignRight]}>
-                <Text style={styles.subtitle2}>Total</Text>
+                <Text style={styles.subtitle2}>备注</Text>
               </View>
             </View>
           </View>
 
           <View style={styles.tableBody}>
-            {items.map((item, index) => (
+            {results.map((item, index) => (
               <View style={styles.tableRow} key={item.id}>
                 <View style={styles.tableCell_1}>
                   <Text>{index + 1}</Text>
                 </View>
 
-                <View style={styles.tableCell_2}>
-                  <Text style={styles.subtitle2}>{item.title}</Text>
-                  <Text>{item.description}</Text>
+                <View style={styles.tableCell_3}>
+                  <Text style={styles.subtitle2}>{item.name}</Text>
                 </View>
 
                 <View style={styles.tableCell_3}>
-                  <Text>{item.quantity}</Text>
+                  <Text style={styles.subtitle2}>{item.content}</Text>
                 </View>
 
                 <View style={styles.tableCell_3}>
-                  <Text>{item.price}</Text>
+                  <Text>{item.info}</Text>
                 </View>
 
-                <View style={[styles.tableCell_3, styles.alignRight]}>
-                  <Text>{fCurrency(item.price * item.quantity)}</Text>
-                </View>
+
               </View>
             ))}
-
-            <View style={[styles.tableRow, styles.noBorder]}>
-              <View style={styles.tableCell_1} />
-              <View style={styles.tableCell_2} />
-              <View style={styles.tableCell_3} />
-              <View style={styles.tableCell_3}>
-                <Text>Subtotal</Text>
-              </View>
-              <View style={[styles.tableCell_3, styles.alignRight]}>
-                <Text>{fCurrency(subTotalPrice)}</Text>
-              </View>
-            </View>
-
-            <View style={[styles.tableRow, styles.noBorder]}>
-              <View style={styles.tableCell_1} />
-              <View style={styles.tableCell_2} />
-              <View style={styles.tableCell_3} />
-              <View style={styles.tableCell_3}>
-                <Text>Discount</Text>
-              </View>
-              <View style={[styles.tableCell_3, styles.alignRight]}>
-                <Text>{fCurrency(-discount)}</Text>
-              </View>
-            </View>
-
-            <View style={[styles.tableRow, styles.noBorder]}>
-              <View style={styles.tableCell_1} />
-              <View style={styles.tableCell_2} />
-              <View style={styles.tableCell_3} />
-              <View style={styles.tableCell_3}>
-                <Text>Taxes</Text>
-              </View>
-              <View style={[styles.tableCell_3, styles.alignRight]}>
-                <Text>{fCurrency(taxes)}</Text>
-              </View>
-            </View>
-
-            <View style={[styles.tableRow, styles.noBorder]}>
-              <View style={styles.tableCell_1} />
-              <View style={styles.tableCell_2} />
-              <View style={styles.tableCell_3} />
-              <View style={styles.tableCell_3}>
-                <Text style={styles.h4}>Total</Text>
-              </View>
-              <View style={[styles.tableCell_3, styles.alignRight]}>
-                <Text style={styles.h4}>{fCurrency(totalPrice)}</Text>
-              </View>
-            </View>
           </View>
         </View>
 

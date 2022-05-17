@@ -459,12 +459,15 @@ export default function HealthInfoCreate() {
 
     const [open,setOpen] = useState(false);
 
-    const operateEditForm = ()=>{
+    const [edit,setEdit] = useState(false);
+
+    const openEditForm = ()=>{
         setOpen(true);
     }
 
     const closeEditForm = ()=>{
         setOpen(false);
+        setEdit(false);
     }
 
     const { themeStretch } = useSettings();
@@ -476,7 +479,8 @@ export default function HealthInfoCreate() {
     const { products, isLoading } = useSelector((state) => state.product);
 
     const [tableData, setTableData] = useState([]);
-    const [usersInfo, setUsersInfo] = useState([]);
+
+    const [editInfo, setEditInfo] = useState({});
 
     const [filterName, setFilterName] = useState('');
 
@@ -519,8 +523,13 @@ export default function HealthInfoCreate() {
         setTableData(deleteRows);
     };
 
-    const handleEditRow = (id) => {
-        navigate(PATH_DASHBOARD.invoice.edit(paramCase(id)));
+    const handleEditRow = async (id) => {
+        await axios.get(`/api/healthInfo/get/${id}`).then(res => {
+            setEditInfo(res.data.healthInfo);
+            openEditForm();
+            setEdit(true);
+        });
+        // navigate(PATH_DASHBOARD.invoice.edit(paramCase(id)));
     };
 
     const dataFiltered = applySortFilter({
@@ -550,7 +559,7 @@ export default function HealthInfoCreate() {
                         <Button
                             variant="contained"
                             startIcon={<Iconify icon="eva:plus-fill" />}
-                            onClick={operateEditForm}
+                            onClick={openEditForm}
                         >
                             New Product
                         </Button>
@@ -647,6 +656,8 @@ export default function HealthInfoCreate() {
                     <NewHealthInfoForm
                         open={open}
                         onClose={closeEditForm}
+                        healthInfo={editInfo}
+                        isEdit={edit}
                     />
                 </Card>
             </Container>

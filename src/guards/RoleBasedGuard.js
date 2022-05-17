@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types';
 import { Container, Alert, AlertTitle } from '@mui/material';
+import axios from "../utils/axios";
 
 // ----------------------------------------------------------------------
 
@@ -8,9 +9,11 @@ RoleBasedGuard.propTypes = {
   children: PropTypes.node
 };
 
-const useCurrentRole = () => {
+const useCurrentRole = async () => {
   // Logic here to get current user role
-  const role = 'admin';
+  const response = await axios.get("/api/user/getCurrentUserRole");
+  const {role} = response.data;
+  console.log(role);
   return role;
 };
 

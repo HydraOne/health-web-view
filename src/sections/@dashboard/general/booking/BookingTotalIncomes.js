@@ -2,12 +2,15 @@ import merge from 'lodash/merge';
 import ReactApexChart from 'react-apexcharts';
 // @mui
 import { styled } from '@mui/material/styles';
-import { Card, Typography, Stack } from '@mui/material';
+import {Card, Typography, Stack} from '@mui/material';
+import HealthAndSafetyIcon from '@mui/icons-material/HealthAndSafety';
 // utils
+import {useEffect, useState} from "react";
 import { fCurrency, fPercent } from '../../../../utils/formatNumber';
 // components
 import Iconify from '../../../../components/Iconify';
 import BaseOptionChart from '../../../../components/chart/BaseOptionChart';
+import axios from "../../../../utils/axios";
 
 // ----------------------------------------------------------------------
 
@@ -44,12 +47,26 @@ export default function BookingTotalIncomes() {
     fill: { gradient: { opacityFrom: 0, opacityTo: 0 } },
   });
 
+  const [chartData,setChartData] = useState([]);
+
+
+
+  useEffect(()=>{
+    async function fetchData(){
+      const response = await axios.get('/api/healthTrend/getList');
+      const {healthTrends} = response.data;
+      const map = healthTrends.map((healthTrend)=>healthTrend.trendIndex);
+      setChartData([{ data: map }]);
+    }
+    fetchData();
+  },[])
+
   return (
     <RootStyle>
       <Stack direction="row" justifyContent="space-between" sx={{ mb: 3 }}>
         <div>
-          <Typography sx={{ mb: 2, typography: 'subtitle2' }}>Total Incomes</Typography>
-          <Typography sx={{ typography: 'h3' }}>{fCurrency(TOTAL)}</Typography>
+          <Typography sx={{ mb: 2, typography: 'subtitle2' }}>健康指数</Typography>
+          <HealthAndSafetyIcon/>
         </div>
 
         <div>
@@ -61,12 +78,12 @@ export default function BookingTotalIncomes() {
             </Typography>
           </Stack>
           <Typography variant="body2" component="span" sx={{ opacity: 0.72 }}>
-            &nbsp;than last month
+            &nbsp;过去一星期
           </Typography>
         </div>
       </Stack>
 
-      <ReactApexChart type="area" series={CHART_DATA} options={chartOptions} height={132} />
+      <ReactApexChart type="area" series={chartData} options={chartOptions} height={132} />
     </RootStyle>
   );
 }

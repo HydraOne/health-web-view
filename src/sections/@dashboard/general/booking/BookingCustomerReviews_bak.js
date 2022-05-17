@@ -19,21 +19,6 @@ export default function BookingCustomerReviews() {
   const theme = useTheme();
   const carouselRef = useRef(null);
 
-  const [dataList,setDataList] = useState([]);
-
-  const [currentItemNum,setCurrentItem] = useState(0);
-
-  const [pageNum,setPageNum] = useState(0);
-
-  useEffect(() => {
-      async function fetchData() {
-          const response = await axios.post("/api/healthRecipes/page",{pageNum,pageSize:10});
-          const {healthRecipes} = response.data;
-          setDataList(healthRecipes)
-      }
-      fetchData();
-  },[pageNum])
-
   const settings = {
     dots: false,
     arrows: false,
@@ -54,7 +39,7 @@ export default function BookingCustomerReviews() {
   return (
     <Card>
       <CardHeader
-        title="膳食计划"
+        title="Customer Reviews"
         subheader={`${_bookingReview.length} Reviews`}
         action={
           <CarouselArrows
@@ -72,7 +57,7 @@ export default function BookingCustomerReviews() {
       />
 
       <Slider ref={carouselRef} {...settings}>
-        {dataList.map((item) => (
+        {_bookingReview.map((item) => (
           <ReviewItem key={item.id} item={item} />
         ))}
       </Slider>
@@ -94,17 +79,28 @@ ReviewItem.propTypes = {
 };
 
 function ReviewItem({ item }) {
-  const { userInfo, details, effectDesc } = item;
+  const { avatar, name, description, rating, postedAt, tags } = item;
 
   return (
     <Stack spacing={2} sx={{ minHeight: 402, position: 'relative', p: 3 }}>
       <Stack direction="row" alignItems="center" spacing={2}>
+        <Avatar alt={name} src={avatar} />
         <div>
-          <Typography variant="subtitle2">你好</Typography>
+          <Typography variant="subtitle2">{name}</Typography>
+          <Typography variant="caption" sx={{ color: 'text.secondary', mt: 0.5, display: 'block' }}>
+            Posted {fDateTime(postedAt)}
+          </Typography>
         </div>
       </Stack>
 
-      <Typography variant="body2">{details}</Typography>
+      <Rating value={rating} size="small" readOnly precision={0.5} />
+      <Typography variant="body2">{description}</Typography>
+
+      <Stack direction="row" flexWrap="wrap">
+        {tags.map((tag) => (
+          <Chip size="small" key={tag} label={tag} sx={{ mr: 1, mb: 1, color: 'text.secondary' }} />
+        ))}
+      </Stack>
 
       <Stack direction="row" spacing={2} alignItems="flex-end" sx={{ flexGrow: 1 }}>
         <Button fullWidth variant="contained" endIcon={<Iconify icon={'eva:checkmark-circle-2-fill'} />}>

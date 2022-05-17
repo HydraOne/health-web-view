@@ -12,6 +12,8 @@ import AuthGuard from '../guards/AuthGuard';
 import {PATH_AFTER_LOGIN, PATH_LOGIN_SUCCESS} from '../config';
 // components
 import LoadingScreen from '../components/LoadingScreen';
+import HealthRecipes from "../pages/dashboard/HealthRecipes";
+import RoleBasedGuard from "../guards/RoleBasedGuard";
 
 // ----------------------------------------------------------------------
 
@@ -66,7 +68,10 @@ export default function Router() {
       children: [
         // { element: <Navigate to={PATH_AFTER_LOGIN} replace />, index: true },
         { element: <Navigate to={PATH_LOGIN_SUCCESS} replace />, index: true },
-        { path: 'app', element: <GeneralApp /> },
+        { path: 'app', element:
+          <RoleBasedGuard accessibleRoles={['admin']}>
+            <GeneralApp />
+          </RoleBasedGuard>},
         { path: 'ecommerce', element: <GeneralEcommerce /> },
         { path: 'analytics', element: <GeneralAnalytics /> },
         { path: 'banking', element: <GeneralBanking /> },
@@ -82,7 +87,7 @@ export default function Router() {
             { path: 'order', element: <EcommerceProductOrderList /> },
             { path: 'healthInfo', element: <HealthInfoCreate /> },
             { path: 'healthProgram', element: <HealthProgram /> },
-            { path: 'healthRecipes', element: <HealthInfoCreate /> },
+            { path: 'healthRecipes', element: <HealthRecipes /> },
             { path: 'product/new', element: <EcommerceProductCreate /> },
             { path: 'product/:id/edit', element: <EcommerceProductCreate /> },
             { path: 'checkout', element: <EcommerceCheckout /> },
@@ -106,6 +111,7 @@ export default function Router() {
             { element: <Navigate to="/dashboard/invoice/list" replace />, index: true },
             { path: 'list', element: <InvoiceList /> },
             { path: ':id', element: <InvoiceDetails /> },
+            { path: ':id/view', element: <CheckResultDetails /> },
             { path: ':id/edit', element: <InvoiceEdit /> },
             { path: 'new', element: <InvoiceCreate /> },
           ],
@@ -192,13 +198,14 @@ const EcommerceProductList = Loadable(lazy(() => import('../pages/dashboard/Ecom
 const EcommerceProductOrderList = Loadable(lazy(() => import('../pages/dashboard/EcommerceProductOrderList')));
 const HealthInfoCreate = Loadable(lazy(() => import('../pages/dashboard/HealthInfoCreate')));
 const HealthProgram = Loadable(lazy(() => import('../pages/dashboard/HealthProgram')));
-const HealthRecipes = Loadable(lazy(() => import('../pages/dashboard/HealthInfoCreate')));
+const healthRecipes = Loadable(lazy(() => import('../pages/dashboard/HealthRecipes')));
 const EcommerceProductCreate = Loadable(lazy(() => import('../pages/dashboard/EcommerceProductCreate')));
 const EcommerceCheckout = Loadable(lazy(() => import('../pages/dashboard/EcommerceCheckout')));
 
 // INVOICE
 const InvoiceList = Loadable(lazy(() => import('../pages/dashboard/InvoiceList')));
 const InvoiceDetails = Loadable(lazy(() => import('../pages/dashboard/InvoiceDetails')));
+const CheckResultDetails = Loadable(lazy(() => import('../pages/dashboard/CheckResultDetails')));
 const InvoiceCreate = Loadable(lazy(() => import('../pages/dashboard/InvoiceCreate')));
 const InvoiceEdit = Loadable(lazy(() => import('../pages/dashboard/InvoiceEdit')));
 
