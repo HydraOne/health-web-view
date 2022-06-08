@@ -20,6 +20,7 @@ import ChatMessageList from './ChatMessageList';
 import ChatHeaderDetail from './ChatHeaderDetail';
 import ChatMessageInput from './ChatMessageInput';
 import ChatHeaderCompose from './ChatHeaderCompose';
+import axios from "../../../utils/axios";
 
 // ----------------------------------------------------------------------
 
@@ -78,6 +79,13 @@ export default function ChatWindow() {
     dispatch(addRecipients(recipients));
   };
 
+  const handleNewSession = async () =>{
+    await axios.get('/api/chat/newSession').then(res => {
+      const {newSessionId} = res.data;
+      navigate(PATH_DASHBOARD.chat.view(newSessionId));
+    });
+  }
+
   const handleSendMessage = async (value) => {
     try {
       dispatch(onSendMessage(value));
@@ -89,12 +97,13 @@ export default function ChatWindow() {
   return (
     <Stack sx={{ flexGrow: 1, minWidth: '1px' }}>
       {mode === 'DETAIL' ? (
-        <ChatHeaderDetail participants={displayParticipants} />
+        <ChatHeaderDetail participants={displayParticipants}/>
       ) : (
         <ChatHeaderCompose
           recipients={recipients}
           contacts={Object.values(contacts.byId)}
           onAddRecipients={handleAddRecipients}
+          handleNewSession={handleNewSession}
         />
       )}
 

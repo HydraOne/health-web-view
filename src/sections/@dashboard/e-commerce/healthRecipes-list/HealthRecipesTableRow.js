@@ -38,7 +38,7 @@ HealthRecipesTableRow.propTypes = {
 export default function HealthRecipesTableRow({ row, selected, onEditRow, onSelectRow, onDeleteRow }) {
   const theme = useTheme();
 
-  const { id, pid, userInfo:{name}, details,effectDesc,executeTime} = row;
+  const { id, pid, userInfo:{name}, details,effectDesc,executeTime,isDone} = row;
 
   const [openMenu, setOpenMenuActions] = useState(null);
 
@@ -70,6 +70,19 @@ export default function HealthRecipesTableRow({ row, selected, onEditRow, onSele
             {effectDesc}
         </TableCell>
 
+        <TableCell align="center">
+            <Label
+                variant={theme.palette.mode === 'light' ? 'ghost' : 'filled'}
+                color={
+                    // eslint-disable-next-line no-nested-ternary
+                    isDone?'success':"warning"
+                }
+                sx={{ textTransform: 'capitalize' }}
+            >
+                {/* eslint-disable-next-line no-nested-ternary */}
+                {isDone?'已完成':"未完成"}
+            </Label>
+        </TableCell>
         <TableCell>
             <Typography variant="subtitle2" noWrap>
                 {fDate(executeTime)}

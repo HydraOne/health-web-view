@@ -108,7 +108,7 @@ export default function EcommerceShop() {
     <Page title="Ecommerce: Shop">
       <Container maxWidth={themeStretch ? false : 'lg'}>
         <HeaderBreadcrumbs
-          heading="Shop"
+          heading="体检预约"
           links={[
             { name: 'Dashboard', href: PATH_DASHBOARD.root },
             {
@@ -119,28 +119,7 @@ export default function EcommerceShop() {
           ]}
         />
 
-        <Stack
-          spacing={2}
-          direction={{ xs: 'column', sm: 'row' }}
-          alignItems={{ sm: 'center' }}
-          justifyContent="space-between"
-          sx={{ mb: 2 }}
-        >
-          <ShopProductSearch />
 
-          <Stack direction="row" spacing={1} flexShrink={0} sx={{ my: 1 }}>
-            <FormProvider methods={methods}>
-              <ShopFilterSidebar
-                onResetAll={handleResetFilter}
-                isOpen={openFilter}
-                onOpen={handleOpenFilter}
-                onClose={handleCloseFilter}
-              />
-            </FormProvider>
-
-            <ShopProductSort />
-          </Stack>
-        </Stack>
 
         <Stack sx={{ mb: 3 }}>
           {!isDefault && (

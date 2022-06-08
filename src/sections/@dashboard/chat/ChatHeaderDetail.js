@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import { capitalCase } from 'change-case';
 // @mui
 import { styled } from '@mui/material/styles';
-import { Box, Link, Avatar, Typography, AvatarGroup, IconButton } from '@mui/material';
+import {Box, Link, Avatar, Typography, AvatarGroup, IconButton, Button} from '@mui/material';
 // utils
 import { fToNow } from '../../../utils/formatTime';
 // components
@@ -23,9 +23,10 @@ const RootStyle = styled('div')(({ theme }) => ({
 
 ChatHeaderDetail.propTypes = {
   participants: PropTypes.array.isRequired,
+    handleNewSession : PropTypes.func
 };
 
-export default function ChatHeaderDetail({ participants }) {
+export default function ChatHeaderDetail({ participants ,handleNewSession}) {
   const isGroup = participants.length > 1;
 
   return (
@@ -33,15 +34,6 @@ export default function ChatHeaderDetail({ participants }) {
       {isGroup ? <GroupAvatar participants={participants} /> : <OneAvatar participants={participants} />}
 
       <Box sx={{ flexGrow: 1 }} />
-      <IconButton>
-        <Iconify icon="eva:phone-fill" width={20} height={20} />
-      </IconButton>
-      <IconButton>
-        <Iconify icon="eva:video-fill" width={20} height={20} />
-      </IconButton>
-      <IconButton>
-        <Iconify icon="eva:more-vertical-fill" width={20} height={20} />
-      </IconButton>
     </RootStyle>
   );
 }

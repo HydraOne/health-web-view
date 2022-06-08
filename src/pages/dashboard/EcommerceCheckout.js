@@ -100,7 +100,7 @@ export default function EcommerceCheckout() {
     <Page title="Ecommerce: Checkout">
       <Container maxWidth={themeStretch ? false : 'lg'}>
         <HeaderBreadcrumbs
-          heading="Checkout"
+          heading="支付"
           links={[
             { name: 'Dashboard', href: PATH_DASHBOARD.root },
             {

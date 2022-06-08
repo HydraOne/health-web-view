@@ -25,8 +25,12 @@ const ICONS = {
   dashboard: getIcon('ic_dashboard'),
 };
 
-const userNavConfig = [
+const doctorNavConfig = [
+  // GENERAL
+  // ----------------------------------------------------------------------
 
+  // MANAGEMENT
+  // ----------------------------------------------------------------------
 
   // APP
   // ----------------------------------------------------------------------
@@ -34,14 +38,12 @@ const userNavConfig = [
     subheader: 'app',
     items: [
       { title: '健康咨询', path: PATH_DASHBOARD.chat.root, icon: ICONS.chat },
-      { title: '家庭成员健康信息管理', path: PATH_DASHBOARD.eCommerce.healthInfo, icon: ICONS.chat },
-      { title: '家庭成员管理', path: PATH_DASHBOARD.eCommerce.familyMemberList, icon: ICONS.chat },
-      { title: '体检预约', path: PATH_DASHBOARD.eCommerce.shop, icon: ICONS.chat },
-      { title: '体检订单', path: PATH_DASHBOARD.eCommerce.order, icon: ICONS.chat },
-      { title: '健康计划', path: PATH_DASHBOARD.eCommerce.healthProgram, icon: ICONS.calendar },
-      { title: '膳食管理', path: PATH_DASHBOARD.eCommerce.healthRecipes, icon: ICONS.calendar }
+      { title: '健康信息管理', path: PATH_DASHBOARD.eCommerce.healthInfo, icon: ICONS.chat },
+      { title: '体检订单管理', path: PATH_DASHBOARD.eCommerce.order, icon: ICONS.chat },
+      { title: '健康计划管理', path: PATH_DASHBOARD.eCommerce.healthProgram, icon: ICONS.calendar },
+      { title: '膳食计划管理', path: PATH_DASHBOARD.eCommerce.healthRecipes, icon: ICONS.calendar }
     ],
   },
 ];
 
-export default userNavConfig;
+export default doctorNavConfig;

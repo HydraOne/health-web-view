@@ -1,46 +1,27 @@
 import PropTypes from 'prop-types';
 import { useState } from 'react';
-import { sentenceCase } from 'change-case';
 // @mui
 import { useTheme } from '@mui/material/styles';
-import {deepOrange} from "@mui/material/colors";
-import {
-    TableRow,
-    Checkbox,
-    TableCell,
-    Typography,
-    MenuItem,
-    ListItemAvatar,
-    ImageListItem,
-    Avatar
-} from '@mui/material';
-// utils
-import { fDate } from '../../../../utils/formatTime';
-import { fCurrency } from '../../../../utils/formatNumber';
+import { Avatar, Checkbox, TableRow, TableCell, Typography, MenuItem } from '@mui/material';
 // components
 import Label from '../../../../components/Label';
-import Image from '../../../../components/Image';
 import Iconify from '../../../../components/Iconify';
 import { TableMoreMenu } from '../../../../components/table';
-//
 
 // ----------------------------------------------------------------------
 
-ProductTableRow.propTypes = {
+AccountTableRow.propTypes = {
   row: PropTypes.object,
   selected: PropTypes.bool,
   onEditRow: PropTypes.func,
   onSelectRow: PropTypes.func,
   onDeleteRow: PropTypes.func,
-  onClickRow: PropTypes.func
 };
 
-export default function ProductTableRow({ row, selected, onEditRow, onSelectRow, onDeleteRow ,onClickRow}) {
+export default function AccountTableRow({ row, selected, onEditRow, onSelectRow, onDeleteRow }) {
   const theme = useTheme();
 
-  const { id,name, type,cover, createTime, inventoryType, price ,images} = row;
-
-  const defaultImages = images[0];
+  const { name, photoURL, displayName, email,role, isVerified, status } = row;
 
   const [openMenu, setOpenMenuActions] = useState(null);
 
@@ -53,27 +34,27 @@ export default function ProductTableRow({ row, selected, onEditRow, onSelectRow,
   };
 
   return (
-    <TableRow hover selected={selected} >
+    <TableRow hover selected={selected}>
       <TableCell padding="checkbox">
         <Checkbox checked={selected} onClick={onSelectRow} />
       </TableCell>
 
       <TableCell sx={{ display: 'flex', alignItems: 'center' }}>
-          {
-              <Image disabledEffect alt={name} src={defaultImages} sx={{ borderRadius: 1.5, width: 48, height: 48, mr: 2 }} />
-          }
+        <Avatar alt={name} src={photoURL} sx={{ mr: 2 }} />
         <Typography variant="subtitle2" noWrap>
           {name}
         </Typography>
       </TableCell>
 
-        <TableCell>
-            {type}
-        </TableCell>
+      <TableCell align="left">{displayName}</TableCell>
 
-      <TableCell>{fDate(createTime)}</TableCell>
+      <TableCell align="left">{email}</TableCell>
 
-      <TableCell align="center">{fCurrency(price)}</TableCell>
+      <TableCell align="left" sx={{ textTransform: 'capitalize' }}>
+          {/* eslint-disable-next-line no-nested-ternary */}
+        {role==="admin"?"管理员":(role==="doctor"?"康养服务工作人员":(role==="user"?"普通用户":"老年用户"))}
+      </TableCell>
+
 
       <TableCell align="right">
         <TableMoreMenu
@@ -90,7 +71,7 @@ export default function ProductTableRow({ row, selected, onEditRow, onSelectRow,
                 sx={{ color: 'error.main' }}
               >
                 <Iconify icon={'eva:trash-2-outline'} />
-                删除
+                Delete
               </MenuItem>
               <MenuItem
                 onClick={() => {
@@ -99,14 +80,8 @@ export default function ProductTableRow({ row, selected, onEditRow, onSelectRow,
                 }}
               >
                 <Iconify icon={'eva:edit-fill'} />
-                编辑
+                Edit
               </MenuItem>
-                <MenuItem
-                    onClick={()=>onClickRow(id)}
-                >
-                <Iconify icon={'eva:eye-fill'} />
-                查看
-                </MenuItem>
             </>
           }
         />

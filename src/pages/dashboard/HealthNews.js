@@ -43,19 +43,25 @@ import axios from "../../utils/axios";
 import {HealthInfoTableRow, HealthInfoTableToolbar} from "../../sections/@dashboard/e-commerce/healthinfo-list";
 import CheckoutNewAddressForm from "../../sections/@dashboard/e-commerce/checkout/CheckoutNewAddressForm";
 import {NewHealthInfoForm} from "../../sections/@dashboard/e-commerce/checkout";
+import {
+    HealthProgramTableRow,
+    HealthProgramTableToolbar
+} from "../../sections/@dashboard/e-commerce/healthProgram-list";
+import NewHealthProgramForm from "../../sections/@dashboard/e-commerce/checkout/NewHealthProgramForm";
+import NewHealthNewsForm from "../../sections/@dashboard/e-commerce/checkout/NewHealthNewsForm";
+import {HealthNewsTableRow, HealthNewsTableToolbar} from "../../sections/@dashboard/e-commerce/healthNews-list";
 
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
-    { id: 'name', label: '信息归属人', alignRight: false },
-    { id: 'details', label: '信息', align: 'center' },
-    { id: 'remarks', label: '备注', align: 'center' },
-    { id: 'createTime', label: '创建时间', align: 'center'},
+    { id: 'title', label: '标题', alignRight: false },
     { id: '' },
 ];
+
+
 // ----------------------------------------------------------------------
 
-export default function HealthInfoCreate() {
+export default function HealthNews() {
     const {
         dense,
         page,
@@ -80,15 +86,12 @@ export default function HealthInfoCreate() {
 
     const [open,setOpen] = useState(false);
 
-    const [edit,setEdit] = useState(false);
-
     const openEditForm = ()=>{
         setOpen(true);
     }
 
     const closeEditForm = ()=>{
         setOpen(false);
-        setEdit(false);
     }
 
     const { themeStretch } = useSettings();
@@ -102,6 +105,8 @@ export default function HealthInfoCreate() {
     const [tableData, setTableData] = useState([]);
 
     const [editInfo, setEditInfo] = useState({});
+
+    const [edit,setEdit] = useState(false);
 
     const [filterName, setFilterName] = useState('');
 
@@ -119,11 +124,11 @@ export default function HealthInfoCreate() {
             //   }
             // }
         };
-        const response = await axios.get("/api/healthInfo/getList", params);
-        const {healthInfos} = response.data;
+        const response = await axios.get("/api/healthNews/list", params);
+        const {list} = response.data;
         // // setUsersInfo(response.data.usersInfo);
         // setTableData(healthInfos);
-        setTableData(healthInfos);
+        setTableData(list);
     }, [localStorage.getItem("currentUserId")]);
 
 
@@ -145,12 +150,11 @@ export default function HealthInfoCreate() {
     };
 
     const handleEditRow = async (id) => {
-        await axios.get(`/api/healthInfo/get/${id}`).then(res => {
-            setEditInfo(res.data.healthInfo);
+        await axios.get(`/api/healthNews/get/${id}`).then(res => {
+            setEditInfo(res.data.healthNews);
             openEditForm();
             setEdit(true);
         });
-        // navigate(PATH_DASHBOARD.invoice.edit(paramCase(id)));
     };
 
     const dataFiltered = applySortFilter({
@@ -158,6 +162,8 @@ export default function HealthInfoCreate() {
         comparator: getComparator(order, orderBy),
         filterName
     });
+
+
 
     const denseHeight = dense ? 60 : 80;
 
@@ -167,7 +173,7 @@ export default function HealthInfoCreate() {
         <Page title="Ecommerce: Product List">
             <Container maxWidth={themeStretch ? false : 'lg'}>
                 <HeaderBreadcrumbs
-                    heading="健康信息"
+                    heading="健康计划"
                     links={[
                         { name: 'Dashboard', href: PATH_DASHBOARD.root },
                         {
@@ -182,13 +188,13 @@ export default function HealthInfoCreate() {
                             startIcon={<Iconify icon="eva:plus-fill" />}
                             onClick={openEditForm}
                         >
-                            新建健康信息
+                            新增健康新闻
                         </Button>
                     }
                 />
 
                 <Card>
-                    <HealthInfoTableToolbar filterName={filterName} onFilterName={handleFilterName} />
+                    <HealthNewsTableToolbar filterName={filterName} onFilterName={handleFilterName} />
 
                     <Scrollbar>
                         <TableContainer sx={{ minWidth: 800 }}>
@@ -236,7 +242,7 @@ export default function HealthInfoCreate() {
                                         .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                                         .map((row, index) =>
                                             row ? (
-                                                <HealthInfoTableRow
+                                                <HealthNewsTableRow
                                                     key={row.id}
                                                     row={row}
                                                     selected={selected.includes(row.id)}
@@ -274,10 +280,10 @@ export default function HealthInfoCreate() {
                             sx={{ px: 3, py: 1.5, top: 0, position: { md: 'absolute' } }}
                         />
                     </Box>
-                    <NewHealthInfoForm
+                    <NewHealthNewsForm
                         open={open}
                         onClose={closeEditForm}
-                        healthInfo={editInfo}
+                        healthProgram={editInfo}
                         isEdit={edit}
                     />
                 </Card>

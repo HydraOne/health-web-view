@@ -96,7 +96,7 @@ export default function ChatMessageInput({ disabled, conversationId, onSend }) {
         disableUnderline
         onKeyUp={handleKeyUp}
         onChange={(event) => setMessage(event.target.value)}
-        placeholder="Type a message"
+        placeholder="发送信息"
         startAdornment={
           <InputAdornment position="start">
             <EmojiPicker disabled={disabled} value={message} setValue={setMessage} />
@@ -106,12 +106,6 @@ export default function ChatMessageInput({ disabled, conversationId, onSend }) {
           <Stack direction="row" spacing={1} sx={{ flexShrink: 0, mr: 1.5 }}>
             <IconButton disabled={disabled} size="small" onClick={handleAttach}>
               <Iconify icon="ic:round-add-photo-alternate" width={22} height={22} />
-            </IconButton>
-            <IconButton disabled={disabled} size="small" onClick={handleAttach}>
-              <Iconify icon="eva:attach-2-fill" width={22} height={22} />
-            </IconButton>
-            <IconButton disabled={disabled} size="small">
-              <Iconify icon="eva:mic-fill" width={22} height={22} />
             </IconButton>
           </Stack>
         }

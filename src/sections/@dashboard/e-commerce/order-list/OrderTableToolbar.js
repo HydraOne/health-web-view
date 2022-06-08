@@ -17,7 +17,7 @@ export default function OrderTableToolbar({ filterName, onFilterName }) {
       <TextField
         value={filterName}
         onChange={(event) => onFilterName(event.target.value)}
-        placeholder="Search product..."
+        placeholder="搜索体检人"
         InputProps={{
           startAdornment: (
             <InputAdornment position="start">

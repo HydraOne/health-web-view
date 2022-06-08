@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 // @mui
 import { alpha, styled } from '@mui/material/styles';
-import {Box, Tab, Card, Grid, Divider, Container, Typography, Skeleton} from '@mui/material';
+import {Box, Tab, Card, Grid, Divider, Container, Typography, Skeleton, Stack} from '@mui/material';
 import { TabContext, TabList, TabPanel } from '@mui/lab';
 // redux
 import { useDispatch, useSelector } from '../../redux/store';
@@ -29,6 +29,7 @@ import ProductDetailsSummaryNew from "../../sections/@dashboard/e-commerce/produ
 import {getTypes} from "../../redux/slices/type";
 import ProductDetailsContainInfo from "../../sections/@dashboard/e-commerce/product-details/ProductDetailsContainInfo";
 import axios from "../../utils/axios";
+import EcommerceYearlySales from "../../sections/@dashboard/general/e-commerce/EcommerceYearlySales";
 
 // ----------------------------------------------------------------------
 
@@ -65,7 +66,7 @@ const IconWrapperStyle = styled('div')(({ theme }) => ({
 
 // ----------------------------------------------------------------------
 
-export default function EcommerceProductDetails() {
+export default function TotalTrendProductDetails() {
 
   const { themeStretch } = useSettings();
   const dispatch = useDispatch();
@@ -90,7 +91,7 @@ export default function EcommerceProductDetails() {
     <Page title="Ecommerce: Product Details">
       <Container maxWidth={themeStretch ? false : 'lg'}>
         <HeaderBreadcrumbs
-          heading="Product Details"
+          heading="检查项目详情"
           links={[
             { name: 'Dashboard', href: PATH_DASHBOARD.root },
             {
@@ -109,58 +110,43 @@ export default function EcommerceProductDetails() {
 
         {product && (
           <>
-            <Card>
-              <Grid container>
-                <Grid item xs={12} md={6} lg={7}>
-                  <ProductDetailsCarousel product={product} />
-                </Grid>
-                <Grid item xs={12} md={6} lg={5}>
-                  <ProductDetailsSummaryNew
-                      product={product}
-                      cart={checkout.cart}
-                      onAddCart={handleAddCart}
-                      onGotoStep={handleGotoStep}
-                  />
-                </Grid>
-              </Grid>
-            </Card>
-
-
-            <Divider/>
 
             <Card>
-              <TabContext value={value}>
-                <Box sx={{ px: 3, bgcolor: 'background.neutral' }}>
-                  <TabList onChange={(e, value) => setValue(value)}>
-                    <Tab disableRipple value="1" label="详情" />
-                    <Tab
-                      disableRipple
-                      value="2"
-                      label={`评论`}
-                      sx={{ '& .MuiTab-wrapper': { whiteSpace: 'nowrap' } }}
-                    />
-                    <Tab
-                        disableRipple
-                        value="3"
-                        label="检查项目"
-                    />
-                  </TabList>
-                </Box>
-
-                <Divider />
-
-                <TabPanel value="1">
-                  <Box sx={{ p: 3 }}>
-                    <Markdown children={product.description} />
+              <Stack spacing={3}>
+                <EcommerceYearlySales id={id}/>
+                <TabContext value={value}>
+                  <Box sx={{ px: 3, bgcolor: 'background.neutral' }}>
+                    <TabList onChange={(e, value) => setValue(value)}>
+                      <Tab disableRipple value="1" label="详情" />
+                      <Tab
+                          disableRipple
+                          value="2"
+                          label="评论"
+                          sx={{ '& .MuiTab-wrapper': { whiteSpace: 'nowrap' } }}
+                      />
+                      <Tab
+                          disableRipple
+                          value="3"
+                          label="检查项目"
+                      />
+                    </TabList>
                   </Box>
-                </TabPanel>
-                <TabPanel value="2">
-                  <ProductDetailsReview product={product} />
-                </TabPanel>
-                <TabPanel value="3">
-                  <ProductDetailsContainInfo  product={product} />
-                </TabPanel>
-              </TabContext>
+
+                  <Divider />
+
+                  <TabPanel value="1">
+                    <Box sx={{ p: 3 }}>
+                      <Markdown children={product.description} />
+                    </Box>
+                  </TabPanel>
+                  <TabPanel value="2">
+                    <ProductDetailsReview product={product} />
+                  </TabPanel>
+                  <TabPanel value="3">
+                    <ProductDetailsContainInfo  product={product} />
+                  </TabPanel>
+                </TabContext>
+              </Stack>
             </Card>
           </>
         )}

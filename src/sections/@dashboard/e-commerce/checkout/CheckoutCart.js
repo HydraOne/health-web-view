@@ -59,14 +59,6 @@ export default function CheckoutCart() {
       <Grid item xs={12} md={8}>
         <Card sx={{ mb: 3 }}>
           <CardHeader
-            title={
-              <Typography variant="h6">
-                Card
-                <Typography component="span" sx={{ color: 'text.secondary' }}>
-                  &nbsp;({totalItems} item)
-                </Typography>
-              </Typography>
-            }
             sx={{ mb: 3 }}
           />
 
@@ -94,7 +86,7 @@ export default function CheckoutCart() {
           to={PATH_DASHBOARD.eCommerce.root}
           startIcon={<Iconify icon={'eva:arrow-ios-back-fill'} />}
         >
-          Continue Shopping
+          继续预约
         </Button>
       </Grid>
 
@@ -114,7 +106,7 @@ export default function CheckoutCart() {
           disabled={cart.length === 0}
           onClick={handleNextStep}
         >
-          Check Out
+          继续
         </Button>
       </Grid>
     </Grid>

@@ -58,15 +58,6 @@ export default function InvoiceToolbar({ invoice }) {
             )}
           </PDFDownloadLink>
         </Stack>
-
-        <Button
-          color="inherit"
-          variant="outlined"
-          startIcon={<Iconify icon={'eva:checkmark-fill'} />}
-          sx={{ alignSelf: 'flex-end' }}
-        >
-          Mark as Paid
-        </Button>
       </Stack>
 
       <Dialog fullScreen open={open}>

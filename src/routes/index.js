@@ -83,10 +83,14 @@ export default function Router() {
             { element: <Navigate to="/dashboard/e-commerce/shop" replace />, index: true },
             { path: 'shop', element: <EcommerceShop /> },
             { path: 'product/:id', element: <EcommerceProductDetails /> },
+            { path: 'productDetails/:id', element: <EcommerceProductDetails /> },
             { path: 'list', element: <EcommerceProductList /> },
+            { path: 'familyMemberList', element: <FamilyMemberList /> },
             { path: 'order', element: <EcommerceProductOrderList /> },
             { path: 'healthInfo', element: <HealthInfoCreate /> },
             { path: 'healthProgram', element: <HealthProgram /> },
+            { path: 'healthNews', element: <HealthNews /> },
+            { path: 'healthDetails/:id', element: <TotalTrendProductDetails /> },
             { path: 'healthRecipes', element: <HealthRecipes /> },
             { path: 'product/new', element: <EcommerceProductCreate /> },
             { path: 'product/:id/edit', element: <EcommerceProductCreate /> },
@@ -100,6 +104,7 @@ export default function Router() {
             { path: 'profile', element: <UserProfile /> },
             { path: 'cards', element: <UserCards /> },
             { path: 'list', element: <UserList /> },
+            { path: 'accountList', element: <AccountList/> },
             { path: 'new', element: <UserCreate /> },
             { path: ':name/edit', element: <UserCreate /> },
             { path: 'account', element: <UserAccount /> },
@@ -194,10 +199,13 @@ const GeneralBooking = Loadable(lazy(() => import('../pages/dashboard/GeneralBoo
 // ECOMMERCE
 const EcommerceShop = Loadable(lazy(() => import('../pages/dashboard/EcommerceShop')));
 const EcommerceProductDetails = Loadable(lazy(() => import('../pages/dashboard/EcommerceProductDetails')));
+const TotalTrendProductDetails = Loadable(lazy(() => import('../pages/dashboard/TotalTrendProductDetails')));
 const EcommerceProductList = Loadable(lazy(() => import('../pages/dashboard/EcommerceProductList')));
+const FamilyMemberList = Loadable(lazy(() => import('../pages/dashboard/FamilyMemberList')));
 const EcommerceProductOrderList = Loadable(lazy(() => import('../pages/dashboard/EcommerceProductOrderList')));
 const HealthInfoCreate = Loadable(lazy(() => import('../pages/dashboard/HealthInfoCreate')));
 const HealthProgram = Loadable(lazy(() => import('../pages/dashboard/HealthProgram')));
+const HealthNews = Loadable(lazy(() => import('../pages/dashboard/HealthNews')));
 const healthRecipes = Loadable(lazy(() => import('../pages/dashboard/HealthRecipes')));
 const EcommerceProductCreate = Loadable(lazy(() => import('../pages/dashboard/EcommerceProductCreate')));
 const EcommerceCheckout = Loadable(lazy(() => import('../pages/dashboard/EcommerceCheckout')));
@@ -218,6 +226,7 @@ const BlogNewPost = Loadable(lazy(() => import('../pages/dashboard/BlogNewPost')
 const UserProfile = Loadable(lazy(() => import('../pages/dashboard/UserProfile')));
 const UserCards = Loadable(lazy(() => import('../pages/dashboard/UserCards')));
 const UserList = Loadable(lazy(() => import('../pages/dashboard/UserList')));
+const AccountList = Loadable(lazy(() => import('../pages/dashboard/AccountList')));
 const UserAccount = Loadable(lazy(() => import('../pages/dashboard/UserAccount')));
 const UserCreate = Loadable(lazy(() => import('../pages/dashboard/UserCreate')));
 

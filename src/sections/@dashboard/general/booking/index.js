@@ -7,3 +7,4 @@ export { default as BookingCheckInWidgets } from './BookingCheckInWidgets';
 export { default as BookingCustomerReviews } from './BookingCustomerReviews';
 export { default as BookingReservationStats } from './BookingReservationStats';
 export { default as BookingWidgetSummary } from './BookingWidgetSummary';
+export { default as HealthProgramReviews } from './HealthProgramReviews';

@@ -116,17 +116,6 @@ export default function InvoicePDF({ invoice }) {
             ))}
           </View>
         </View>
-
-        <View style={[styles.gridContainer, styles.footer]}>
-          <View style={styles.col8}>
-            <Text style={styles.subtitle2}>NOTES</Text>
-            <Text>We appreciate your business. Should you need us to add VAT or extra notes let us know!</Text>
-          </View>
-          <View style={[styles.col4, styles.alignRight]}>
-            <Text style={styles.subtitle2}>Have a Question?</Text>
-            <Text>support@abcapp.com</Text>
-          </View>
-        </View>
       </Page>
     </Document>
   );

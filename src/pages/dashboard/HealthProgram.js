@@ -55,6 +55,7 @@ const TABLE_HEAD = [
     { id: 'name', label: '执行人', alignRight: false },
     { id: 'details', label: '信息', align: 'center' },
     { id: 'target', label: '目的', align: 'center' },
+    { id: 'isDone', label: '完成状态', align: 'center'},
     { id: 'executeTime', label: '执行时间', align: 'center'},
     { id: '' },
 ];
@@ -174,7 +175,7 @@ export default function HealthProgram() {
         <Page title="Ecommerce: Product List">
             <Container maxWidth={themeStretch ? false : 'lg'}>
                 <HeaderBreadcrumbs
-                    heading="Product List"
+                    heading="健康计划"
                     links={[
                         { name: 'Dashboard', href: PATH_DASHBOARD.root },
                         {
@@ -189,7 +190,7 @@ export default function HealthProgram() {
                             startIcon={<Iconify icon="eva:plus-fill" />}
                             onClick={openEditForm}
                         >
-                            New Product
+                            新增健康计划
                         </Button>
                     }
                 />

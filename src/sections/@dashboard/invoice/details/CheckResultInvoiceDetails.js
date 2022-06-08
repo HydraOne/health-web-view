@@ -141,19 +141,6 @@ export default function CheckResultInvoiceDetails({ invoice }) {
             </Table>
           </TableContainer>
         </Scrollbar>
-
-        <Grid container>
-          <Grid item xs={12} md={9} sx={{ py: 3 }}>
-            <Typography variant="subtitle2">NOTES</Typography>
-            <Typography variant="body2">
-              We appreciate your business. Should you need us to add VAT or extra notes let us know!
-            </Typography>
-          </Grid>
-          <Grid item xs={12} md={3} sx={{ py: 3, textAlign: 'right' }}>
-            <Typography variant="subtitle2">Have a Question?</Typography>
-            <Typography variant="body2">support@minimals.cc</Typography>
-          </Grid>
-        </Grid>
       </Card>
     </>
   );

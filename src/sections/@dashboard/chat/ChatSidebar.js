@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 // @mui
 import { useTheme, styled } from '@mui/material/styles';
-import { Box, Stack, Drawer, IconButton } from '@mui/material';
+import {Box, Stack, Drawer, IconButton, Button} from '@mui/material';
 // redux
 import { useSelector } from '../../../redux/store';
 // hooks
@@ -149,21 +149,8 @@ export default function ChatSidebar() {
             />
           </IconButton>
 
-          {!isCollapse && (
-            <IconButton onClick={() => navigate(PATH_DASHBOARD.chat.new)}>
-              <Iconify icon={'eva:edit-fill'} width={20} height={20} />
-            </IconButton>
-          )}
-        </Stack>
 
-        {!isCollapse && (
-          <ChatContactSearch
-            query={searchQuery}
-            onFocus={handleSearchFocus}
-            onChange={handleChangeSearch}
-            onClickAway={handleClickAwaySearch}
-          />
-        )}
+        </Stack>
       </Box>
 
       <Scrollbar>

@@ -15,7 +15,7 @@ import axios from "../../../../utils/axios";
 
 // ----------------------------------------------------------------------
 
-export default function BookingCustomerReviews() {
+export default function HealthProgramReviews() {
   const theme = useTheme();
   const carouselRef = useRef(null);
 
@@ -27,9 +27,9 @@ export default function BookingCustomerReviews() {
 
   useEffect(() => {
       async function fetchData() {
-          const response = await axios.post("/api/healthRecipes/page",{pageNum,pageSize:10});
-          const {healthRecipes} = response.data;
-          setDataList(healthRecipes)
+          const response = await axios.post("/api/healthProgram/page",{pageNum,pageSize:10});
+          const {healthPrograms} = response.data;
+          setDataList(healthPrograms)
       }
       fetchData();
   },[pageNum])
@@ -51,12 +51,14 @@ export default function BookingCustomerReviews() {
     carouselRef.current?.slickNext();
   };
 
-
+ const handleDone = async (id) => {
+    await axios.put(`/api/healthProgram/updateDone/${id}`);
+ };
 
   return (
     <Card>
       <CardHeader
-        title="膳食计划"
+        title="健康计划"
         action={
           <CarouselArrows
             customIcon={'ic:round-keyboard-arrow-right'}
@@ -74,7 +76,7 @@ export default function BookingCustomerReviews() {
 
       <Slider ref={carouselRef} {...settings}>
         {dataList.map((item) => (
-          <ReviewItem key={item.id} item={item}/>
+          <ReviewItem key={item.id} item={item} handleDone={handleDone}/>
         ))}
       </Slider>
     </Card>
@@ -91,16 +93,14 @@ ReviewItem.propTypes = {
     postedAt: PropTypes.instanceOf(Date),
     rating: PropTypes.number,
     tags: PropTypes.array,
-  }
-  )
+  }),
+   handleDone: PropTypes.func,
 };
 
-function ReviewItem({ item,updateDone }) {
-  const { id,userInfo, details, effectDesc } = item;
+function ReviewItem({ item,handleDone}) {
+  const { id,userInfo, details, effectDesc,isDone } = item;
 
-  const handleDone = async (id) => {
-    await axios.put(`/api/healthRecipes/updateDone/${id}`);
-  };
+
 
   return (
     <Stack spacing={2} sx={{ minHeight: 402, position: 'relative', p: 3 }}>
@@ -113,7 +113,7 @@ function ReviewItem({ item,updateDone }) {
       <Typography variant="body2">{details}</Typography>
 
       <Stack direction="row" spacing={2} alignItems="flex-end" sx={{ flexGrow: 1 }}>
-        <Button fullWidth variant="contained" endIcon={<Iconify icon={'eva:checkmark-circle-2-fill'}/>} onClick={()=>handleDone(id)}>
+        <Button fullWidth variant="contained" endIcon={<Iconify icon={'eva:checkmark-circle-2-fill'} />} onClick={()=>handleDone(id)}>
           完成
         </Button>
       </Stack>

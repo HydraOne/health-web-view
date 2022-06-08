@@ -96,34 +96,6 @@ export default function InvoiceNewEditDetails({checks}) {
         </Stack>
 
         <Divider sx={{ my: 3, borderStyle: 'dashed' }} />
-
-        <Stack
-            spacing={2}
-            direction={{ xs: 'column-reverse', md: 'row' }}
-            alignItems={{ xs: 'flex-start', md: 'center' }}
-        >
-          <Button size="small" startIcon={<Iconify icon="eva:plus-fill" />} onClick={handleAdd} sx={{ flexShrink: 0 }}>
-            Add new detail
-          </Button>
-
-          <Stack spacing={2} justifyContent="flex-end" direction={{ xs: 'column', md: 'row' }} sx={{ width: 1 }}>
-            <RHFTextField
-                size="small"
-                label="Discount"
-                name="discount"
-                onChange={(event) => setValue('discount', Number(event.target.value))}
-                sx={{ maxWidth: { md: 200 } }}
-            />
-
-            <RHFTextField
-                size="small"
-                label="Taxes"
-                name="taxes"
-                onChange={(event) => setValue('taxes', Number(event.target.value))}
-                sx={{ maxWidth: { md: 200 } }}
-            />
-          </Stack>
-        </Stack>
       </Box>
   );
 }

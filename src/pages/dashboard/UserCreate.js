@@ -3,6 +3,7 @@ import { useParams, useLocation } from 'react-router-dom';
 // @mui
 import { Container } from '@mui/material';
 // routes
+import {useEffect, useState} from "react";
 import { PATH_DASHBOARD } from '../../routes/paths';
 // hooks
 import useSettings from '../../hooks/useSettings';
@@ -13,6 +14,7 @@ import Page from '../../components/Page';
 import HeaderBreadcrumbs from '../../components/HeaderBreadcrumbs';
 // sections
 import UserNewEditForm from '../../sections/@dashboard/user/UserNewEditForm';
+import axios from "../../utils/axios";
 
 // ----------------------------------------------------------------------
 
@@ -25,7 +27,14 @@ export default function UserCreate() {
 
   const isEdit = pathname.includes('edit');
 
-  const currentUser = _userList.find((user) => paramCase(user.name) === name);
+  const [currentUser,setCurrentUser] = useState({});
+
+  useEffect(()=>{
+      async function fetchDate(){
+          axios.get(`/api/user/getUserByLoginName/${name}`).then(res=>setCurrentUser(res.data.user));
+      }
+      fetchDate();
+  },[name])
 
   return (
     <Page title="User: Create a new user">

@@ -1,14 +1,17 @@
 import { paramCase } from 'change-case';
-import { useState, useEffect } from 'react';
-import { useNavigate, Link as RouterLink } from 'react-router-dom';
+import {useEffect, useState} from 'react';
+import { Link as RouterLink, useNavigate } from 'react-router-dom';
 // @mui
 import {
   Box,
+  Tab,
+  Tabs,
   Card,
   Table,
-  Button,
   Switch,
+  Button,
   Tooltip,
+  Divider,
   TableBody,
   Container,
   IconButton,
@@ -16,42 +19,48 @@ import {
   TablePagination,
   FormControlLabel,
 } from '@mui/material';
-// redux
-import { useDispatch, useSelector } from '../../redux/store';
-import { getProducts } from '../../redux/slices/product';
 // routes
 import { PATH_DASHBOARD } from '../../routes/paths';
 // hooks
+import useTabs from '../../hooks/useTabs';
 import useSettings from '../../hooks/useSettings';
 import useTable, { getComparator, emptyRows } from '../../hooks/useTable';
+// _mock_
+import { _userList } from '../../_mock';
 // components
 import Page from '../../components/Page';
 import Iconify from '../../components/Iconify';
 import Scrollbar from '../../components/Scrollbar';
 import HeaderBreadcrumbs from '../../components/HeaderBreadcrumbs';
-import {
-  TableNoData,
-  TableSkeleton,
-  TableEmptyRows,
-  TableHeadCustom,
-  TableSelectedActions,
-} from '../../components/table';
+import { TableEmptyRows, TableHeadCustom, TableNoData, TableSelectedActions } from '../../components/table';
 // sections
-import { ProductTableRow, ProductTableToolbar } from '../../sections/@dashboard/e-commerce/product-list';
+import { UserTableToolbar, UserTableRow } from '../../sections/@dashboard/user/list';
+import {AccountTableRow, AccountTableToolbar} from "../../sections/@dashboard/user/account-list";
+import axios from "../../utils/axios";
 
 // ----------------------------------------------------------------------
 
+const STATUS_OPTIONS = ['all', 'active', 'banned'];
+
+const ROLE_OPTIONS = [
+  {id:'all',label:"所有用户"},
+  {id:'admin',label:"管理员"},
+  {id:'doctor',label:"康养服务工作人员"},
+  {id:'user',label:"普通用户"},
+  {id:'elderly',label:"老年用户"}
+];
+
 const TABLE_HEAD = [
-  { id: 'name', label: '项目名', alignRight: false },
-  { id: 'type', label: '项目类型', alignRight: false },
-  { id: 'createTime', label: '创建时间', alignRight: false },
-  { id: 'price', label: '费用', align: 'center' },
+  { id: 'name', label: '用户', align: 'left' },
+  { id: 'displayName', label: '显示名', align: 'left' },
+  { id: 'email', label: '联系方式', align: 'left' },
+  { id: 'role', label: '用户类型', align: 'left' },
   { id: '' },
 ];
 
 // ----------------------------------------------------------------------
 
-export default function EcommerceProductList() {
+export default function UserList() {
   const {
     dense,
     page,
@@ -69,39 +78,27 @@ export default function EcommerceProductList() {
     onChangeDense,
     onChangePage,
     onChangeRowsPerPage,
-  } = useTable({
-    defaultOrderBy: 'createdAt',
-  });
+  } = useTable();
 
   const { themeStretch } = useSettings();
 
   const navigate = useNavigate();
 
-  const dispatch = useDispatch();
-
-  const { products, isLoading } = useSelector((state) => state.product);
-
-  const [tableData, setTableData] = useState([]);
+  const [tableData, setTableData] = useState(_userList);
 
   const [filterName, setFilterName] = useState('');
 
-  useEffect(() => {
-    dispatch(getProducts());
-  }, [dispatch]);
+  const [filterRole, setFilterRole] = useState('all');
 
-  const handleOnClickRow = (id)=>{
-    navigate(PATH_DASHBOARD.eCommerce.healthDetails(id));
-  }
-
-  useEffect(() => {
-    if (products.length) {
-      setTableData(products);
-    }
-  }, [products]);
+  const { currentTab: filterStatus, onChangeTab: onChangeFilterStatus } = useTabs('all');
 
   const handleFilterName = (filterName) => {
     setFilterName(filterName);
     setPage(0);
+  };
+
+  const handleFilterRole = (event) => {
+    setFilterRole(event.target.value);
   };
 
   const handleDeleteRow = (id) => {
@@ -117,49 +114,67 @@ export default function EcommerceProductList() {
   };
 
   const handleEditRow = (id) => {
-    navigate(PATH_DASHBOARD.eCommerce.edit(paramCase(id)));
+    navigate(PATH_DASHBOARD.user.edit(paramCase(id)));
   };
 
   const dataFiltered = applySortFilter({
     tableData,
     comparator: getComparator(order, orderBy),
     filterName,
+    filterRole,
+    filterStatus,
   });
 
-  const denseHeight = dense ? 60 : 80;
+  useEffect(()=>{
+    async function fetchData(){
+      await axios.get("/api/user/list").then(res=>{
+        setTableData(res.data.userList);
+      });
+    }
+    fetchData();
+  },[localStorage.getItem("currentUserId")])
 
-  const isNotFound = (!dataFiltered.length && !!filterName) || (!isLoading && !dataFiltered.length);
+  const denseHeight = dense ? 52 : 72;
+
+  const isNotFound =
+    (!dataFiltered.length && !!filterName) ||
+    (!dataFiltered.length && !!filterRole) ||
+    (!dataFiltered.length && !!filterStatus);
 
   return (
-    <Page title="Ecommerce: Product List">
+    <Page title="User: List">
       <Container maxWidth={themeStretch ? false : 'lg'}>
         <HeaderBreadcrumbs
-          heading="体检项目管理"
+          heading="用户管理"
           links={[
             { name: 'Dashboard', href: PATH_DASHBOARD.root },
-            {
-              name: 'E-Commerce',
-              href: PATH_DASHBOARD.eCommerce.root,
-            },
-            { name: 'Product List' },
+            { name: 'User', href: PATH_DASHBOARD.user.root },
+            { name: 'List' },
           ]}
           action={
             <Button
               variant="contained"
-              startIcon={<Iconify icon="eva:plus-fill" />}
               component={RouterLink}
-              to={PATH_DASHBOARD.eCommerce.new}
+              to={PATH_DASHBOARD.user.new}
+              startIcon={<Iconify icon={'eva:plus-fill'} />}
             >
-              新建体检项目
+              新建用户
             </Button>
           }
         />
 
         <Card>
-          <ProductTableToolbar filterName={filterName} onFilterName={handleFilterName} />
+
+          <AccountTableToolbar
+            filterName={filterName}
+            filterRole={filterRole}
+            onFilterName={handleFilterName}
+            onFilterRole={handleFilterRole}
+            optionsRole={ROLE_OPTIONS}
+          />
 
           <Scrollbar>
-            <TableContainer sx={{ minWidth: 800 }}>
+            <TableContainer sx={{ minWidth: 800, position: 'relative' }}>
               {selected.length > 0 && (
                 <TableSelectedActions
                   dense={dense}
@@ -198,23 +213,16 @@ export default function EcommerceProductList() {
                 />
 
                 <TableBody>
-                  {(isLoading ? [...Array(rowsPerPage)] : dataFiltered)
-                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                    .map((row, index) =>
-                      row ? (
-                        <ProductTableRow
-                          key={row.id}
-                          row={row}
-                          selected={selected.includes(row.id)}
-                          onSelectRow={() => onSelectRow(row.id)}
-                          onDeleteRow={() => handleDeleteRow(row.id)}
-                          onEditRow={() => handleEditRow(row.id)}
-                          onClickRow={handleOnClickRow}
-                        />
-                      ) : (
-                        !isNotFound && <TableSkeleton key={index} sx={{ height: denseHeight }} />
-                      )
-                    )}
+                  {dataFiltered.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => (
+                    <AccountTableRow
+                      key={row.id}
+                      row={row}
+                      selected={selected.includes(row.id)}
+                      onSelectRow={() => onSelectRow(row.id)}
+                      onDeleteRow={() => handleDeleteRow(row.id)}
+                      onEditRow={() => handleEditRow(row.name)}
+                    />
+                  ))}
 
                   <TableEmptyRows height={denseHeight} emptyRows={emptyRows(page, rowsPerPage, tableData.length)} />
 
@@ -249,7 +257,7 @@ export default function EcommerceProductList() {
 
 // ----------------------------------------------------------------------
 
-function applySortFilter({ tableData, comparator, filterName }) {
+function applySortFilter({ tableData, comparator, filterName, filterStatus, filterRole }) {
   const stabilizedThis = tableData.map((el, index) => [el, index]);
 
   stabilizedThis.sort((a, b) => {
@@ -261,7 +269,16 @@ function applySortFilter({ tableData, comparator, filterName }) {
   tableData = stabilizedThis.map((el) => el[0]);
 
   if (filterName) {
-    tableData = tableData.filter((item) => item.name.toLowerCase().indexOf(filterName.toLowerCase()) !== -1);
+    tableData = tableData.filter((item) => {
+      return item.name.toLowerCase().indexOf(filterName.toLowerCase()) !== -1});
+  }
+
+  if (filterStatus !== 'all') {
+    tableData = tableData.filter((item) => item.status === filterStatus);
+  }
+
+  if (filterRole !== 'all') {
+    tableData = tableData.filter((item) => item.role === filterRole);
   }
 
   return tableData;

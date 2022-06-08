@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import {useEffect, useState} from 'react';
 // @mui
-import { Box, Grid, Card, Button, Typography } from '@mui/material';
+import {Box, Grid, Card, Button, Typography, Stack} from '@mui/material';
 // redux
 import { useDispatch, useSelector } from '../../../../redux/store';
 import { onBackStep, onNextStep, createBilling } from '../../../../redux/slices/product';
@@ -15,10 +15,11 @@ import CheckoutSummary from './CheckoutSummary';
 import CheckoutNewAddressForm from './CheckoutNewAddressForm';
 import axios from "../../../../utils/axios";
 import {fDate, fTimestamp} from "../../../../utils/formatTime";
+import NewFamilyMemberForm from "./NewFamilyMemberForm";
 
 // ----------------------------------------------------------------------
 
-export default function CheckoutBillingAddress() {
+export default function FamilyMember() {
   //
   const dispatch = useDispatch();
   const { checkout } = useSelector((state) => state.product);
@@ -26,8 +27,11 @@ export default function CheckoutBillingAddress() {
   //
   const [open, setOpen] = useState(false);
 
-
   const [userList,setUserList] = useState([]);
+
+  const [editInfo, setEditInfo] = useState({});
+
+  const [edit,setEdit] = useState(false);
 
   useEffect(async () => {
       const response = await axios.get('/api/userInfo/get');
@@ -47,6 +51,15 @@ export default function CheckoutBillingAddress() {
     dispatch(onNextStep());
   };
 
+  const handleEditRow = async (id) => {
+    await axios.get(`/api/userInfo/get/${id}`).then(res => {
+        setEditInfo(res.data.userInfo);
+        handleClickOpen();
+        setEdit(true);
+    });
+    // navigate(PATH_DASHBOARD.invoice.edit(paramCase(id)));
+  };
+
   const handleBackStep = () => {
     dispatch(onBackStep());
   };
@@ -58,60 +71,48 @@ export default function CheckoutBillingAddress() {
   return (
     <>
       <Grid container spacing={3}>
-        <Grid item xs={12} md={8}>
-          {userList.map((userInfo, index) => (
-            <AddressItem
-              key={index}
-              userInfo={userInfo}
-              onNextStep={handleNextStep}
-              onCreateBilling={handleCreateBilling}
-            />
-          ))}
-          <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-            <Button
-              size="small"
-              color="inherit"
-              onClick={handleBackStep}
-              startIcon={<Iconify icon={'eva:arrow-ios-back-fill'} />}
-            >
-              Back
-            </Button>
-            <Button size="small" onClick={handleClickOpen} startIcon={<Iconify icon={'eva:plus-fill'} />}>
-              添加用户
-            </Button>
-          </Box>
-        </Grid>
-
-        <Grid item xs={12} md={4}>
-          <CheckoutSummary subtotal={subtotal} total={total} discount={discount} />
+        <Grid item xs={12} md={12}>
+        <Stack spacing={3}>
+            <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+                <Button size="small" onClick={handleClickOpen} startIcon={<Iconify icon={'eva:plus-fill'} />}>
+                    添加家庭成员
+                </Button>
+            </Box>
+            {userList.map((userInfo, index) => (
+                <FamilyMemberItem
+                    key={userInfo.id}
+                    userInfo={userInfo}
+                    onNextStep={handleNextStep}
+                    onCreateBilling={handleCreateBilling}
+                    onEditRow={handleEditRow}
+                />
+            ))}
+        </Stack>
         </Grid>
       </Grid>
-
-      <CheckoutNewAddressForm
-        open={open}
-        onClose={handleClose}
-        onNextStep={handleNextStep}
-        onCreateBilling={handleCreateBilling}
-      />
+        <NewFamilyMemberForm
+            open={open}
+            familyMember={editInfo}
+            onClose={handleClose}
+            isEdit={edit}
+            onNextStep={handleNextStep}
+            onCreateBilling={handleCreateBilling}
+        />
     </>
   );
 }
 
 // ----------------------------------------------------------------------
 
-AddressItem.propTypes = {
+FamilyMemberItem.propTypes = {
   userInfo: PropTypes.object,
   onNextStep: PropTypes.func,
-  onCreateBilling: PropTypes.func,
+  editFamilyMember: PropTypes.func,
+  onEditRow: PropTypes.func,
 };
 
-function AddressItem({ userInfo, onNextStep, onCreateBilling }) {
-  const { name, gender, idCard, contact, birth, isDefault } = userInfo;
-
-  const handleCreateBilling = () => {
-    onCreateBilling(userInfo);
-    onNextStep();
-  };
+function FamilyMemberItem({ userInfo, editFamilyMember ,onEditRow}) {
+  const { id,name, gender, idCard, contact, birth, isDefault } = userInfo;
 
   return (
     <Card sx={{ p: 3, mb: 3, position: 'relative' }}>
@@ -142,9 +143,12 @@ function AddressItem({ userInfo, onNextStep, onCreateBilling }) {
           bottom: { sm: 24 },
         }}
       >
+          <Button variant="outlined" size="small" color="error">
+              删除
+          </Button>
         <Box sx={{ mx: 0.5 }} />
-        <Button variant="outlined" size="small" onClick={handleCreateBilling}>
-          选择用户信息
+        <Button variant="outlined" size="small" color="inherit" onClick={()=>onEditRow(id)}>
+          编辑
         </Button>
       </Box>
     </Card>

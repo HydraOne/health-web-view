@@ -14,7 +14,7 @@ import {
   BookingWidgetSummary,
   BookingCheckInWidgets,
   BookingCustomerReviews,
-  BookingReservationStats,
+  BookingReservationStats, HealthProgramReviews,
 } from '../../sections/@dashboard/general/booking';
 // assets
 import { BookingIllustration, CheckInIllustration, CheckOutIllustration } from '../../assets';
@@ -35,7 +35,6 @@ export default function GeneralBooking() {
               <Grid item xs={12} md={6}>
                 <Stack spacing={3}>
                   <BookingTotalIncomes />
-                  <BookingCheckInWidgets />
                 </Stack>
               </Grid>
 
@@ -46,15 +45,11 @@ export default function GeneralBooking() {
           </Grid>
 
           <Grid item xs={12} md={4}>
-            <BookingCustomerReviews />
+            <HealthProgramReviews />
           </Grid>
 
           <Grid item xs={12} md={12}>
             <HealthNewsDetails />
-          </Grid>
-
-          <Grid item xs={12}>
-            <BookingDetails />
           </Grid>
         </Grid>
       </Container>

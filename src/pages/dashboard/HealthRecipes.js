@@ -55,7 +55,8 @@ const TABLE_HEAD = [
     { id: 'name', label: '归属人', alignRight: false },
     { id: 'details', label: '信息', align: 'center' },
     { id: 'effectDesc', label: '备注', align: 'center' },
-    { id: 'executeTime', label: '创建时间', align: 'center'},
+    { id: 'isDone', label: '完成状态', align: 'center'},
+    { id: 'executeTime', label: '执行时间', align: 'center'},
     { id: '' },
 ];
 
@@ -173,7 +174,7 @@ export default function HealthRecipes() {
         <Page title="Ecommerce: Product List">
             <Container maxWidth={themeStretch ? false : 'lg'}>
                 <HeaderBreadcrumbs
-                    heading="Product List"
+                    heading="膳食管理"
                     links={[
                         { name: 'Dashboard', href: PATH_DASHBOARD.root },
                         {
@@ -188,7 +189,7 @@ export default function HealthRecipes() {
                             startIcon={<Iconify icon="eva:plus-fill" />}
                             onClick={openEditForm}
                         >
-                            New Product
+                            新建膳食计划
                         </Button>
                     }
                 />

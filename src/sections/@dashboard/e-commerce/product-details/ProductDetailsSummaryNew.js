@@ -32,6 +32,7 @@ import SocialsButton from '../../../../components/SocialsButton';
 import { ColorSinglePicker } from '../../../../components/color-utils';
 import { FormProvider, RHFSelect } from '../../../../components/hook-form';
 import {getTypes} from "../../../../redux/slices/type";
+import axios from "../../../../utils/axios";
 
 // ----------------------------------------------------------------------
 
@@ -73,6 +74,8 @@ export default function ProductDetailsSummaryNew({ cart, product, onAddCart, onG
 
   const dispatch = useDispatch();
 
+  // const [types,setTypes] = useState();
+
   const { types } = useSelector((state) => state.type);
 
   const [appointData,setAppointData] = useState(endOfTomorrow);
@@ -80,6 +83,15 @@ export default function ProductDetailsSummaryNew({ cart, product, onAddCart, onG
   useEffect(() => {
     dispatch(getTypes());
   }, []);
+
+  // useEffect(() => {
+  //   async function fetchData(){
+  //     await axios.get('/api/type/get').then(res=>{
+  //       console.log(res);
+  //     })
+  //   }
+  //   fetchData();
+  // }, []);
 
   const {
     id,
@@ -153,13 +165,6 @@ export default function ProductDetailsSummaryNew({ cart, product, onAddCart, onG
   return (
     <RootStyle {...other}>
       <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
-        <Label
-          variant={theme.palette.mode === 'light' ? 'ghost' : 'filled'}
-          color={inventoryType === 'in_stock' ? 'success' : 'error'}
-          sx={{ textTransform: 'uppercase' }}
-        >
-          {sentenceCase(inventoryType || '')}
-        </Label>
 
         <Typography
           variant="overline"
@@ -195,23 +200,6 @@ export default function ProductDetailsSummaryNew({ cart, product, onAddCart, onG
 
         <Divider sx={{ borderStyle: 'dashed' }} />
 
-        <Stack direction="row" alignItems="center" justifyContent="space-between"  sx={{ my: 3 }}>
-          <DatePicker
-              label="预约日期"
-              value={appointData}
-              shouldDisableDate={isPast}
-              onChange={(date)=>setAppointData(date)}
-              renderInput={(params) => (
-                  <TextField
-                      {...params}
-                      name="appoint"
-                      fullWidth
-                  />
-              )}
-          />
-        </Stack>
-
-
         <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ my: 3}} >
           <Autocomplete
               fullWidth
@@ -232,32 +220,12 @@ export default function ProductDetailsSummaryNew({ cart, product, onAddCart, onG
           />
         </Stack>
 
-        <Stack direction="row" justifyContent="space-between" sx={{ mb: 3 }}>
-          <div>
-            <Typography variant="subtitle1" component="div" sx={{ mt: 1, textAlign: 'right'}}>
-              可预约数:  {available}
-            </Typography>
-          </div>
-        </Stack>
-
 
 
 
         <Divider sx={{ borderStyle: 'dashed' }} />
 
         <Stack direction="row" spacing={2} sx={{ mt: 5 }}>
-          <Button
-            fullWidth
-            disabled={isMaxQuantity}
-            size="large"
-            color="warning"
-            variant="contained"
-            startIcon={<Iconify icon={'ic:round-add-shopping-cart'} />}
-            onClick={handleAddCart}
-            sx={{ whiteSpace: 'nowrap' }}
-          >
-            添加到购物车
-          </Button>
 
           <Button fullWidth size="large" type="submit" variant="contained">
             现在预约

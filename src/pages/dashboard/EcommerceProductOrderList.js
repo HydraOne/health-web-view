@@ -527,7 +527,7 @@ export default function EcommerceProductOrderList() {
     <Page title="Ecommerce: Product List">
       <Container maxWidth={themeStretch ? false : 'lg'}>
         <HeaderBreadcrumbs
-          heading="Product List"
+          heading="体检订单"
           links={[
             { name: 'Dashboard', href: PATH_DASHBOARD.root },
             {
@@ -536,16 +536,6 @@ export default function EcommerceProductOrderList() {
             },
             { name: 'Order' },
           ]}
-          action={
-            <Button
-              variant="contained"
-              startIcon={<Iconify icon="eva:plus-fill" />}
-              component={RouterLink}
-              to={PATH_DASHBOARD.eCommerce.new}
-            >
-              New Product
-            </Button>
-          }
         />
 
         <Card>

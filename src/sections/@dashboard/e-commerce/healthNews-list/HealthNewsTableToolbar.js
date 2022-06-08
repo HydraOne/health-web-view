@@ -6,18 +6,18 @@ import Iconify from '../../../../components/Iconify';
 
 // ----------------------------------------------------------------------
 
-ProductTableToolbar.propTypes = {
+HealthNewsTableToolbar.propTypes = {
   filterName: PropTypes.string,
   onFilterName: PropTypes.func,
 };
 
-export default function ProductTableToolbar({ filterName, onFilterName }) {
+export default function HealthNewsTableToolbar({ filterName, onFilterName }) {
   return (
     <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ py: 2.5, px: 3 }}>
       <TextField
         value={filterName}
         onChange={(event) => onFilterName(event.target.value)}
-        placeholder="搜索检查项目"
+        placeholder="搜索执行人"
         InputProps={{
           startAdornment: (
             <InputAdornment position="start">

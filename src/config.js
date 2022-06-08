@@ -36,7 +36,7 @@ export const MAPBOX_API = process.env.REACT_APP_MAPBOX;
 
 export const PATH_AFTER_LOGIN = PATH_AUTH.verify;
 
-export const PATH_LOGIN_SUCCESS = PATH_DASHBOARD.general.app;
+export const PATH_LOGIN_SUCCESS = PATH_DASHBOARD.general.booking;
 // LAYOUT
 // ----------------------------------------------------------------------
 

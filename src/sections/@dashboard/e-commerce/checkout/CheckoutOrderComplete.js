@@ -41,35 +41,17 @@ export default function CheckoutOrderComplete({ ...other }) {
       <Box sx={{ p: 4, maxWidth: 480, margin: 'auto' }}>
         <Box sx={{ textAlign: 'center' }}>
           <Typography variant="h4" paragraph>
-            Thank you for your purchase!
+            感谢您的预约
           </Typography>
 
           <OrderCompleteIllustration sx={{ height: 260, my: 10 }} />
-
-          <Typography align="left" paragraph>
-            Thanks for placing order &nbsp;
-            <Link href="#">01dc1370-3df6-11eb-b378-0242ac130002</Link>
-          </Typography>
-
-          <Typography align="left" sx={{ color: 'text.secondary' }}>
-            We will send you a notification within 5 days when it ships.
-            <br /> <br /> If you have any question or queries then fell to get in contact us. <br /> <br /> All the
-            best,
-          </Typography>
         </Box>
 
         <Divider sx={{ my: 3 }} />
 
         <Stack direction={{ xs: 'column-reverse', sm: 'row' }} justifyContent="space-between" spacing={2}>
           <Button color="inherit" onClick={handleResetStep} startIcon={<Iconify icon={'eva:arrow-ios-back-fill'} />}>
-            Continue Shopping
-          </Button>
-          <Button
-            variant="contained"
-            startIcon={<Iconify icon={'ant-design:file-pdf-filled'} />}
-            onClick={handleResetStep}
-          >
-            Download as PDF
+            返回
           </Button>
         </Stack>
       </Box>

@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import * as Yup from 'yup';
-import { useCallback, useEffect, useMemo } from 'react';
+import {useCallback, useEffect, useMemo, useState} from 'react';
 import { useSnackbar } from 'notistack';
 import { useNavigate } from 'react-router-dom';
 // form
@@ -8,8 +8,10 @@ import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 // @mui
 import { LoadingButton } from '@mui/lab';
-import { Box, Card, Grid, Stack, Switch, Typography, FormControlLabel } from '@mui/material';
+import {Box, Card, Grid, Stack, Switch, Typography, FormControlLabel, TextField} from '@mui/material';
 // utils
+import DatePicker from "@mui/lab/DatePicker";
+import {endOfTomorrow, isPast} from "date-fns";
 import { fData } from '../../../utils/formatNumber';
 // routes
 import { PATH_DASHBOARD } from '../../../routes/paths';
@@ -20,6 +22,23 @@ import Label from '../../../components/Label';
 import { FormProvider, RHFSelect, RHFSwitch, RHFTextField, RHFUploadAvatar } from '../../../components/hook-form';
 
 // ----------------------------------------------------------------------
+const gender =[
+    {
+        name:"男",
+        value:"M"
+    },
+    {
+        name:"女",
+        value:"F"
+    }
+]
+
+const ROLE_OPTIONS = [
+    {id:'user',label:"普通用户"},
+    {id:'elderly',label:"老年用户"},
+    {id:'admin',label:"管理员"},
+    {id:'doctor',label:"康养服务工作人员"},
+];
 
 UserNewEditForm.propTypes = {
   isEdit: PropTypes.bool,
@@ -48,16 +67,11 @@ export default function UserNewEditForm({ isEdit, currentUser }) {
     () => ({
       name: currentUser?.name || '',
       email: currentUser?.email || '',
+      displayName: currentUser?.displayName || '',
       phoneNumber: currentUser?.phoneNumber || '',
       address: currentUser?.address || '',
-      country: currentUser?.country || '',
-      state: currentUser?.state || '',
-      city: currentUser?.city || '',
-      zipCode: currentUser?.zipCode || '',
-      avatarUrl: currentUser?.avatarUrl || '',
-      isVerified: currentUser?.isVerified || true,
+      avatarUrl: currentUser?.photoURL || '',
       status: currentUser?.status,
-      company: currentUser?.company || '',
       role: currentUser?.role || '',
     }),
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -79,6 +93,8 @@ export default function UserNewEditForm({ isEdit, currentUser }) {
   } = methods;
 
   const values = watch();
+
+    const [executeTime,setExecuteTime] = useState(endOfTomorrow);
 
   useEffect(() => {
     if (isEdit && currentUser) {
@@ -148,58 +164,14 @@ export default function UserNewEditForm({ isEdit, currentUser }) {
                       color: 'text.secondary',
                     }}
                   >
-                    Allowed *.jpeg, *.jpg, *.png, *.gif
+                      允许上传 *.jpeg, *.jpg, *.png, *.gif
                     <br /> max size of {fData(3145728)}
                   </Typography>
                 }
               />
             </Box>
 
-            {isEdit && (
-              <FormControlLabel
-                labelPlacement="start"
-                control={
-                  <Controller
-                    name="status"
-                    control={control}
-                    render={({ field }) => (
-                      <Switch
-                        {...field}
-                        checked={field.value !== 'active'}
-                        onChange={(event) => field.onChange(event.target.checked ? 'banned' : 'active')}
-                      />
-                    )}
-                  />
-                }
-                label={
-                  <>
-                    <Typography variant="subtitle2" sx={{ mb: 0.5 }}>
-                      Banned
-                    </Typography>
-                    <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                      Apply disable account
-                    </Typography>
-                  </>
-                }
-                sx={{ mx: 0, mb: 3, width: 1, justifyContent: 'space-between' }}
-              />
-            )}
 
-            <RHFSwitch
-              name="isVerified"
-              labelPlacement="start"
-              label={
-                <>
-                  <Typography variant="subtitle2" sx={{ mb: 0.5 }}>
-                    Email Verified
-                  </Typography>
-                  <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                    Disabling this will automatically send the user a verification email
-                  </Typography>
-                </>
-              }
-              sx={{ mx: 0, width: 1, justifyContent: 'space-between' }}
-            />
           </Card>
         </Grid>
 
@@ -213,25 +185,39 @@ export default function UserNewEditForm({ isEdit, currentUser }) {
                 gridTemplateColumns: { xs: 'repeat(1, 1fr)', sm: 'repeat(2, 1fr)' },
               }}
             >
-              <RHFTextField name="name" label="Full Name" />
-              <RHFTextField name="email" label="Email Address" />
-              <RHFTextField name="phoneNumber" label="Phone Number" />
-
-              <RHFSelect name="country" label="Country" placeholder="Country">
-                <option value="" />
-                {countries.map((option) => (
-                  <option key={option.code} value={option.label}>
-                    {option.label}
-                  </option>
+              <RHFTextField name="name" label="登录名" />
+              <RHFTextField name="displayName" label="显示名" />
+              <RHFTextField name="email" label="邮箱地址" />
+              <RHFTextField name="address" label="住址" />
+              <RHFTextField name="idCard" label="身份证号码"/>
+            <RHFSelect name="gender" label="性别" placeholder="男">
+                {gender.map((option) => (
+                    <option key={option.value} value={option.name}>
+                        {option.name}
+                    </option>
                 ))}
-              </RHFSelect>
+            </RHFSelect>
 
-              <RHFTextField name="state" label="State/Region" />
-              <RHFTextField name="city" label="City" />
-              <RHFTextField name="address" label="Address" />
-              <RHFTextField name="zipCode" label="Zip/Code" />
-              <RHFTextField name="company" label="Company" />
-              <RHFTextField name="role" label="Role" />
+              <DatePicker
+                label="出生年月"
+                value={executeTime}
+                shouldDisableDate={isPast}
+                onChange={(date)=>setExecuteTime(date)}
+                renderInput={(params) => (
+                    <TextField
+                        {...params}
+                        name="executeTime"
+                        fullWidth
+                    />
+                )}
+              />
+            <RHFSelect name="role" label="性别" placeholder="男">
+                {ROLE_OPTIONS.map((option) => (
+                    <option key={option.id} value={option.id}>
+                        {option.label}
+                    </option>
+                ))}
+            </RHFSelect>
             </Box>
 
             <Stack alignItems="flex-end" sx={{ mt: 3 }}>

@@ -103,7 +103,7 @@ export default function InvoiceNewEditForm({ isEdit, currentInvoice }) {
       await axios.put("/api/checkResult/put",newInvoice)
       reset();
       setLoadingSend(false);
-      navigate(PATH_DASHBOARD.invoice.list);
+      navigate(PATH_DASHBOARD.eCommerce.order);
       console.log(JSON.stringify(newInvoice, null, 2));
     } catch (error) {
       console.error(error);
@@ -118,15 +118,6 @@ export default function InvoiceNewEditForm({ isEdit, currentInvoice }) {
       </Card>
 
       <Stack justifyContent="flex-end" direction="row" spacing={2} sx={{ mt: 3 }}>
-        <LoadingButton
-          color="inherit"
-          size="large"
-          variant="contained"
-          loading={loadingSave && isSubmitting}
-          onClick={handleSubmit(handleSaveAsDraft)}
-        >
-          Save as Draft
-        </LoadingButton>
 
         <LoadingButton
           size="large"
@@ -134,7 +125,7 @@ export default function InvoiceNewEditForm({ isEdit, currentInvoice }) {
           loading={loadingSend && isSubmitting}
           onClick={handleSubmit(handleCreateAndSend)}
         >
-          {isEdit ? 'Update' : 'Create'} & Send
+          保存
         </LoadingButton>
       </Stack>
     </FormProvider>

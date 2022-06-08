@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import {useEffect, useState} from 'react';
-import { useLocation } from 'react-router-dom';
+import {useLocation, useNavigate} from 'react-router-dom';
 // @mui
 import { styled, useTheme } from '@mui/material/styles';
 import { Box, Stack, Drawer } from '@mui/material';
@@ -23,6 +23,8 @@ import CollapseButton from './CollapseButton';
 import axios from "../../../utils/axios";
 import elderlyNavConfig from "./ElderlyNavConfig";
 import userNavConfig from "./UserNavConfig";
+import doctorNavConfig from "./DoctorNavConfig";
+import {PATH_DASHBOARD} from "../../../routes/paths";
 
 // ----------------------------------------------------------------------
 
@@ -44,6 +46,9 @@ NavbarVertical.propTypes = {
 
 export default function NavbarVertical({ isOpenSidebar, onCloseSidebar }) {
   const theme = useTheme();
+
+  // =useNavigate();
+  const navigate = useNavigate();
 
   const { pathname } = useLocation();
 
@@ -72,12 +77,16 @@ export default function NavbarVertical({ isOpenSidebar, onCloseSidebar }) {
   useEffect(()=>{
       if (currentRole==='elder'){
           setCurrentNavConfig(elderlyNavConfig);
+          navigate(PATH_DASHBOARD.general.booking);
       }
       if (currentRole==='admin'){
           setCurrentNavConfig(navConfig);
       }
       if (currentRole==='user'){
           setCurrentNavConfig(userNavConfig);
+      }
+      if (currentRole==='doctor'){
+          setCurrentNavConfig(doctorNavConfig);
       }
   },[currentRole])
 
@@ -120,8 +129,6 @@ export default function NavbarVertical({ isOpenSidebar, onCloseSidebar }) {
       <NavSectionVertical navConfig={currentNavConfig} isCollapse={isCollapse} />
 
       <Box sx={{ flexGrow: 1 }} />
-
-      {!isCollapse && <NavbarDocs />}
     </Scrollbar>
   );
 

@@ -71,12 +71,6 @@ export default function CheckoutSummary({
             <Typography variant="subtitle2">{discount ? fCurrency(-discount) : '-'}</Typography>
           </Stack>
 
-          <Stack direction="row" justifyContent="space-between">
-            <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-              Shipping
-            </Typography>
-            <Typography variant="subtitle2">{shipping ? fCurrency(shipping) : displayShipping}</Typography>
-          </Stack>
 
           <Divider />
 
@@ -85,9 +79,6 @@ export default function CheckoutSummary({
             <Box sx={{ textAlign: 'right' }}>
               <Typography variant="subtitle1" sx={{ color: 'error.main' }}>
                 {fCurrency(total)}
-              </Typography>
-              <Typography variant="caption" sx={{ fontStyle: 'italic' }}>
-                (VAT included if applicable)
               </Typography>
             </Box>
           </Stack>
@@ -101,7 +92,7 @@ export default function CheckoutSummary({
                 endAdornment: (
                   <InputAdornment position="end">
                     <Button onClick={() => onApplyDiscount(5)} sx={{ mr: -0.5 }}>
-                      Apply
+                      折扣
                     </Button>
                   </InputAdornment>
                 ),

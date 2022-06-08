@@ -47,9 +47,7 @@ export default function CheckoutProductList({ products, onDelete, onIncreaseQuan
       <Table>
         <TableHead>
           <TableRow>
-            <TableCell>Product</TableCell>
-            <TableCell align="left">Price</TableCell>
-            <TableCell align="left">Quantity</TableCell>
+            <TableCell>体检项目</TableCell>
             <TableCell align="right">费用</TableCell>
             <TableCell align="right" />
           </TableRow>
@@ -69,17 +67,6 @@ export default function CheckoutProductList({ products, onDelete, onIncreaseQuan
                       </Typography>
                     </Box>
                   </Box>
-                </TableCell>
-
-                <TableCell align="left">{fCurrency(price)}</TableCell>
-
-                <TableCell align="left">
-                  <Incrementer
-                    quantity={quantity}
-                    available={available}
-                    onDecrease={() => onDecreaseQuantity(id)}
-                    onIncrease={() => onIncreaseQuantity(id)}
-                  />
                 </TableCell>
 
                 <TableCell align="right">{fCurrency(price * quantity)}</TableCell>
